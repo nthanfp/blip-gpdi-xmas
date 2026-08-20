@@ -1,21 +1,12 @@
 {
-  "name": "itg-gift",
+  "name": "ci3-boiler-admin",
   "version": "1.0.0",
-  "description": "",
+  "description": "CodeIgniter 3 Admin Boilerplate",
   "main": "index.js",
   "scripts": {},
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/nthanfp/itg-gift.git"
-  },
-  "keywords": [],
+  "keywords": ["codeigniter", "admin", "boilerplate"],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
-  "bugs": {
-    "url": "https://github.com/nthanfp/itg-gift/issues"
-  },
-  "homepage": "https://github.com/nthanfp/itg-gift#readme",
   "devDependencies": {
     "@playwright/test": "^1.60.0",
     "@types/node": "^25.8.0",
