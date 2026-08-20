@@ -1,3 +1,10 @@
+<?php
+// Brand mode: 'logo' or 'text'
+$brand_mode = 'text'; // Change to 'text' for text-only brand
+$brand_title = 'INTERNAL';
+$brand_subtitle = 'GRUP';
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -56,7 +63,6 @@
             align-items: center;
             justify-content: center;
             gap: 12px;
-            margin-bottom: 18px;
         }
 
         .login-brand-mark {
@@ -79,7 +85,7 @@
         }
 
         .login-brand-text .title {
-            font-size: 1.2rem;
+            font-size: 1.5rem;
             font-weight: 800;
             letter-spacing: 1px;
         }
@@ -204,8 +210,16 @@
         <div class="login-card-wrap">
             <div class="card card-outline card-secondary border-0 login-panel" id="card-login">
                 <div class="card-header text-center">
+                    <?php if ($brand_mode === 'logo'): ?>
                     <div class="qrtag-logo">
                     </div>
+                    <?php else: ?>
+                    <div class="login-brand">
+                        <div class="login-brand-text">
+                            <div class="title"><?php echo $brand_title; ?> <?php echo $brand_subtitle; ?></div>
+                        </div>
+                    </div>
+                    <?php endif; ?>
                 </div>
                 <div class="card-body">
                     <form action="" id="form-login" method="POST">
