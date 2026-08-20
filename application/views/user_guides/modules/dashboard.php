@@ -1,7 +1,7 @@
             <div class="guide-section">
                 <div class="guide-section-header"><i class="fas fa-info-circle mr-2"></i>Ringkasan</div>
                 <div class="guide-section-body">
-                    <p class="mb-0">Dashboard menyajikan ringkasan data real-time platform. Widget menampilkan total Item Gift, Customer, Voucher, dan Redeem. Grafik garis menunjukkan tren klaim 7 hari terakhir. Grafik donat menampilkan distribusi status voucher secara keseluruhan.</p>
+                    <p class="mb-0">Dashboard menyajikan ringkasan data real-time sistem. Widget menampilkan total Item Gift, Customer, Voucher, dan Redeem. Grafik garis menunjukkan tren klaim 7 hari terakhir. Grafik donat menampilkan distribusi status voucher secara keseluruhan.</p>
                 </div>
             </div>
             <div class="guide-section">

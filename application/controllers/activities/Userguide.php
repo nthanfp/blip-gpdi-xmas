@@ -8,7 +8,7 @@ class Userguide extends CI_Controller
             'menuid'   => 108,
             'title'    => 'Dashboard',
             'icon'     => 'fas fa-tachometer-alt',
-            'desc'     => 'Overview data dan statistik platform Hoki Beli Illusions.',
+            'desc'     => 'Overview data dan statistik sistem.',
             'color'    => 'blue',
         ),
         'itemgift' => array(
@@ -80,6 +80,34 @@ class Userguide extends CI_Controller
             'icon'     => 'fas fa-mobile-alt',
             'desc'     => 'Kelola token perangkat untuk push notification.',
             'color'    => 'indigo',
+        ),
+        'logemail' => array(
+            'menuid'   => 120,
+            'title'    => 'Log Email',
+            'icon'     => 'fas fa-envelope-open-text',
+            'desc'     => 'Lihat riwayat pengiriman email notifikasi.',
+            'color'    => 'lime',
+        ),
+        'logapi' => array(
+            'menuid'   => 122,
+            'title'    => 'Log API',
+            'icon'     => 'fas fa-exchange-alt',
+            'desc'     => 'Lihat riwayat request API beserta status dan waktu eksekusi.',
+            'color'    => 'red',
+        ),
+        'apikey' => array(
+            'menuid'   => 123,
+            'title'    => 'API Key',
+            'icon'     => 'fas fa-key',
+            'desc'     => 'Kelola API key untuk autentikasi eksternal.',
+            'color'    => 'amber',
+        ),
+        'sync' => array(
+            'menuid'   => 121,
+            'title'    => 'Sync',
+            'icon'     => 'fas fa-sync-alt',
+            'desc'     => 'Sinkronisasi data proof of purchase dan proof completed.',
+            'color'    => 'cyan',
         ),
     );
 
