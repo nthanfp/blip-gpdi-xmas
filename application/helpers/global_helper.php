@@ -2,11 +2,9 @@
 
 function topdf($pages, $header = '', $top = 10, $ls = 0, $printA5 = 0, $report = 0, $username = 'Unknown')
 {
-    // Use local URL for wkhtmltopdf (not ngrok)
-    $local_base = 'http://192.168.10.130:8080/itg-gift/';
-    $ngrok_pattern = '/https?:\/\/[^\/]+\.ngrok[-\.]free\.app\/itg-gift\//';
-    $pages = preg_replace($ngrok_pattern, $local_base, $pages);
-    $header = preg_replace($ngrok_pattern, $local_base, $header);
+    $local_base = base_url();
+    $pages = str_replace(site_url(), $local_base, $pages);
+    $header = str_replace(site_url(), $local_base, $header);
 
     $db_aktif = isset($_SESSION['db_aktif']) ? $_SESSION['db_aktif'] : '';
 
@@ -47,7 +45,7 @@ function topdf($pages, $header = '', $top = 10, $ls = 0, $printA5 = 0, $report =
         $command = array();
         $cwd = getcwd();
 
-        $session_cookie_name = getenv('SESSION_COOKIE_NAME') ?: 'itg_ci3_boiler_admin';
+        $session_cookie_name = getenv('SESSION_COOKIE_NAME') ?: 'ci3_boiler_admin';
         $session_id = session_id();
 
         $command[] = '"' . $cwd . '/wkhtmltopdf/wkhtmltopdf' . '"';
@@ -91,7 +89,7 @@ function topdf($pages, $header = '', $top = 10, $ls = 0, $printA5 = 0, $report =
             $wkhtmltopdf = 'wkhtmltopdf';
         }
 
-        $session_cookie_name = getenv('SESSION_COOKIE_NAME') ?: 'itg_ci3_boiler_admin';
+        $session_cookie_name = getenv('SESSION_COOKIE_NAME') ?: 'ci3_boiler_admin';
         $session_id = session_id();
 
         $command = '"' . $wkhtmltopdf . '"';
@@ -135,7 +133,7 @@ function topdf($pages, $header = '', $top = 10, $ls = 0, $printA5 = 0, $report =
         $command = array();
         $cwd = getcwd();
 
-        $session_cookie_name = getenv('SESSION_COOKIE_NAME') ?: 'itg_ci3_boiler_admin';
+        $session_cookie_name = getenv('SESSION_COOKIE_NAME') ?: 'ci3_boiler_admin';
         $session_id = session_id();
 
         $command[] = "cd /Applications/wkhtmltopdf.app/Contents/MacOS/;";
