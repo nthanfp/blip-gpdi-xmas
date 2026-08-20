@@ -21,7 +21,7 @@ class Setmenu_Model extends CI_Model
 
         $current_user = $CI->Auth_Model->current_user();
 
-        return $current_user ? $current_user->mst_adminid : null;
+        return $current_user ? (int) $current_user->mst_adminid : null;
     }
 
     private function normalize_menuid($menuid)
