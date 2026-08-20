@@ -39,12 +39,7 @@ class Dashboard extends CI_Controller
 
     private function _widget_permissions()
     {
-        $menus = [
-            'can_itemgift' => 104,
-            'can_customer' => 112,
-            'can_voucher'  => 107,
-            'can_redeem'   => 113,
-        ];
+        $menus = [];
 
         $data = [];
         foreach ($menus as $key => $menuid) {
