@@ -1,6 +1,6 @@
 {
-    "name": "INTERNAL QR TAG",
-    "short_name": "ITG_QRTAG",
+    "name": "ITG ADMIN",
+    "short_name": "ITG_STARTER_ADMIN",
     "description": "-",
     "start_url": "./activities/dashboard",
     "scope": "./",

@@ -21,7 +21,7 @@ class Database_Scanner extends CI_Model
             return $cached;
         }
 
-        $prefixes = ['itg_qr', 'qrtag'];
+        $prefixes = ['ci3'];
         $available_dbs = [];
 
         try {

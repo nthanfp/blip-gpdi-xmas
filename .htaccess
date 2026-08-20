@@ -1,6 +1,6 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
-    RewriteBase /itg-qrtag/
+    RewriteBase /ci3-boiler-admin/
 
     RewriteCond %{REQUEST_URI} ^system.*
     RewriteRule ^(.*)$ /index.php/$1 [L]

@@ -28,10 +28,10 @@ $base_url = getenv('BASE_URL');
 if ($base_url) {
     $config['base_url'] = $base_url;
 } else if (strpos($_SERVER['HTTP_HOST'], '192.168.') !== false || strpos($_SERVER['HTTP_HOST'], 'localhost') !== false) {
-    $config['base_url'] = 'http://' . $_SERVER['HTTP_HOST'] . '/itg-qrtag/';
+    $config['base_url'] = 'http://' . $_SERVER['HTTP_HOST'] . '/ci3-boiler-admin/';
 } else if (preg_match('/\.ngrok[-\.]free\.app/', $_SERVER['HTTP_HOST'])) {
     $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'https';
-    $config['base_url'] = $protocol . '://' . $_SERVER['HTTP_HOST'] . '/itg-qrtag/';
+    $config['base_url'] = $protocol . '://' . $_SERVER['HTTP_HOST'] . '/ci3-boiler-admin/';
 } else {
     $config['base_url'] = 'https://qrtag.internalgroup.id/';
 }
@@ -395,7 +395,7 @@ $config['encryption_key'] = getenv('ENCRYPTION_KEY') ?: '';
 |
 */
 $config['sess_driver'] = 'files';
-$config['sess_cookie_name'] = getenv('SESSION_COOKIE_NAME') ?: 'itg_qrtag_session';
+$config['sess_cookie_name'] = getenv('SESSION_COOKIE_NAME') ?: 'itg_ci3_boiler_admin';
 $config['sess_samesite'] = 'Lax';
 $config['sess_expiration'] = 259200;
 $config['sess_save_path'] = NULL;

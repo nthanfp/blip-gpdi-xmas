@@ -47,7 +47,7 @@ function topdf($pages, $header = '', $top = 10, $ls = 0, $printA5 = 0, $report =
         $command = array();
         $cwd = getcwd();
 
-        $session_cookie_name = getenv('SESSION_COOKIE_NAME') ?: 'itg_qrtag_session';
+        $session_cookie_name = getenv('SESSION_COOKIE_NAME') ?: 'itg_ci3_boiler_admin';
         $session_id = session_id();
 
         $command[] = '"' . $cwd . '/wkhtmltopdf/wkhtmltopdf' . '"';
@@ -91,7 +91,7 @@ function topdf($pages, $header = '', $top = 10, $ls = 0, $printA5 = 0, $report =
             $wkhtmltopdf = 'wkhtmltopdf';
         }
 
-        $session_cookie_name = getenv('SESSION_COOKIE_NAME') ?: 'itg_qrtag_session';
+        $session_cookie_name = getenv('SESSION_COOKIE_NAME') ?: 'itg_ci3_boiler_admin';
         $session_id = session_id();
 
         $command = '"' . $wkhtmltopdf . '"';
@@ -135,7 +135,7 @@ function topdf($pages, $header = '', $top = 10, $ls = 0, $printA5 = 0, $report =
         $command = array();
         $cwd = getcwd();
 
-        $session_cookie_name = getenv('SESSION_COOKIE_NAME') ?: 'itg_qrtag_session';
+        $session_cookie_name = getenv('SESSION_COOKIE_NAME') ?: 'itg_ci3_boiler_admin';
         $session_id = session_id();
 
         $command[] = "cd /Applications/wkhtmltopdf.app/Contents/MacOS/;";
