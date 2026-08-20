@@ -1,0 +1,22 @@
+{
+    "name": "INTERNAL QR TAG",
+    "short_name": "ITG_QRTAG",
+    "description": "-",
+    "start_url": "./activities/dashboard",
+    "scope": "./",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#343a40",
+    "orientation": "portrait-primary",
+    "icons": [
+        {
+            "src": "assets/icons/itg_logo.png",
+            "sizes": "1024x1024",
+            "purpose": "any"
+        }
+    ],
+    "categories": [
+        "business",
+        "utilities"
+    ]
+}

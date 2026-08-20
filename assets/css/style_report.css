@@ -1,0 +1,216 @@
+/* CSS Document */
+
+/*untuk excel*/
+.excel_num {
+    mso-number-format: Fixed;
+}
+
+.excel_text {
+    mso-number-format: "\@";
+    /*force text*/
+}
+
+.excel_date {
+    /*mso-number-format:"\[$-F800\]dddd\\\,\\ mmmm\\ dd\\\,\\ yyyy";*/
+    mso-number-format: "\[$-F800\]\\ dd\\\ mmmm \\ yyyy";
+}
+
+/* end untuk excel*/
+table,
+tr,
+td,
+th,
+tbody,
+thead,
+tfoot {
+    page-break-inside: avoid;
+    clear: both;
+    overflow: auto;
+}
+
+body {
+    margin: 0;
+    font-family: Calibri, Arial, Helvetica, sans-serif;
+    font-size: 16px;
+    color: #000000;
+}
+
+table {
+    font-family: Calibri, Verdana, Arial, Helvetica, sans-serif;
+    font-size: 16px;
+    border-width: 1px;
+}
+
+.tablerep_html {
+    word-wrap: break-word;
+    page-break-inside: avoid;
+    font-family: Calibri, Verdana, Arial, Helvetica, sans-serif;
+    /*font-size: 14px;*/
+    font-size: 12pt;
+    border-collapse: collapse;
+}
+
+.tablerep {
+    table-layout: fixed;
+    word-wrap: break-word;
+    page-break-inside: avoid;
+    font-family: Calibri, Verdana, Arial, Helvetica, sans-serif;
+    /*font-size: 14px;*/
+    font-size: 12pt;
+    border-collapse: collapse;
+}
+
+.tablerep td {
+    overflow: hidden;
+}
+
+.tablerep td,
+table th {
+    padding: 2px;
+    /* 'cellpadding' equivalent */
+    border-spacing: 2px;
+    /* 'cellspacing' equivalent */
+}
+
+/*
+.tablerepfin{
+	font-family: Calibri, Verdana, Arial, Helvetica, sans-serif; font-size: 14px;
+	border-collapse:collapse;
+}
+*/
+
+.tablerepfin {
+    table-layout: fixed;
+    word-wrap: break-word;
+    page-break-inside: avoid;
+    font-family: Calibri, Verdana, Arial, Helvetica, sans-serif;
+    /*font-size: 14px;*/
+    font-size: 12pt;
+    border-collapse: collapse;
+}
+
+.tablerepfin td,
+table th {
+    padding: 1px;
+    /* 'cellpadding' equivalent */
+    border-spacing: 1px;
+    /* 'cellspacing' equivalent */
+}
+
+.tablewithborder {
+    border-top: solid;
+    border-bottom: hidden;
+    border-left: hidden;
+    border-right: hidden;
+    border-width: 1px;
+    border-collapse: collapse;
+}
+
+.printcmpname {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.printjudul {
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.nomorbesar {
+    font-size: 16px;
+}
+
+.nomorbesar2 {
+    font-size: 16px;
+}
+
+.poststatus {
+    font-size: 9px;
+}
+
+.tdsubtotal {
+    border-top: solid;
+    border-width: 1px;
+}
+
+.headertd {
+    border-top: solid;
+    border-bottom: solid;
+    font-weight: bold;
+    border-width: 1px;
+}
+
+.headertdBesar {
+    border-top: solid;
+    border-bottom: solid;
+    border-width: 1px;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.headertd2 {
+    border-bottom: solid;
+    border-width: 1px;
+    font-weight: bold
+}
+
+.headertd2Besar {
+    border-bottom: solid;
+    border-width: 1px;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.headertd_fin {
+    font-weight: bold;
+    text-decoration: underline
+}
+
+.subfoottd {
+    border-top: solid;
+    border-bottom: solid;
+    border-width: 1px;
+    font-weight: bold
+}
+
+.foottd {
+    border-top: solid;
+    border-width: 1px;
+    font-weight: bold
+}
+
+.tdclosed {
+    border-bottom: solid;
+    border-width: 1px;
+}
+
+a:link {
+    color: #CAE4FF;
+    text-decoration: none;
+}
+
+a:visited {
+    color: #CAE4FF;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #fff;
+}
+
+a:active {
+    text-decoration: none;
+}
+
+#preloader {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 99999;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    opacity: 0.8;
+    background: #FFF url(../images/loading.gif) no-repeat center center;
+    transition: all 0.5s ease;
+}
