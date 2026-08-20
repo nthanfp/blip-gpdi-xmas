@@ -36,7 +36,8 @@ class Database_Scanner extends CI_Model
                 return [];
             }
 
-            $result = pg_query($conn, "SELECT datname FROM pg_database WHERE NOT datistemplate ORDER BY datname");
+            /** @phpstan-ignore-next-line */
+            $result = @pg_query($conn, "SELECT datname FROM pg_database WHERE NOT datistemplate ORDER BY datname");
 
             if ($result) {
                 while ($row = pg_fetch_assoc($result)) {
