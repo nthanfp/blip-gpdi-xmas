@@ -1,5 +1,5 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
 class Landing extends CI_Controller
 {
@@ -24,24 +24,17 @@ class Landing extends CI_Controller
         return true;
     }
 
-    public function index($voucher_key = null)
+    public function index()
     {
         if ($this->_is_maintenance()) {
             $this->load->view('landing/maintenance');
             return;
         }
 
-        // if (!$this->_require_mobile()) return;
-
-        // if (!$voucher_key) {
-        //     $this->load->view('landing/starter');
-        //     return;
-        // }
-
         $this->load->view('landing/index');
     }
 
-    public function complete($voucher_key)
+    public function complete()
     {
         if ($this->_is_maintenance()) {
             $this->load->view('landing/maintenance');
@@ -61,7 +54,5 @@ class Landing extends CI_Controller
         }
 
         if (!$this->_require_mobile()) return;
-
-        // $this->load->view('landing/starter');
     }
 }
