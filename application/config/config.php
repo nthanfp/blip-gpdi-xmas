@@ -1,6 +1,6 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
-date_default_timezone_set('Asia/Jakarta');
+date_default_timezone_set(getenv('TIMEZONE') ?: 'Asia/Jakarta');
 
 /*
 |--------------------------------------------------------------------------
@@ -27,13 +27,11 @@ date_default_timezone_set('Asia/Jakarta');
 $base_url = getenv('BASE_URL');
 if ($base_url) {
     $config['base_url'] = $base_url;
-} else if (strpos($_SERVER['HTTP_HOST'], '192.168.') !== false || strpos($_SERVER['HTTP_HOST'], 'localhost') !== false) {
-    $config['base_url'] = 'http://' . $_SERVER['HTTP_HOST'] . '/ci3-boiler-admin/';
-} else if (preg_match('/\.ngrok[-\.]free\.app/', $_SERVER['HTTP_HOST'])) {
-    $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'https';
-    $config['base_url'] = $protocol . '://' . $_SERVER['HTTP_HOST'] . '/ci3-boiler-admin/';
+} else if (isset($_SERVER['HTTP_HOST'])) {
+    $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
+    $config['base_url'] = $protocol . '://' . $_SERVER['HTTP_HOST'] . '/';
 } else {
-    $config['base_url'] = 'https://qrtag.internalgroup.id/';
+    $config['base_url'] = 'http://localhost/';
 }
 
 /*
@@ -46,7 +44,7 @@ if ($base_url) {
 | variable so that it is blank.
 |
 */
-$config['index_page'] = '';
+$config['index_page'] = getenv('INDEX_PAGE') ?: '';
 
 /*
 |--------------------------------------------------------------------------
@@ -236,7 +234,7 @@ $config['allow_get_array'] = TRUE;
 | your log files will fill up very fast.
 |
 */
-$config['log_threshold'] = 0;
+$config['log_threshold'] = (int) (getenv('LOG_THRESHOLD') ?: 0);
 
 /*
 |--------------------------------------------------------------------------
@@ -397,10 +395,10 @@ $config['encryption_key'] = getenv('ENCRYPTION_KEY') ?: '';
 $config['sess_driver'] = 'files';
 $config['sess_cookie_name'] = getenv('SESSION_COOKIE_NAME') ?: 'itg_ci3_boiler_admin';
 $config['sess_samesite'] = 'Lax';
-$config['sess_expiration'] = 259200;
-$config['sess_save_path'] = NULL;
+$config['sess_expiration'] = (int) (getenv('SESSION_EXPIRATION') ?: 259200);
+$config['sess_save_path'] = getenv('SESSION_SAVE_PATH') ?: NULL;
 $config['sess_match_ip'] = FALSE;
-$config['sess_time_to_update'] = 300;
+$config['sess_time_to_update'] = (int) (getenv('SESSION_TIME_TO_UPDATE') ?: 300);
 $config['sess_regenerate_destroy'] = TRUE;
 
 /*
@@ -468,27 +466,12 @@ $config['global_xss_filtering'] = FALSE;
 | 'csrf_regenerate' = Regenerate token on every submission
 | 'csrf_exclude_uris' = Array of URIs which ignore CSRF checks
 */
-$config['csrf_protection'] = TRUE;
-$config['csrf_token_name'] = 'csrf_test_name';
-$config['csrf_cookie_name'] = 'csrf_cookie_name';
-$config['csrf_expire'] = 7200;
+$config['csrf_protection'] = (getenv('CSRF_PROTECTION') ?: 'true') === 'true';
+$config['csrf_token_name'] = getenv('CSRF_TOKEN_NAME') ?: 'csrf_test_name';
+$config['csrf_cookie_name'] = getenv('CSRF_COOKIE_NAME') ?: 'csrf_cookie_name';
+$config['csrf_expire'] = (int) (getenv('CSRF_EXPIRE') ?: 7200);
 $config['csrf_regenerate'] = FALSE;
-$config['csrf_exclude_uris'] = array(
-    'activities/apikey/data_delete',
-    'activities/notification/save_token',
-    'activities/notification/remove_token',
-    'activities/notification/mark_read',
-    'activities/notification/mark_all_read',
-    'activities/redeem/data_confirm',
-    'activities/redeem/data_reject',
-    'activities/voucher/data_bulk_new',
-    'api/voucher/verification',
-    'api/voucher/claim_gift',
-    'api/customer/check_phone',
-    'api/code/verify',
-    'api/code/claim',
-    'api/code/claim',
-);
+$config['csrf_exclude_uris'] = array();
 
 /*
 |--------------------------------------------------------------------------
