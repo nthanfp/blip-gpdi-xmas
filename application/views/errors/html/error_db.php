@@ -1,64 +1,53 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-?><!DOCTYPE html>
+$CI =& get_instance();
+if (!isset($CI)) {
+    $CI = new CI_Controller();
+}
+$CI->load->helper('url');
+?>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<title>Database Error</title>
-<style type="text/css">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Database Error</title>
 
-::selection { background-color: #E13300; color: white; }
-::-moz-selection { background-color: #E13300; color: white; }
-
-body {
-	background-color: #fff;
-	margin: 40px;
-	font: 13px/20px normal Helvetica, Arial, sans-serif;
-	color: #4F5155;
-}
-
-a {
-	color: #003399;
-	background-color: transparent;
-	font-weight: normal;
-}
-
-h1 {
-	color: #444;
-	background-color: transparent;
-	border-bottom: 1px solid #D0D0D0;
-	font-size: 19px;
-	font-weight: normal;
-	margin: 0 0 14px 0;
-	padding: 14px 15px 10px 15px;
-}
-
-code {
-	font-family: Consolas, Monaco, Courier New, Courier, monospace;
-	font-size: 12px;
-	background-color: #f9f9f9;
-	border: 1px solid #D0D0D0;
-	color: #002166;
-	display: block;
-	margin: 14px 0 14px 0;
-	padding: 12px 10px 12px 10px;
-}
-
-#container {
-	margin: 10px;
-	border: 1px solid #D0D0D0;
-	box-shadow: 0 0 8px #D0D0D0;
-}
-
-p {
-	margin: 12px 15px 12px 15px;
-}
-</style>
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="<?php echo base_url('assets/plugins/fontawesome-free/css/all.min.css'); ?>">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="<?php echo base_url('assets/css/adminlte.min.css'); ?>">
 </head>
-<body>
-	<div id="container">
-		<h1><?php echo $heading; ?></h1>
-		<?php echo $message; ?>
-	</div>
+<body class="hold-transition sidebar-mini">
+<div class="wrapper d-flex align-items-center justify-content-center" style="min-height: 100vh; background-color: #f4f6f9;">
+    <!-- Main content -->
+    <section class="content">
+        <div class="error-page" style="margin: 0 auto; width: 600px;">
+            <h2 class="headline text-danger"> 500</h2>
+
+            <div class="error-content pt-3">
+                <h3><i class="fas fa-database text-danger"></i> Database Error.</h3>
+
+                <p>
+                    <strong><?php echo $heading; ?></strong><br>
+                    <?php echo strip_tags($message); ?><br><br>
+                    Please contact system administrator.
+                </p>
+            </div>
+        </div>
+        <!-- /.error-page -->
+    </section>
+    <!-- /.content -->
+</div>
+<!-- ./wrapper -->
+
+<!-- jQuery -->
+<script src="<?php echo base_url('assets/plugins/jquery/jquery.min.js'); ?>"></script>
+<!-- Bootstrap 4 -->
+<script src="<?php echo base_url('assets/plugins/bootstrap/js/bootstrap.bundle.min.js'); ?>"></script>
+<!-- AdminLTE App -->
+<script src="<?php echo base_url('assets/js/adminlte.min.js'); ?>"></script>
 </body>
 </html>
