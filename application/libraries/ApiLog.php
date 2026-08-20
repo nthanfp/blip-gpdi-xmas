@@ -88,11 +88,6 @@ class ApiLog
                 $data[$key] = substr($value, 0, 4) . '****';
                 continue;
             }
-
-            if ($lower_key === 'voucher_key' && is_string($value) && strlen($value) > 8) {
-                $data[$key] = substr($value, 0, 8) . '****';
-                continue;
-            }
         }
 
         return $data;
