@@ -18,8 +18,8 @@ user_guide_src/cilexer/pycilexer.egg-info/*
 /vendor/
 /assets/captcha
 /node_modules
-/uploads/redeem-proof
-/uploads/purchase-proof
+/uploads/*
+!/uploads/index.html
 /assets/qrcode
 /assets/temp_qr
 
