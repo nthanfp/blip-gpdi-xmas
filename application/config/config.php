@@ -393,7 +393,7 @@ $config['encryption_key'] = getenv('ENCRYPTION_KEY') ?: '';
 |
 */
 $config['sess_driver'] = 'files';
-$config['sess_cookie_name'] = getenv('SESSION_COOKIE_NAME') ?: 'itg_ci3_boiler_admin';
+$config['sess_cookie_name'] = getenv('SESSION_COOKIE_NAME') ?: 'ci3_boiler_admin';
 $config['sess_samesite'] = 'Lax';
 $config['sess_expiration'] = (int) (getenv('SESSION_EXPIRATION') ?: 259200);
 $config['sess_save_path'] = getenv('SESSION_SAVE_PATH') ?: NULL;
@@ -419,10 +419,10 @@ $config['sess_regenerate_destroy'] = TRUE;
 */
 $config['cookie_prefix']    = '';
 $config['cookie_domain']    = '';
-$config['cookie_path']        = '/';
+$config['cookie_path']      = '/';
 $config['cookie_secure']    = FALSE;
-$config['cookie_httponly']     = FALSE;
-$config['cookie_samesite']     = 'Lax';
+$config['cookie_httponly']  = FALSE;
+$config['cookie_samesite']  = 'Lax';
 
 /*
 |--------------------------------------------------------------------------
