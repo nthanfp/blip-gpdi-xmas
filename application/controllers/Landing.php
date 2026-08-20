@@ -31,12 +31,12 @@ class Landing extends CI_Controller
             return;
         }
 
-        if (!$this->_require_mobile()) return;
+        // if (!$this->_require_mobile()) return;
 
-        if (!$voucher_key) {
-            $this->load->view('landing/starter');
-            return;
-        }
+        // if (!$voucher_key) {
+        //     $this->load->view('landing/starter');
+        //     return;
+        // }
 
         $this->load->view('landing/index');
     }
@@ -62,6 +62,6 @@ class Landing extends CI_Controller
 
         if (!$this->_require_mobile()) return;
 
-        $this->load->view('landing/starter');
+        // $this->load->view('landing/starter');
     }
 }
