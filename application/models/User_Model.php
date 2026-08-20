@@ -246,7 +246,7 @@ class User_Model extends CI_Model
         $suspended = array_key_exists('suspended', $input) ? (int) $input['suspended'] : 0;
         $permissions = $this->normalize_permissions($input['permissions'] ?? []);
         $current_user = $this->current_user_id()->username;
-        $mst_adminid = $this->Global_Model->get_autoid($this->_table, 'mst_adminid');
+        $mst_adminid = $this->Global_Model->get_autoid_seq('seq_mst_admin');
 
         if ($mst_adminid === null) {
             return [

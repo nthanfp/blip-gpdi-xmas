@@ -61,8 +61,7 @@ class ApiLog
     private function insert_log(array $data)
     {
         $this->CI->load->model('Global_Model');
-
-        $act_api_logid = $this->CI->Global_Model->get_autoid('act_api_log', 'act_api_logid');
+        $act_api_logid = $this->Global_Model->get_autoid_seq('seq_act_api_log');
         if ($act_api_logid === null) {
             $act_api_logid = 1;
         }
