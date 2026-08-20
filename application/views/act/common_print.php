@@ -12,7 +12,7 @@
         header("Content-Disposition: attachment; filename=$filename.xls");
     }
     ?>
-    <title>INTERNAL QR TAG</title>
+    <title>INTERNAL GRUP</title>
     <link rel="icon" type="image/x-icon" href="<?php echo base_url() . 'assets/icons/favicon.ico'; ?>" />
     <link rel="stylesheet" type="text/css" href="<?php echo base_url() . 'assets/css/style_report.css'; ?>" />
     <style>

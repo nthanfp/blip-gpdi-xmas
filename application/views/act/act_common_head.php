@@ -4,7 +4,7 @@
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>INTERNAL QR TAG</title>
+    <title>INTERNAL GRUP</title>
     <link rel="icon" type="image/x-icon" href="<?php echo base_url() . 'assets/icons/favicon.ico'; ?>" />
     <link rel="stylesheet" type="text/css" href="<?php echo base_url() . 'assets/css/style_report.css'; ?>" />
 </head>

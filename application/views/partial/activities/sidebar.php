@@ -150,7 +150,7 @@ if (!function_exists('render_sidebar_menu_items')) {
     <a href="<?= site_url('activities/dashboard') ?>" class="brand-link">
         <img src="<?php echo base_url('assets/icons/logo.png'); ?>" alt="ITG Logo" class="brand-image"
             style="opacity: .8; filter: brightness(0) invert(1);">
-        <span class="brand-text font-weight-bold mx-2">INTERNAL QR TAG</span>
+        <span class="brand-text font-weight-bold mx-2">INTERNAL GRUP</span>
     </a>
 
     <div class="sidebar">
