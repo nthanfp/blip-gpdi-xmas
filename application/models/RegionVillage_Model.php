@@ -27,28 +27,41 @@ class RegionVillage_Model extends CI_Model
         ];
     }
 
-    public function data_list($page = 1, $per_page = 10, $search = '', $sort_by = 'village_name', $sort_dir = 'ASC', $districtid = '')
+    public function data_list($page = 1, $per_page = 10, $search = '', $sort_by = 'village_name', $sort_dir = 'ASC', $districtid = '', $cityid = '', $provinceid = '')
     {
         $page = max(1, (int) $page);
         $per_page = max(1, (int) $per_page);
         $offset = ($page - 1) * $per_page;
 
-        $this->db->from($this->_table);
+        $this->db->from($this->_table . ' v');
+
+        if ($provinceid !== '' || $cityid !== '') {
+            $this->db->join('mst_reg_district dist', 'dist.mst_reg_districtid = v.mst_reg_districtid', 'left');
+        }
+
+        if ($provinceid !== '') {
+            $this->db->join('mst_reg_city c', 'c.mst_reg_cityid = dist.mst_reg_cityid', 'left');
+            $this->db->where('c.mst_reg_provinceid', (int) $provinceid);
+        }
+
+        if ($cityid !== '') {
+            $this->db->where('dist.mst_reg_cityid', (int) $cityid);
+        }
 
         if ($districtid !== '') {
-            $this->db->where('mst_reg_districtid', (int) $districtid);
+            $this->db->where('v.mst_reg_districtid', (int) $districtid);
         }
 
         if ($search !== '') {
-            $this->db->like('village_name', $search);
+            $this->db->like('v.village_name', $search);
         }
 
         $total = $this->db->count_all_results('', false);
 
         $allowed_sort = [
-            'mst_reg_villageid' => 'mst_reg_villageid',
-            'village_name' => 'village_name',
-            'mst_reg_districtid' => 'mst_reg_districtid',
+            'mst_reg_villageid' => 'v.mst_reg_villageid',
+            'village_name' => 'v.village_name',
+            'mst_reg_districtid' => 'v.mst_reg_districtid',
         ];
 
         $sort_column = isset($allowed_sort[$sort_by]) ? $allowed_sort[$sort_by] : 'village_name';

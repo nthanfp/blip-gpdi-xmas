@@ -178,7 +178,9 @@
                 search: '',
                 sort_by: 'village_name',
                 sort_dir: 'ASC',
-                districtid: ''
+                districtid: '',
+                cityid: '',
+                provinceid: ''
             }
 
             let provinceMap = {}
@@ -381,7 +383,9 @@
                         search: state.search,
                         sort_by: state.sort_by,
                         sort_dir: state.sort_dir,
-                        districtid: state.districtid
+                        districtid: state.districtid,
+                        cityid: state.cityid,
+                        provinceid: state.provinceid
                     },
                     beforeSend: function () {
                         $('input, select, textarea, button').prop('disabled', true);
@@ -443,6 +447,8 @@
                 state.search = $('#search').val().trim()
                 state.perPage = parseInt($('#perPage').val(), 10) || 10
                 state.districtid = $('#filterDistrict').val()
+                state.cityid = $('#filterCity').val()
+                state.provinceid = $('#filterProvince').val()
                 loadData()
             })
 
@@ -456,12 +462,13 @@
                 state.perPage = 10
                 state.search = ''
                 state.districtid = ''
+                state.cityid = ''
+                state.provinceid = ''
                 loadData()
             })
 
             $('#filterProvince').on('change', function () {
                 const provinceid = $(this).val()
-                state.districtid = ''
                 $('#filterDistrict').val('').prop('disabled', true).find('option:gt(0)').remove()
                 $('#filterCity').val('')
                 loadCities(provinceid, $('#filterCity'))
@@ -469,7 +476,6 @@
 
             $('#filterCity').on('change', function () {
                 const cityid = $(this).val()
-                state.districtid = ''
                 $('#filterDistrict').val('')
                 loadDistricts(cityid, $('#filterDistrict'))
             })

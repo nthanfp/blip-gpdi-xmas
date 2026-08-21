@@ -52,8 +52,10 @@ class Region_Village extends CI_Controller
         $sort_by = $this->input->post('sort_by', true) ?: $this->input->get('sort_by', true) ?: 'village_name';
         $sort_dir = $this->input->post('sort_dir', true) ?: $this->input->get('sort_dir', true) ?: 'ASC';
         $districtid = $this->input->post('districtid', true) ?: $this->input->get('districtid', true) ?: '';
+        $cityid = $this->input->post('cityid', true) ?: $this->input->get('cityid', true) ?: '';
+        $provinceid = $this->input->post('provinceid', true) ?: $this->input->get('provinceid', true) ?: '';
 
-        $result = $this->RegionVillage_Model->data_list($page, $per_page, $search, $sort_by, $sort_dir, $districtid);
+        $result = $this->RegionVillage_Model->data_list($page, $per_page, $search, $sort_by, $sort_dir, $districtid, $cityid, $provinceid);
         $this->respond([
             'success' => $result['success'],
             'message' => $result['message'],
