@@ -165,7 +165,8 @@
                 search: '',
                 sort_by: 'district_name',
                 sort_dir: 'ASC',
-                cityid: ''
+                cityid: '',
+                provinceid: ''
             }
 
             let provinceMap = {}
@@ -337,7 +338,8 @@
                         search: state.search,
                         sort_by: state.sort_by,
                         sort_dir: state.sort_dir,
-                        cityid: state.cityid
+                        cityid: state.cityid,
+                        provinceid: state.provinceid
                     },
                     beforeSend: function () {
                         $('input, select, textarea, button').prop('disabled', true);
@@ -399,6 +401,7 @@
                 state.search = $('#search').val().trim()
                 state.perPage = parseInt($('#perPage').val(), 10) || 10
                 state.cityid = $('#filterCity').val()
+                state.provinceid = $('#filterProvince').val()
                 loadData()
             })
 
@@ -411,6 +414,7 @@
                 state.perPage = 10
                 state.search = ''
                 state.cityid = ''
+                state.provinceid = ''
                 loadData()
             })
 

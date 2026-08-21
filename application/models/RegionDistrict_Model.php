@@ -27,28 +27,33 @@ class RegionDistrict_Model extends CI_Model
         ];
     }
 
-    public function data_list($page = 1, $per_page = 10, $search = '', $sort_by = 'district_name', $sort_dir = 'ASC', $cityid = '')
+    public function data_list($page = 1, $per_page = 10, $search = '', $sort_by = 'district_name', $sort_dir = 'ASC', $cityid = '', $provinceid = '')
     {
         $page = max(1, (int) $page);
         $per_page = max(1, (int) $per_page);
         $offset = ($page - 1) * $per_page;
 
-        $this->db->from($this->_table);
+        $this->db->from($this->_table . ' d');
+
+        if ($provinceid !== '') {
+            $this->db->join('mst_reg_city c', 'c.mst_reg_cityid = d.mst_reg_cityid', 'left');
+            $this->db->where('c.mst_reg_provinceid', (int) $provinceid);
+        }
 
         if ($cityid !== '') {
-            $this->db->where('mst_reg_cityid', (int) $cityid);
+            $this->db->where('d.mst_reg_cityid', (int) $cityid);
         }
 
         if ($search !== '') {
-            $this->db->like('district_name', $search);
+            $this->db->like('d.district_name', $search);
         }
 
         $total = $this->db->count_all_results('', false);
 
         $allowed_sort = [
-            'mst_reg_districtid' => 'mst_reg_districtid',
-            'district_name' => 'district_name',
-            'mst_reg_cityid' => 'mst_reg_cityid',
+            'mst_reg_districtid' => 'd.mst_reg_districtid',
+            'district_name' => 'd.district_name',
+            'mst_reg_cityid' => 'd.mst_reg_cityid',
         ];
 
         $sort_column = isset($allowed_sort[$sort_by]) ? $allowed_sort[$sort_by] : 'district_name';

@@ -51,8 +51,9 @@ class Region_District extends CI_Controller
         $sort_by = $this->input->post('sort_by', true) ?: $this->input->get('sort_by', true) ?: 'district_name';
         $sort_dir = $this->input->post('sort_dir', true) ?: $this->input->get('sort_dir', true) ?: 'ASC';
         $cityid = $this->input->post('cityid', true) ?: $this->input->get('cityid', true) ?: '';
+        $provinceid = $this->input->post('provinceid', true) ?: $this->input->get('provinceid', true) ?: '';
 
-        $result = $this->RegionDistrict_Model->data_list($page, $per_page, $search, $sort_by, $sort_dir, $cityid);
+        $result = $this->RegionDistrict_Model->data_list($page, $per_page, $search, $sort_by, $sort_dir, $cityid, $provinceid);
         $this->respond([
             'success' => $result['success'],
             'message' => $result['message'],
