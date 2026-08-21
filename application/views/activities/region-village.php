@@ -339,19 +339,33 @@
 
                 let items = []
 
-                items.push(`<li class="page-item ${hasPrev ? '' : 'disabled'}"><a class="page-link" href="#" data-page="1">First</a></li>`)
-                items.push(`<li class="page-item ${hasPrev ? '' : 'disabled'}"><a class="page-link" href="#" data-page="${Math.max(1, currentPage - 1)}">Prev</a></li>`)
-
-                for (let i = 1; i <= totalPages; i++) {
-                    if (i > 3 && i < totalPages - 1 && Math.abs(i - currentPage) > 1) {
-                        items.push('<li class="page-item disabled"><span class="page-link">...</span></li>')
-                        continue
-                    }
-                    items.push(`<li class="page-item ${i === currentPage ? 'active' : ''}"><a class="page-link" href="#" data-page="${i}">${i}</a></li>`)
+                const addPage = (page, label, active, disabled) => {
+                    items.push(`<li class="page-item ${active ? 'active' : ''} ${disabled ? 'disabled' : ''}"><a class="page-link" href="#" data-page="${page}">${label || page}</a></li>`)
                 }
 
-                items.push(`<li class="page-item ${hasNext ? '' : 'disabled'}"><a class="page-link" href="#" data-page="${Math.min(totalPages, currentPage + 1)}">Next</a></li>`)
-                items.push(`<li class="page-item ${hasNext ? '' : 'disabled'}"><a class="page-link" href="#" data-page="${totalPages}">Last</a></li>`)
+                const addEllipsis = () => {
+                    items.push('<li class="page-item disabled"><span class="page-link">...</span></li>')
+                }
+
+                addPage(1, '1', currentPage === 1, false)
+
+                const start = Math.max(2, currentPage - 1)
+                const end = Math.min(totalPages - 1, currentPage + 1)
+
+                if (start > 2) addEllipsis()
+
+                for (let i = start; i <= end; i++) {
+                    addPage(i, String(i), i === currentPage, false)
+                }
+
+                if (end < totalPages - 1) addEllipsis()
+
+                if (totalPages > 1) {
+                    addPage(totalPages, String(totalPages), currentPage === totalPages, false)
+                }
+
+                items.unshift('<li class="page-item' + (currentPage === 1 ? ' disabled' : '') + '"><a class="page-link" href="#" data-page="' + (currentPage - 1) + '">Prev</a></li>')
+                items.push('<li class="page-item' + (currentPage === totalPages ? ' disabled' : '') + '"><a class="page-link" href="#" data-page="' + (currentPage + 1) + '">Next</a></li>')
 
                 pagination.html(items.join(''))
             }
