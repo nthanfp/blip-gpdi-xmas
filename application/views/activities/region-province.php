@@ -15,7 +15,7 @@
                     <div>
                     </div>
                     <div>
-                        <button type="button" class="btn btn-sm btn-secondary" id="btnAdd">
+                        <button type="button" class="btn btn-sm btn-secondary d-none" id="btnAdd">
                             <i class="fas fa-plus"></i> New
                         </button>
                     </div>

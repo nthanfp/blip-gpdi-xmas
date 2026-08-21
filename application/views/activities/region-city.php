@@ -15,7 +15,7 @@
                     <div>
                     </div>
                     <div>
-                        <button type="button" class="btn btn-sm btn-secondary" id="btnAdd">
+                        <button type="button" class="btn btn-sm btn-secondary d-none" id="btnAdd">
                             <i class="fas fa-plus"></i> New
                         </button>
                     </div>
@@ -27,8 +27,7 @@
                     <div class="row">
                         <div class="col-12 col-md-4 mb-2">
                             <label class="mb-0">Province</label>
-                            <select class="form-control form-control-sm" id="filterProvince">
-                                <option value="">All Provinces</option>
+                            <select class="selectpicker form-control" id="filterProvince" data-live-search="true" data-width="100%" data-none-selected-text="All Provinces">
                             </select>
                         </div>
                         <div class="col-12 col-md-4 mb-2">
@@ -112,8 +111,7 @@
                             <input type="hidden" name="id" id="recordId" value="">
                             <div class="form-group">
                                 <label>Province <span class="text-danger">*</span></label>
-                                <select name="mst_reg_provinceid" id="mst_reg_provinceid" class="form-control">
-                                    <option value="">-- Select Province --</option>
+                                <select name="mst_reg_provinceid" id="mst_reg_provinceid" class="selectpicker" data-live-search="true" data-width="100%" data-none-selected-text="-- Select Province --">
                                 </select>
                             </div>
                             <div class="form-group">
@@ -193,6 +191,8 @@
                         filterSelect.append(`<option value="${escapeHtml(item.value)}">${escapeHtml(item.label)}</option>`)
                         formSelect.append(`<option value="${escapeHtml(item.value)}">${escapeHtml(item.label)}</option>`)
                     })
+                    filterSelect.selectpicker('refresh')
+                    formSelect.selectpicker('refresh')
                 })
             }
 
@@ -212,6 +212,7 @@
             const resetForm = () => {
                 form[0].reset()
                 fields.id.val('')
+                fields.mst_reg_provinceid.selectpicker('val', '')
                 $('#modalTitle').text('New City')
             }
 
@@ -364,7 +365,7 @@
             $('#btnReset').on('click', function () {
                 $('#search').val('')
                 $('#perPage').val('10')
-                $('#filterProvince').val('')
+                $('#filterProvince').selectpicker('val', '')
                 state.page = 1
                 state.perPage = 10
                 state.search = ''
@@ -398,7 +399,7 @@
                         }
                         const data = res.data || {}
                         fields.id.val(data.mst_reg_cityid || '')
-                        fields.mst_reg_provinceid.val(data.mst_reg_provinceid || '')
+                        fields.mst_reg_provinceid.selectpicker('val', data.mst_reg_provinceid || '')
                         fields.city_name.val(data.city_name || '')
                         $('#modalTitle').text('Edit City')
                         modal.modal('show')

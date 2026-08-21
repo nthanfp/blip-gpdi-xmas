@@ -15,7 +15,7 @@
                     <div>
                     </div>
                     <div>
-                        <button type="button" class="btn btn-sm btn-secondary" id="btnAdd">
+                        <button type="button" class="btn btn-sm btn-secondary d-none" id="btnAdd">
                             <i class="fas fa-plus"></i> New
                         </button>
                     </div>
@@ -27,14 +27,12 @@
                     <div class="row">
                         <div class="col-12 col-md-3 mb-2">
                             <label class="mb-0">Province</label>
-                            <select class="form-control form-control-sm" id="filterProvince">
-                                <option value="">All Provinces</option>
+                            <select class="selectpicker form-control" id="filterProvince" data-live-search="true" data-width="100%" data-none-selected-text="All Provinces">
                             </select>
                         </div>
                         <div class="col-12 col-md-3 mb-2">
                             <label class="mb-0">City</label>
-                            <select class="form-control form-control-sm" id="filterCity" disabled>
-                                <option value="">All Cities</option>
+                            <select class="selectpicker form-control" id="filterCity" data-live-search="true" data-width="100%" data-none-selected-text="All Cities" disabled>
                             </select>
                         </div>
                         <div class="col-12 col-md-3 mb-2">
@@ -115,14 +113,12 @@
                             <input type="hidden" name="id" id="recordId" value="">
                             <div class="form-group">
                                 <label>Province <span class="text-danger">*</span></label>
-                                <select name="mst_reg_provinceid" id="mst_reg_provinceid" class="form-control">
-                                    <option value="">-- Select Province --</option>
+                                <select name="mst_reg_provinceid" id="mst_reg_provinceid" class="selectpicker" data-live-search="true" data-width="100%" data-none-selected-text="-- Select Province --">
                                 </select>
                             </div>
                             <div class="form-group">
                                 <label>City <span class="text-danger">*</span></label>
-                                <select name="mst_reg_cityid" id="mst_reg_cityid" class="form-control" disabled>
-                                    <option value="">-- Select City --</option>
+                                <select name="mst_reg_cityid" id="mst_reg_cityid" class="selectpicker" data-live-search="true" data-width="100%" data-none-selected-text="-- Select City --" disabled>
                                 </select>
                             </div>
                             <div class="form-group">
@@ -206,6 +202,8 @@
                         filterSelect.append(`<option value="${escapeHtml(item.value)}">${escapeHtml(item.label)}</option>`)
                         formSelect.append(`<option value="${escapeHtml(item.value)}">${escapeHtml(item.label)}</option>`)
                     })
+                    filterSelect.selectpicker('refresh')
+                    formSelect.selectpicker('refresh')
                 })
             }
 
@@ -213,6 +211,7 @@
                 if (!provinceid) {
                     target.find('option:gt(0)').remove()
                     target.prop('disabled', true)
+                    target.selectpicker('refresh')
                     return $.Deferred().resolve()
                 }
 
@@ -234,6 +233,7 @@
                     } else {
                         target.prop('disabled', true)
                     }
+                    target.selectpicker('refresh')
                 })
             }
 
@@ -253,7 +253,9 @@
             const resetForm = () => {
                 form[0].reset()
                 fields.id.val('')
+                fields.mst_reg_provinceid.selectpicker('val', '')
                 fields.mst_reg_cityid.prop('disabled', true).find('option:gt(0)').remove()
+                fields.mst_reg_cityid.selectpicker('refresh')
                 $('#modalTitle').text('New District')
             }
 
@@ -408,8 +410,9 @@
             $('#btnReset').on('click', function () {
                 $('#search').val('')
                 $('#perPage').val('10')
-                $('#filterProvince').val('')
+                $('#filterProvince').selectpicker('val', '')
                 $('#filterCity').val('').prop('disabled', true).find('option:gt(0)').remove()
+                $('#filterCity').selectpicker('refresh')
                 state.page = 1
                 state.perPage = 10
                 state.search = ''
@@ -421,7 +424,7 @@
             $('#filterProvince').on('change', function () {
                 const provinceid = $(this).val()
                 state.cityid = ''
-                $('#filterCity').val('')
+                $('#filterCity').val('').prop('disabled', true).find('option:gt(0)').remove()
                 loadCities(provinceid, $('#filterCity'))
             })
 
@@ -435,7 +438,8 @@
 
             fields.mst_reg_provinceid.on('change', function () {
                 const provinceid = $(this).val()
-                fields.mst_reg_cityid.val('')
+                fields.mst_reg_cityid.val('').prop('disabled', true).find('option:gt(0)').remove()
+                fields.mst_reg_cityid.selectpicker('refresh')
                 loadCities(provinceid, fields.mst_reg_cityid)
             })
 
@@ -462,9 +466,9 @@
                         const provinceid = data.mst_reg_provinceid || ''
                         const cityid = data.mst_reg_cityid || ''
 
-                        fields.mst_reg_provinceid.val(provinceid)
+                        fields.mst_reg_provinceid.selectpicker('val', provinceid)
                         loadCities(provinceid, fields.mst_reg_cityid).then(function () {
-                            fields.mst_reg_cityid.val(cityid)
+                            fields.mst_reg_cityid.selectpicker('val', cityid)
                         })
 
                         $('#modalTitle').text('Edit District')
