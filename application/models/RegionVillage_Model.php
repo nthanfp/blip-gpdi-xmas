@@ -34,18 +34,16 @@ class RegionVillage_Model extends CI_Model
         $offset = ($page - 1) * $per_page;
 
         $this->db->from($this->_table . ' v');
+        $this->db->join('mst_reg_district dist', 'dist.mst_reg_districtid = v.mst_reg_districtid', 'left');
 
         if ($provinceid !== '' || $cityid !== '') {
-            $this->db->join('mst_reg_district dist', 'dist.mst_reg_districtid = v.mst_reg_districtid', 'left');
-        }
-
-        if ($provinceid !== '') {
             $this->db->join('mst_reg_city c', 'c.mst_reg_cityid = dist.mst_reg_cityid', 'left');
-            $this->db->where('c.mst_reg_provinceid', (int) $provinceid);
-        }
-
-        if ($cityid !== '') {
-            $this->db->where('dist.mst_reg_cityid', (int) $cityid);
+            if ($provinceid !== '') {
+                $this->db->where('c.mst_reg_provinceid', (int) $provinceid);
+            }
+            if ($cityid !== '') {
+                $this->db->where('dist.mst_reg_cityid', (int) $cityid);
+            }
         }
 
         if ($districtid !== '') {
