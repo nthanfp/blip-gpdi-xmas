@@ -53,10 +53,10 @@
                         <div class="col-6 col-md-1 mb-2">
                             <label class="mb-0">Show</label>
                             <select class="form-control form-control-sm" id="perPage">
-                                <option value="25" selected>25</option>
+                                <option value="25">25</option>
                                 <option value="50">50</option>
                                 <option value="100">100</option>
-                                <option value="0">ALL</option>
+                                <option value="0" selected>ALL</option>
                             </select>
                         </div>
                         <div class="col-md-3 mb-2">
@@ -77,11 +77,12 @@
                     <table class="table table-sm table-striped mb-0">
                         <thead>
                             <tr>
-                                <th class="">ID</th>
+                                <th class="d-none">ID</th>
+                                <th class="text-center" style="width:50px"></th>
                                 <th>Menu Name</th>
                                 <th>Path</th>
                                 <th>Parent Menu</th>
-                                <th>Order</th>
+                                <th class="d-none">Order</th>
                                 <th>Icon</th>
                                 <th>Suspended</th>
                                 <th class="text-right">Action</th>
@@ -89,7 +90,7 @@
                         </thead>
                         <tbody id="tableBodySetmenu">
                             <tr>
-                                <td colspan="8" class="text-center text-muted py-4">Loading...</td>
+                                <td colspan="9" class="text-center text-muted py-4">Loading...</td>
                             </tr>
                         </tbody>
                     </table>
@@ -133,7 +134,7 @@
                                 <input type="text" name="path" id="path" class="form-control" autocomplete="off">
                             </div>
 
-                            <div class="form-row">
+                            <div class="form-row d-none">
                                 <div class="form-group col-md-4">
                                     <label>Order</label>
                                     <input type="number" name="order" id="order" class="form-control" min="0" step="1"
@@ -191,12 +192,13 @@
                 edit: '<?= site_url("activities/setmenu/data_edit") ?>',
                 update: '<?= site_url("activities/setmenu/data_update") ?>',
                 delete: '<?= site_url("activities/setmenu/data_delete") ?>',
+                move: '<?= site_url("activities/setmenu/data_move") ?>',
                 optionParent: '<?= site_url("activities/setmenu/data_option_parent") ?>'
             }
 
             const state = {
                 page: 1,
-                perPage: 25,
+                perPage: 0,
                 search: '',
                 parent_set_menuid: '',
                 suspended: 0
@@ -246,9 +248,11 @@
 
             const renderRows = (rows) => {
                 if (!rows || !rows.length) {
-                    tableBody.html('<tr><td colspan="8" class="text-center text-muted py-4">No data found</td></tr>')
+                    tableBody.html('<tr><td colspan="9" class="text-center text-muted py-4">No data found</td></tr>')
                     return
                 }
+
+                const isShowingAll = state.search === '' && state.parent_set_menuid === ''
 
                 const nodeMap = {}
                 const childrenMap = {}
@@ -278,7 +282,7 @@
 
                 const html = []
 
-                function renderBranch(id, depth) {
+                function renderBranch(id, depth, sibIndex, sibCount) {
                     const row = nodeMap[id]
                     if (!row) return
 
@@ -287,15 +291,27 @@
                     const nameHtml = (depth === 0 ? '<strong>' : '') + prefix + escapeHtml(row.name) + (depth === 0 ? '</strong>' : '')
                     const order = row.sort_order || row.order || 0
 
+                    const canMoveUp = isShowingAll && sibIndex > 0
+                    const canMoveDown = isShowingAll && sibIndex < sibCount - 1
+
                     html.push('<tr>')
-                    html.push('<td class="">' + escapeHtml(row.set_menuid) + '</td>')
+                    html.push('<td class="d-none">' + escapeHtml(row.set_menuid) + '</td>')
+                    const moveBtnClass = depth === 0 ? 'btn-secondary' : 'btn-outline-secondary'
+                    html.push('<td class="text-left text-nowrap" style="padding-left:12px">')
+                    if (canMoveUp) {
+                        html.push('<button type="button" class="btn btn-xs ' + moveBtnClass + ' btn-move" data-id="' + escapeHtml(row.set_menuid) + '" data-direction="up"><i class="fas fa-arrow-up"></i></button> ')
+                    }
+                    if (canMoveDown) {
+                        html.push('<button type="button" class="btn btn-xs ' + moveBtnClass + ' btn-move" data-id="' + escapeHtml(row.set_menuid) + '" data-direction="down"><i class="fas fa-arrow-down"></i></button>')
+                    }
+                    html.push('</td>')
                     html.push('<td>' + nameHtml + '</td>')
                     html.push('<td>' + escapeHtml(row.path) + '</td>')
                     html.push('<td>' + escapeHtml(parentLabel(row.parent_set_menuid)) + '</td>')
-                    html.push('<td>' + escapeHtml(order) + '</td>')
+                    html.push('<td class="d-none">' + escapeHtml(order) + '</td>')
                     html.push('<td><i class="' + escapeHtml(row.icon || 'far fa-circle') + '"></i> <span class="ml-1">' + escapeHtml(row.icon || '-') + '</span></td>')
                     html.push('<td>' + suspendedLabel(row.suspended) + '</td>')
-                    html.push('<td class="text-right">')
+                    html.push('<td class="text-right text-nowrap">')
                     html.push('<button type="button" class="btn btn-xs btn-outline-primary btn-edit" data-id="' + escapeHtml(row.set_menuid) + '"><i class="fas fa-edit"></i></button> ')
                     html.push('<button type="button" class="btn btn-xs btn-outline-danger btn-delete" data-id="' + escapeHtml(row.set_menuid) + '" data-name="' + escapeHtml(row.name) + '"><i class="fas fa-trash"></i></button>')
                     html.push('</td>')
@@ -308,8 +324,8 @@
                         if (oa !== ob) return oa - ob
                         return (a.name || '').localeCompare(b.name || '')
                     })
-                    children.forEach(function (child) {
-                        renderBranch(String(child.set_menuid), depth + 1)
+                    children.forEach(function (child, i) {
+                        renderBranch(String(child.set_menuid), depth + 1, i, children.length)
                     })
                 }
 
@@ -321,8 +337,8 @@
                     return (ra.name || '').localeCompare(rb.name || '')
                 })
 
-                rootIds.forEach(function (id) {
-                    renderBranch(id, 0)
+                rootIds.forEach(function (id, i) {
+                    renderBranch(id, 0, i, rootIds.length)
                 })
 
                 tableBody.html(html.join(''))
@@ -503,7 +519,7 @@
                 state.search = $('#search').val().trim()
                 state.parent_set_menuid = $('#filterParent').val()
                 state.suspended = $('#filterSuspended').val()
-                state.perPage = parseInt($('#perPage').val(), 10) || 25
+                state.perPage = $('#perPage').val() === '0' ? 0 : (parseInt($('#perPage').val(), 10) || 25)
                 loadData()
             })
 
@@ -511,9 +527,9 @@
                 $('#search').val('')
                 $('#filterParent').val('')
                 $('#filterSuspended').val(0)
-                $('#perPage').val('25')
+                $('#perPage').val('0')
                 state.page = 1
-                state.perPage = 25
+                state.perPage = 0
                 state.search = ''
                 state.parent_set_menuid = ''
                 state.suspended = 0
@@ -532,6 +548,37 @@
 
             $(document).on('click', '.btn-edit', function () {
                 openEditModal($(this).data('id'))
+            })
+
+            $(document).on('click', '.btn-move', function () {
+                const id = $(this).data('id')
+                const direction = $(this).data('direction')
+
+                $.ajax({
+                    url: endpoints.move,
+                    type: 'POST',
+                    dataType: 'json',
+                    data: { id: id, direction: direction },
+                    beforeSend: function () {
+                        $('input, select, textarea, button').prop('disabled', true);
+                        $.LoadingOverlay('show', { background: 'rgba(0, 0, 0, 0.25)' });
+                    },
+                    success: function (res) {
+                        if (!res.success) {
+                            Swal.fire('Error', res.message || 'Failed to move menu', 'error')
+                            return
+                        }
+                        loadData()
+                    },
+                    error: function (xhr) {
+                        console.error(xhr.responseText);
+                        Swal.fire('Error', 'Server error (' + xhr.status + ')', 'error')
+                    },
+                    complete: function () {
+                        $('input, select, textarea, button').prop('disabled', false);
+                        $.LoadingOverlay('hide');
+                    },
+                })
             })
 
             $(document).on('click', '.btn-delete', function () {

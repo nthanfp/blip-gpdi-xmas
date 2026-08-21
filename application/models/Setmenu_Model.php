@@ -284,6 +284,88 @@ class Setmenu_Model extends CI_Model
         ];
     }
 
+    public function data_move($id, $direction)
+    {
+        $id = (int) $id;
+
+        $item = $this->db->get_where($this->_table, [
+            'set_menuid' => $id
+        ])->row();
+
+        if (!$item) {
+            return [
+                'success' => false,
+                'message' => 'Menu data not found'
+            ];
+        }
+
+        $parent_id = ($item->parent_set_menuid !== null && $item->parent_set_menuid !== '' && (int) $item->parent_set_menuid > 0)
+            ? (int) $item->parent_set_menuid
+            : null;
+
+        $this->db->select('set_menuid, "order" AS sort_order, name');
+        $this->db->from($this->_table);
+        $this->db->where('suspended', 0);
+        if ($parent_id !== null) {
+            $this->db->where('parent_set_menuid', $parent_id);
+        } else {
+            $this->db->group_start();
+            $this->db->where('parent_set_menuid IS NULL', null, false);
+            $this->db->or_where('parent_set_menuid', 0);
+            $this->db->group_end();
+        }
+        $this->db->order_by('"order"', 'ASC');
+        $this->db->order_by('name', 'ASC');
+        $siblings = $this->db->get()->result();
+
+        $currentIndex = null;
+        foreach ($siblings as $i => $sibling) {
+            if ((int) $sibling->set_menuid === $id) {
+                $currentIndex = $i;
+                break;
+            }
+        }
+
+        if ($currentIndex === null) {
+            return [
+                'success' => false,
+                'message' => 'Menu not found among active siblings'
+            ];
+        }
+
+        $targetIndex = null;
+        if ($direction === 'up' && $currentIndex > 0) {
+            $targetIndex = $currentIndex - 1;
+        } elseif ($direction === 'down' && $currentIndex < count($siblings) - 1) {
+            $targetIndex = $currentIndex + 1;
+        }
+
+        if ($targetIndex === null) {
+            return [
+                'success' => false,
+                'message' => 'Cannot move further in this direction'
+            ];
+        }
+
+        $moved = $siblings[$currentIndex];
+        array_splice($siblings, $currentIndex, 1);
+        array_splice($siblings, $targetIndex, 0, [$moved]);
+
+        $this->db->trans_start();
+        foreach ($siblings as $i => $sibling) {
+            $this->db->where('set_menuid', (int) $sibling->set_menuid);
+            $this->db->update($this->_table, [
+                'order' => $i + 1
+            ]);
+        }
+        $this->db->trans_complete();
+
+        return [
+            'success' => (bool) $this->db->trans_status(),
+            'message' => $this->db->trans_status() ? 'Menu order updated successfully' : 'Failed to update menu order'
+        ];
+    }
+
     public function data_option_parent()
     {
         $rows = $this->db->select('set_menuid, name, path, "order" AS sort_order, icon')

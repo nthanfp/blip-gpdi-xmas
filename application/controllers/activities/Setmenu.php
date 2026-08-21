@@ -183,6 +183,35 @@ class Setmenu extends CI_Controller
         $this->respond($result);
     }
 
+    public function data_move()
+    {
+        if (!$this->guard_menu_access(102, 'update')) {
+            return;
+        }
+
+        $id = $this->input->post('id', true);
+        $direction = $this->input->post('direction', true);
+
+        if (!$id) {
+            $this->respond([
+                'success' => false,
+                'message' => 'Menu ID is required'
+            ]);
+            return;
+        }
+
+        if (!in_array($direction, ['up', 'down'])) {
+            $this->respond([
+                'success' => false,
+                'message' => 'Direction must be "up" or "down"'
+            ]);
+            return;
+        }
+
+        $result = $this->Setmenu_Model->data_move($id, $direction);
+        $this->respond($result);
+    }
+
     public function data_option_parent(){
         if (!$this->guard_menu_access(102, 'view')) {
             return;
