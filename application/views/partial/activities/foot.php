@@ -169,7 +169,7 @@
                         })
 
                         messaging.onMessage(function(payload) {
-                            var title = (payload.notification && payload.notification.title) || payload.data.title || 'IG Admin'
+                            var title = (payload.notification && payload.notification.title) || payload.data.title || 'ITG CI3 Starter'
                             var body = (payload.notification && payload.notification.body) || payload.data.body || ''
                             Swal.fire({
                                 toast: true,
@@ -199,7 +199,7 @@
                 html: '<div style="text-align:center;padding:8px 0">' +
                     '<i class="fas fa-rocket fa-3x text-primary mb-3"></i>' +
                     '<h5 style="font-weight:700;margin-bottom:6px">Install App</h5>' +
-                    '<p style="font-size:14px;color:#6c757d;margin:0">Add Internal Gift to your home screen for faster access</p>' +
+                    '<p style="font-size:14px;color:#6c757d;margin:0">Add ITG CI3 Starter to your home screen for faster access</p>' +
                     '</div>',
                 showConfirmButton: true,
                 showDenyButton: true,
@@ -323,7 +323,7 @@
                     var n = new Notification(latest.title, {
                         body: latest.message,
                         icon: '<?php echo base_url('assets/icons/android-chrome-192x192.png'); ?>',
-                        tag: 'itg-notif',
+                        tag: 'itg-ci3-starter-notification',
                         renotify: false
                     })
                     setTimeout(function() {

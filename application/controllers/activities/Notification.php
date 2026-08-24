@@ -120,7 +120,7 @@ class Notification extends CI_Controller
 
         $result = $this->Notification_Model->send_push(
             'Test Notification',
-            'Halo ' . strtoupper($username) . ', ini notifikasi percobaan dari Internal CI3 Admin dikirim pada '.date('d M Y H:i:s'),
+            'Halo ' . strtoupper($username) . ', ini notifikasi percobaan dikirim pada '.date('d M Y H:i:s'),
             'index.php/activities/dashboard'
         );
 

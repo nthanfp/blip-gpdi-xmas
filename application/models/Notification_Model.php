@@ -125,11 +125,11 @@ class Notification_Model extends CI_Model
 
     private function _browser_family($ua)
     {
-        if (stripos($ua, 'Firefox') !== false) return 'Mozilla/5.0';
-        if (stripos($ua, 'Edg') !== false) return 'Mozilla/5.0';
-        if (stripos($ua, 'Chrome') !== false && stripos($ua, 'Samsung') !== false) return 'SamsungBrowser';
-        if (stripos($ua, 'Chrome') !== false) return 'Mozilla/5.0';
-        if (stripos($ua, 'Safari') !== false) return 'Mozilla/5.0';
+        if (stripos($ua, 'Firefox') !== false) return 'Firefox/';
+        if (stripos($ua, 'Edg') !== false) return 'Edg/';
+        if (stripos($ua, 'Samsung') !== false) return 'SamsungBrowser/';
+        if (stripos($ua, 'Chrome') !== false) return 'Chrome/';
+        if (stripos($ua, 'Safari') !== false) return 'Safari/';
         return '';
     }
 
