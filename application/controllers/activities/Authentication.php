@@ -1,5 +1,5 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
 class Authentication extends CI_Controller
 {
@@ -136,6 +136,13 @@ class Authentication extends CI_Controller
     public function logout()
     {
         $this->load->model('Auth_Model');
+        $this->load->model('Notification_Model');
+
+        $current_user = $this->Auth_Model->current_user();
+        if ($current_user && isset($current_user->mst_adminid)) {
+            $this->Notification_Model->remove_tokens_by_admin($current_user->mst_adminid);
+        }
+
         $this->Auth_Model->logout();
         redirect(site_url('activities/authentication/login'));
         exit;
@@ -203,6 +210,5 @@ class Authentication extends CI_Controller
         $this->output
             ->set_content_type('application/json')
             ->set_output(json_encode($result));
-
     }
 }

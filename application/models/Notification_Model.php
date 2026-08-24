@@ -138,6 +138,11 @@ class Notification_Model extends CI_Model
         return $this->db->where('fcm_token', $fcm_token)->delete($this->_token_table);
     }
 
+    public function remove_tokens_by_admin($admin_id)
+    {
+        return $this->db->where('mst_adminid', (int) $admin_id)->delete($this->_token_table);
+    }
+
     public function get_all_tokens()
     {
         $rows = $this->db->select('fcm_token')
