@@ -3,10 +3,10 @@
 // APIs & Services → Credentials → API Key → Application restrictions → HTTP referrers
 // Recommended: enable Firebase App Check for additional request verification.
 var firebaseConfig = {
-	apiKey: "AIzaSyC1325gTkxUBicZ1wtWarAX4T01Aoh8uAo",
-	authDomain: "hoki-beli-illusions.firebaseapp.com",
-	projectId: "hoki-beli-illusions",
-	storageBucket: "hoki-beli-illusions.firebasestorage.app",
-	messagingSenderId: "225645808904",
-	appId: "1:225645808904:web:3763958bc65a9f2c4c30bd",
+	apiKey: "AIzaSyA8LSxVwwjLhaFmRv4CeoMt2iwYPxNCNVE",
+	authDomain: "itg-test-notification.firebaseapp.com",
+	projectId: "itg-test-notification",
+	storageBucket: "itg-test-notification.firebasestorage.app",
+	messagingSenderId: "754272586958",
+	appId: "1:754272586958:web:f986507b59fdfdb2cfd49f",
 };

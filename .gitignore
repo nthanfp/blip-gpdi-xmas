@@ -53,3 +53,6 @@ env/firebase-service-account.json
 
 # Third party cache
 application/third_party/phpqrcode/cache
+
+# LLM Context
+/context

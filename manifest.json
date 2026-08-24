@@ -1,6 +1,6 @@
 {
-    "name": "ITG ADMIN",
-    "short_name": "ITG_STARTER_ADMIN",
+    "name": "ITG CI3 Starter",
+    "short_name": "ITG_CI3_STARTER",
     "description": "-",
     "start_url": "./activities/dashboard",
     "scope": "./",
