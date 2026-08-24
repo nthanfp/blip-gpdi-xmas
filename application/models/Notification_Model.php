@@ -307,7 +307,7 @@ class Notification_Model extends CI_Model
 
         $fcm_url = 'https://fcm.googleapis.com/v1/projects/' . $project_id . '/messages:send';
         $icon_url = base_url('assets/icons/android-chrome-192x192.png');
-        $click_path = $click_url ? base_url($click_url) : base_url('index.php/activities/redeem');
+        $click_path = $click_url ? base_url($click_url) : base_url('index.php/activities/dashboard');
 
         $success_count = 0;
         $fail_count = 0;

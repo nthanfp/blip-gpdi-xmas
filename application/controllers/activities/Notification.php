@@ -121,7 +121,7 @@ class Notification extends CI_Controller
         $result = $this->Notification_Model->send_push(
             'Test Notification',
             'Halo ' . strtoupper($username) . ', ini notifikasi percobaan dari Internal CI3 Admin dikirim pada '.date('d M Y H:i:s'),
-            'index.php/activities/redeem'
+            'index.php/activities/dashboard'
         );
 
         if ($result['success']) {
@@ -155,7 +155,7 @@ class Notification extends CI_Controller
         }
 
         if (empty($click_url)) {
-            $click_url = 'index.php/activities/redeem';
+            $click_url = 'index.php/activities/dashboard';
         }
 
         $result = $this->Notification_Model->send_push($title, $body, $click_url);

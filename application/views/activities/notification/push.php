@@ -36,7 +36,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="pushUrl">Click URL</label>
-                                    <input type="text" class="form-control form-control-sm" id="pushUrl" name="click_url" placeholder="index.php/activities/redeem" value="index.php/activities/redeem">
+                                    <input type="text" class="form-control form-control-sm" id="pushUrl" name="click_url" placeholder="index.php/activities/dashboard" value="index.php/activities/redeem">
                                     <small class="text-muted">Page to open when notification is clicked</small>
                                 </div>
                             </form>
@@ -122,7 +122,7 @@
             $('#btnSendPush').on('click', function() {
                 var title = $('#pushTitle').val().trim()
                 var body = $('#pushBody').val().trim()
-                var url = $('#pushUrl').val().trim() || 'index.php/activities/redeem'
+                var url = $('#pushUrl').val().trim() || 'index.php/activities/dashboard'
 
                 if (!title) {
                     $('#pushTitle').focus();

@@ -33,7 +33,7 @@ if (typeof firebase !== "undefined") {
 				body: body,
 				icon: "./assets/icons/itg_logo.png",
 				badge: "./assets/icons/android-chrome-192x192.png",
-				data: { click_url: data.click_url || "./index.php/activities/redeem" },
+				data: { click_url: data.click_url || "./index.php/activities/dashboard" },
 			})
 			.then(function () {
 				return self.clients.matchAll({ type: "window" });
@@ -57,7 +57,7 @@ if (typeof firebase !== "undefined") {
 		var url =
 			event.notification.data && event.notification.data.click_url
 				? event.notification.data.click_url
-				: "./index.php/activities/redeem";
+				: "./index.php/activities/dashboard";
 		event.waitUntil(clients.openWindow(url));
 	});
 }
