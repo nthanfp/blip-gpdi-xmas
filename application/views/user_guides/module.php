@@ -85,7 +85,7 @@
     </style>
 </head>
 
-<body class="hold-transition sidebar-mini layout-fixed">
+<body class="<?php $this->load->view('partial/activities/body-class'); ?>">
     <div class="wrapper">
         <?php $this->load->view('partial/activities/sidebar.php') ?>
 

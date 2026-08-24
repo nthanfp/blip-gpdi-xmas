@@ -5,7 +5,7 @@
     <?php $this->load->view('partial/activities/head.php') ?>
 </head>
 
-<body class="sidebar-mini layout-fixed sidebar-collapse">
+<body class="<?php $this->load->view('partial/activities/body-class'); ?>">
     <div class="wrapper">
         <?php $this->load->view('partial/activities/sidebar.php') ?>
 

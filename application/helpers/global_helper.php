@@ -213,3 +213,23 @@ function value_to_view($amount, $des = 2)
     }
     return $amount;
 }
+
+// ===== Navigation Layout =====
+function nav_layout()
+{
+    $layout = getenv('NAV_LAYOUT');
+    return ($layout === 'topnav') ? 'topnav' : 'sidebar';
+}
+
+function is_topnav()
+{
+    return nav_layout() === 'topnav';
+}
+
+function nav_layout_body_class()
+{
+    if (is_topnav()) {
+        return 'hold-transition layout-top-nav';
+    }
+    return 'sidebar-mini layout-fixed sidebar-collapse';
+}

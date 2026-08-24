@@ -93,3 +93,88 @@
         justify-content: center;
     }
 </style>
+<!-- Topnav Layout (only applies when body.layout-top-nav) -->
+<style>
+    /* ===== Dropdown submenu (nested menus) ===== */
+    body.layout-top-nav .dropdown-submenu {
+        position: relative;
+    }
+
+    body.layout-top-nav .dropdown-submenu>.dropdown-menu {
+        top: 0;
+        left: 100%;
+        margin-top: -1px;
+        margin-left: -1px;
+        border-radius: 0 .375rem .375rem .375rem;
+    }
+
+    body.layout-top-nav .dropdown-submenu:hover>.dropdown-menu {
+        display: block;
+    }
+
+    /* Arrow indicator for submenu items */
+    body.layout-top-nav .dropdown-submenu>a::after {
+        display: inline-block;
+        width: 0;
+        height: 0;
+        margin-left: .5rem;
+        vertical-align: middle;
+        border-top: .3em solid transparent;
+        border-right: 0;
+        border-bottom: .3em solid transparent;
+        border-left: .3em solid;
+        content: "";
+    }
+
+    /* Reverse arrow for RTL or left-positioned submenus */
+    body.layout-top-nav .dropdown-submenu.pull-left {
+        float: none;
+    }
+
+    body.layout-top-nav .dropdown-submenu.pull-left>.dropdown-menu {
+        left: -100%;
+        margin-left: 10px;
+        border-radius: .375rem 0 .375rem .375rem;
+    }
+
+    /* ===== Content: full width, no sidebar offset ===== */
+    body.layout-top-nav .content-wrapper {
+        margin-left: 0;
+    }
+
+    body.layout-top-nav .content-wrapper .container {
+        max-width: 100%;
+    }
+
+    /* ===== Brand link (hidden in topnav — brand is in navbar) ===== */
+    body.layout-top-nav .main-sidebar .brand-link {
+        display: none;
+    }
+
+    /* ===== Sidebar hidden ===== */
+    body.layout-top-nav .main-sidebar {
+        display: none;
+    }
+
+    /* ===== Responsive: stack menu on mobile ===== */
+    @media (max-width: 767.98px) {
+        body.layout-top-nav .main-header.navbar .navbar-nav .nav-item {
+            border-bottom: 1px solid rgba(0, 0, 0, .05);
+        }
+
+        body.layout-top-nav .main-header.navbar .navbar-nav .dropdown-menu {
+            border-top: 0;
+            box-shadow: none;
+        }
+
+        /* Submenu opens inline on mobile */
+        body.layout-top-nav .dropdown-submenu>.dropdown-menu {
+            position: static !important;
+            float: none;
+            width: auto;
+            margin: 0 .5rem;
+            border: 0;
+            box-shadow: none;
+        }
+    }
+</style>

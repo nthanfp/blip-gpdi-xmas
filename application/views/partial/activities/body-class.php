@@ -1,0 +1,1 @@
+<?php echo nav_layout_body_class(); ?>
