@@ -16,7 +16,7 @@ class Notification_Model extends CI_Model
 
     public function data_new($type, $title, $message, $related_id = null, $mst_adminid = null)
     {
-        $id = $this->Global_Model->get_autoid($this->_table, 'act_admin_notificationid');
+        $id = $this->Global_Model->get_autoid_seq('act_admin_notification_seq');
         if ($id === null) {
             return ['success' => false, 'message' => 'Failed to generate notification ID'];
         }

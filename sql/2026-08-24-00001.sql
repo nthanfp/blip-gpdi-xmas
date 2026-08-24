@@ -16,6 +16,6 @@ CREATE TABLE public.act_admin_notifications (
 
 CREATE INDEX idx_notif_admin ON act_admin_notifications USING btree (mst_adminid);
 
--- public.act_admin_notificationid_seq definition
--- DROP SEQUENCE public.act_admin_notificationid_seq;
-CREATE SEQUENCE public.act_admin_notificationid_seq INCREMENT BY 1 MINVALUE 1 MAXVALUE 9223372036854775807 START 1 NO CYCLE;
+-- public.act_admin_notification_seq definition
+-- DROP SEQUENCE public.act_admin_notification_seq;
+CREATE SEQUENCE public.act_admin_notification_seq INCREMENT BY 1 MINVALUE 1 MAXVALUE 9223372036854775807 START 1 NO CYCLE;
