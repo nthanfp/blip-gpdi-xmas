@@ -83,9 +83,7 @@ SESSION_COOKIE_NAME=ci3_admin_session
 | `set_menu` | Defines the sidebar menu structure (parent/child relationships) |
 | `set_menu_admin` | Junction table assigning menus and granular permissions to admins |
 | `set_pref` | Key-value configuration store |
-| `set_api_key` | API keys for external authentication |
 | `act_log_admin` | Audit trail of admin user actions |
-| `act_api_log` | Audit trail of incoming API requests |
 
 ---
 
