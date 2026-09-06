@@ -94,7 +94,7 @@ class Setpref_Model extends CI_Model
             return ['success' => false, 'message' => 'Preference name is already in use'];
         }
 
-        $set_prefid = $this->Global_Model->get_autoid_seq('seq_set_pref');
+        $set_prefid = $this->Global_Model->get_autoid_seq('set_pref');
         if ($set_prefid === null) {
             return ['success' => false, 'message' => 'Failed to generate preference ID'];
         }

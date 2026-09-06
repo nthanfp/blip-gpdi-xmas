@@ -92,7 +92,7 @@ class RegionProvince_Model extends CI_Model
             ];
         }
 
-        $mst_reg_provinceid = $this->Global_Model->get_autoid_seq('seq_mst_reg_province');
+        $mst_reg_provinceid = $this->Global_Model->get_autoid_seq('mst_reg_province');
         if ($mst_reg_provinceid === null) {
             return [
                 'success' => false,

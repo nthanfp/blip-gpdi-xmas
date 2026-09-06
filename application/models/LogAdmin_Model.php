@@ -293,7 +293,7 @@ class LogAdmin_Model extends CI_Model
 
     public function data_new(array $input)
     {
-        $act_log_adminid = $this->Global_Model->get_autoid_seq('seq_act_log_admin');
+        $act_log_adminid = $this->Global_Model->get_autoid_seq('act_log_admin');
         $mst_adminid = $this->normalize_id($input['mst_adminid'] ?? null);
         $set_menuid = $this->normalize_id($input['set_menuid'] ?? null);
         $action = $this->normalize_text($input['action'] ?? '');

@@ -39,13 +39,7 @@ class Userguide extends CI_Controller
             'desc'     => 'Lihat dan cetak log aktivitas admin.',
             'color'    => 'red',
         ),
-        'apikey' => array(
-            'menuid'   => 123,
-            'title'    => 'API Key',
-            'icon'     => 'fas fa-key',
-            'desc'     => 'Kelola API key untuk autentikasi eksternal.',
-            'color'    => 'purple',
-        ),
+
         'region_province' => array(
             'menuid'   => 125,
             'title'    => 'Province',

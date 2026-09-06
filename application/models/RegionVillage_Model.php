@@ -121,7 +121,7 @@ class RegionVillage_Model extends CI_Model
             ];
         }
 
-        $mst_reg_villageid = $this->Global_Model->get_autoid_seq('seq_mst_reg_village');
+        $mst_reg_villageid = $this->Global_Model->get_autoid_seq('mst_reg_village');
         if ($mst_reg_villageid === null) {
             return [
                 'success' => false,

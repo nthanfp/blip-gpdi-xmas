@@ -115,7 +115,7 @@ class RegionDistrict_Model extends CI_Model
             ];
         }
 
-        $mst_reg_districtid = $this->Global_Model->get_autoid_seq('seq_mst_reg_district');
+        $mst_reg_districtid = $this->Global_Model->get_autoid_seq('mst_reg_district');
         if ($mst_reg_districtid === null) {
             return [
                 'success' => false,

@@ -14,9 +14,10 @@ class Global_Model extends CI_Model
         return $maxid;
     }
 
-    function get_autoid_seq($seq)
+    function get_autoid_seq($table)
     {
-        $maxid = $this->db->query("SELECT nextval('" . $seq . "'::regclass) as id")->row()->id;
+        $result = $this->db->query("SELECT AUTO_INCREMENT AS id FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = '" . $table . "'")->row();
+        $maxid = ($result) ? $result->id : null;
         if ($maxid == '' || !isset($maxid)) {
             $maxid = 1;
         }
