@@ -1,17 +1,12 @@
--- public.set_menu definition
+-- set_menu definition
 
--- Drop table
-
--- DROP TABLE public.set_menu;
-
-CREATE TABLE public.set_menu (
-	set_menuid int2 NOT NULL,
-	parent_set_menuid int2 NULL,
-	"name" varchar(30) NULL,
-	"path" varchar(30) NULL,
-	suspended int2 NULL,
-	"order" int2 NULL,
-	icon varchar(50) NULL,
-	CONSTRAINT set_menu_pk PRIMARY KEY (set_menuid)
-);
-
+CREATE TABLE `set_menu` (
+	`set_menuid` SMALLINT NOT NULL,
+	`parent_set_menuid` SMALLINT NULL,
+	`name` VARCHAR(30) NULL,
+	`path` VARCHAR(30) NULL,
+	`suspended` SMALLINT NULL,
+	`order` SMALLINT NULL,
+	`icon` VARCHAR(50) NULL,
+	PRIMARY KEY (`set_menuid`)
+) ENGINE=InnoDB;

@@ -1,21 +1,16 @@
--- public.act_admin_notifications definition
--- Drop table
--- DROP TABLE public.act_admin_notifications;
-CREATE TABLE public.act_admin_notifications (
-    act_admin_notificationid serial4 NOT NULL,
-    "type" varchar(50) DEFAULT 'redeem' :: character varying NOT NULL,
-    title varchar(255) DEFAULT '' :: character varying NOT NULL,
-    message text DEFAULT '' :: text NOT NULL,
-    related_id int4 NULL,
-    is_read int2 DEFAULT 0 NULL,
-    created_date timestamp DEFAULT now() NULL,
-    mst_adminid int4 NULL,
-    CONSTRAINT act_admin_notifications_pkey PRIMARY KEY (act_admin_notificationid),
-    CONSTRAINT fk_notif_admin FOREIGN KEY (mst_adminid) REFERENCES public.mst_admin(mst_adminid)
-);
+-- act_admin_notifications definition
 
-CREATE INDEX idx_notif_admin ON act_admin_notifications USING btree (mst_adminid);
+CREATE TABLE `act_admin_notifications` (
+    `act_admin_notificationid` INT NOT NULL AUTO_INCREMENT,
+    `type` VARCHAR(50) DEFAULT 'redeem' NOT NULL,
+    `title` VARCHAR(255) DEFAULT '' NOT NULL,
+    `message` TEXT DEFAULT NULL,
+    `related_id` INT NULL,
+    `is_read` SMALLINT DEFAULT 0 NULL,
+    `created_date` DATETIME DEFAULT CURRENT_TIMESTAMP NULL,
+    `mst_adminid` INT NULL,
+    PRIMARY KEY (`act_admin_notificationid`),
+    CONSTRAINT `fk_notif_admin` FOREIGN KEY (`mst_adminid`) REFERENCES `mst_admin`(`mst_adminid`)
+) ENGINE=InnoDB;
 
--- public.act_admin_notification_seq definition
--- DROP SEQUENCE public.act_admin_notification_seq;
-CREATE SEQUENCE public.act_admin_notification_seq INCREMENT BY 1 MINVALUE 1 MAXVALUE 9223372036854775807 START 1 NO CYCLE;
+CREATE INDEX `idx_notif_admin` ON `act_admin_notifications` (`mst_adminid`);
