@@ -53,6 +53,8 @@ $route['default_controller'] = 'Landing';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
+$route['landing/invite'] = 'landing/invite';
+$route['landing/invite/(:any)'] = 'landing/invite/$1';
 $route['landing/(:any)'] = 'landing/index/$1';
 $route['activities/userguide'] = 'activities/userguide/index';
 $route['activities/userguide/module/(:any)'] = 'activities/userguide/module/$1';

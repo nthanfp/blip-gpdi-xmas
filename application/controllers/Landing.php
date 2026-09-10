@@ -55,4 +55,14 @@ class Landing extends CI_Controller
 
         if (!$this->_require_mobile()) return;
     }
+
+    public function invite($slug = null)
+    {
+        if ($this->_is_maintenance()) {
+            $this->load->view('landing/maintenance');
+            return;
+        }
+
+        $this->load->view('landing/invite', ['slug' => $slug]);
+    }
 }

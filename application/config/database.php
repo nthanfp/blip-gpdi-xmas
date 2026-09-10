@@ -73,7 +73,14 @@ defined('BASEPATH') or exit('No direct script access allowed');
 $active_group = 'default';
 $query_builder = TRUE;
 
-if (preg_match('/\.ngrok[-\.]free\.app/', $_SERVER['HTTP_HOST']) || strpos($_SERVER['HTTP_HOST'], '192.168.') === 0) {
+$is_dev_host = (
+    preg_match('/\.ngrok[-\.]free\.app/', $_SERVER['HTTP_HOST'])
+    || strpos($_SERVER['HTTP_HOST'], '192.168.') === 0
+    || $_SERVER['HTTP_HOST'] === 'localhost'
+    || $_SERVER['HTTP_HOST'] === '127.0.0.1'
+    || $_SERVER['HTTP_HOST'] === '::1'
+);
+if ($is_dev_host) {
 	$db['default'] = array(
 		'dsn'      => '',
 		'hostname' => getenv('DB_HOST_DEV') ?: '',

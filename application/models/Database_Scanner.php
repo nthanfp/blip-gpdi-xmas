@@ -21,7 +21,7 @@ class Database_Scanner extends CI_Model
             return $cached;
         }
 
-        $prefixes = ['ci3'];
+        $prefixes = ['blip'];
         $available_dbs = [];
 
         try {
@@ -30,18 +30,17 @@ class Database_Scanner extends CI_Model
             $password = $this->db->password ?: (getenv('DB_PASS_PROD') ?: getenv('DB_PASS_DEV'));
             $port = $this->db->port ?: (getenv('DB_PORT_PROD') ?: getenv('DB_PORT_DEV')) ?: 5432;
 
-            $conn = @pg_connect("host={$host} port={$port} user={$username} password={$password} dbname=postgres");
+            $conn = @mysqli_connect($host, $username, $password, '', $port);
 
             if (!$conn) {
                 return [];
             }
 
-            /** @phpstan-ignore-next-line */
-            $result = @pg_query($conn, "SELECT datname FROM pg_database WHERE NOT datistemplate ORDER BY datname");
+            $result = @mysqli_query($conn, "SELECT SCHEMA_NAME FROM information_schema.SCHEMATA ORDER BY SCHEMA_NAME");
 
             if ($result) {
-                while ($row = pg_fetch_assoc($result)) {
-                    $db_name = $row['datname'];
+                while ($row = mysqli_fetch_assoc($result)) {
+                    $db_name = $row['SCHEMA_NAME'];
                     foreach ($prefixes as $prefix) {
                         if (strpos($db_name, $prefix) === 0) {
                             $available_dbs[] = [
@@ -54,7 +53,7 @@ class Database_Scanner extends CI_Model
                 }
             }
 
-            pg_close($conn);
+            mysqli_close($conn);
             $this->cache->save($cache_key, $available_dbs, 3600);
 
             return $available_dbs;
@@ -95,20 +94,20 @@ class Database_Scanner extends CI_Model
         }
 
         $config = [
-            'dsn'      => '',
+            'dsn' => '',
             'hostname' => $this->db->hostname,
             'username' => $this->db->username,
             'password' => $this->db->password,
             'database' => $db_name,
             'dbdriver' => $this->db->dbdriver,
-            'port'     => $this->db->port,
+            'port' => $this->db->port,
             'dbprefix' => '',
             'pconnect' => FALSE,
             'db_debug' => FALSE,
             'cache_on' => FALSE,
             'cachedir' => '',
             'swap_pre' => '',
-            'encrypt'  => FALSE,
+            'encrypt' => FALSE,
             'compress' => FALSE,
             'stricton' => FALSE,
             'failover' => array(),
