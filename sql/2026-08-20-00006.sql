@@ -2,7 +2,7 @@
 
 CREATE TABLE `set_menu_admin` (
 	`set_menuid` SMALLINT NULL,
-	`mst_adminid` SMALLINT NULL,
+	`mst_adminid` INT NULL,
 	`view` SMALLINT NULL,
 	`new` SMALLINT NULL,
 	`update` SMALLINT NULL,

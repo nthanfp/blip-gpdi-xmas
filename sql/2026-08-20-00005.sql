@@ -3,7 +3,7 @@
 CREATE TABLE `act_log_admin` (
 	`act_log_adminid` BIGINT NOT NULL,
 	`mst_adminid` INT NULL,
-	`set_menuid` INT NULL,
+	`set_menuid` SMALLINT NULL,
 	`action` VARCHAR(30) NULL,
 	`description` VARCHAR(200) NULL,
 	`ip_address` VARCHAR(200) NULL,

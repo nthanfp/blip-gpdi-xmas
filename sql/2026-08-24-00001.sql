@@ -7,10 +7,9 @@ CREATE TABLE `act_admin_notifications` (
     `message` TEXT DEFAULT NULL,
     `related_id` INT NULL,
     `is_read` SMALLINT DEFAULT 0 NULL,
-    `created_date` DATETIME DEFAULT CURRENT_TIMESTAMP NULL,
+    `created_date` DATETIME DEFAULT CURRENT_TIMESTAMP,
     `mst_adminid` INT NULL,
     PRIMARY KEY (`act_admin_notificationid`),
-    CONSTRAINT `fk_notif_admin` FOREIGN KEY (`mst_adminid`) REFERENCES `mst_admin`(`mst_adminid`)
+    CONSTRAINT `fk_notif_admin` FOREIGN KEY (`mst_adminid`) REFERENCES `mst_admin`(`mst_adminid`),
+    INDEX `idx_notif_admin` (`mst_adminid`)
 ) ENGINE=InnoDB;
-
-CREATE INDEX `idx_notif_admin` ON `act_admin_notifications` (`mst_adminid`);
