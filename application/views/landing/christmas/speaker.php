@@ -18,7 +18,7 @@
         </div>
 
         <!-- Speaker card -->
-        <div class="bg-white rounded-2xl border border-stone-100 shadow-sm p-8 text-center space-y-5">
+        <div class="card-hover bg-white rounded-2xl border border-stone-100 shadow-sm p-8 text-center space-y-5">
 
             <!-- Photo -->
             <div class="relative w-28 h-28 mx-auto">

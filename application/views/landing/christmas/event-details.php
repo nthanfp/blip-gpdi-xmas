@@ -21,7 +21,7 @@
         <div class="space-y-3">
 
             <!-- Date -->
-            <div class="flex items-start gap-4 p-4 rounded-xl bg-white border border-stone-100 shadow-sm">
+            <div class="card-hover flex items-start gap-4 p-4 rounded-xl bg-white border border-stone-100 shadow-sm">
                 <div class="w-10 h-10 rounded-lg bg-amber-50 flex items-center justify-center shrink-0">
                     <i class="fas fa-calendar-alt text-amber-500 text-base"></i>
                 </div>
@@ -32,7 +32,7 @@
             </div>
 
             <!-- Time -->
-            <div class="flex items-start gap-4 p-4 rounded-xl bg-white border border-stone-100 shadow-sm">
+            <div class="card-hover flex items-start gap-4 p-4 rounded-xl bg-white border border-stone-100 shadow-sm">
                 <div class="w-10 h-10 rounded-lg bg-amber-50 flex items-center justify-center shrink-0">
                     <i class="fas fa-clock text-amber-500 text-base"></i>
                 </div>
@@ -44,7 +44,7 @@
             </div>
 
             <!-- Location -->
-            <div class="flex items-start gap-4 p-4 rounded-xl bg-white border border-stone-100 shadow-sm">
+            <div class="card-hover flex items-start gap-4 p-4 rounded-xl bg-white border border-stone-100 shadow-sm">
                 <div class="w-10 h-10 rounded-lg bg-amber-50 flex items-center justify-center shrink-0">
                     <i class="fas fa-map-marker-alt text-amber-500 text-base"></i>
                 </div>
@@ -56,7 +56,7 @@
             </div>
 
             <!-- Dresscode -->
-            <div class="flex items-start gap-4 p-4 rounded-xl bg-white border border-stone-100 shadow-sm">
+            <div class="card-hover flex items-start gap-4 p-4 rounded-xl bg-white border border-stone-100 shadow-sm">
                 <div class="w-10 h-10 rounded-lg bg-amber-50 flex items-center justify-center shrink-0">
                     <i class="fas fa-tshirt text-amber-500 text-base"></i>
                 </div>

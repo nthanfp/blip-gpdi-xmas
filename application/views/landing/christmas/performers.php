@@ -21,7 +21,7 @@
         <div class="grid grid-cols-2 gap-3">
 
             <!-- Worship Leader -->
-            <div class="bg-white rounded-2xl border border-stone-100 shadow-sm p-5 text-center space-y-3">
+            <div class="card-hover bg-white rounded-2xl border border-stone-100 shadow-sm p-5 text-center space-y-3">
                 <div class="w-14 h-14 mx-auto rounded-full bg-amber-50 flex items-center justify-center">
                     <i class="fas fa-music text-amber-500 text-lg"></i>
                 </div>
@@ -32,7 +32,7 @@
             </div>
 
             <!-- Christmas Choir -->
-            <div class="bg-white rounded-2xl border border-stone-100 shadow-sm p-5 text-center space-y-3">
+            <div class="card-hover bg-white rounded-2xl border border-stone-100 shadow-sm p-5 text-center space-y-3">
                 <div class="w-14 h-14 mx-auto rounded-full bg-amber-50 flex items-center justify-center">
                     <i class="fas fa-users text-amber-500 text-lg"></i>
                 </div>
@@ -43,7 +43,7 @@
             </div>
 
             <!-- Music Team -->
-            <div class="bg-white rounded-2xl border border-stone-100 shadow-sm p-5 text-center space-y-3">
+            <div class="card-hover bg-white rounded-2xl border border-stone-100 shadow-sm p-5 text-center space-y-3">
                 <div class="w-14 h-14 mx-auto rounded-full bg-amber-50 flex items-center justify-center">
                     <i class="fas fa-guitar text-amber-500 text-lg"></i>
                 </div>
@@ -54,7 +54,7 @@
             </div>
 
             <!-- Special Performance -->
-            <div class="bg-white rounded-2xl border border-stone-100 shadow-sm p-5 text-center space-y-3">
+            <div class="card-hover bg-white rounded-2xl border border-stone-100 shadow-sm p-5 text-center space-y-3">
                 <div class="w-14 h-14 mx-auto rounded-full bg-amber-50 flex items-center justify-center">
                     <i class="fas fa-star text-amber-500 text-lg"></i>
                 </div>

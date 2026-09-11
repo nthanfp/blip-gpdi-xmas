@@ -46,4 +46,45 @@
     *::after {
         box-sizing: border-box;
     }
+
+    /* ── Fade-in on scroll ── */
+    .fi {
+        opacity: 0;
+        transform: translateY(24px);
+        transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+                    transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .fi.fi-visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    .fi.fi-delay-1 { transition-delay: 0.1s; }
+    .fi.fi-delay-2 { transition-delay: 0.2s; }
+    .fi.fi-delay-3 { transition-delay: 0.3s; }
+    .fi.fi-delay-4 { transition-delay: 0.4s; }
+
+    /* ── Card hover lift ── */
+    .card-hover {
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+    .card-hover:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.08),
+                    0 4px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+
+    /* ── Reduced motion ── */
+    @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+            scroll-behavior: auto !important;
+        }
+        .fi {
+            opacity: 1 !important;
+            transform: none !important;
+            transition: none !important;
+        }
+    }
 </style>

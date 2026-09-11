@@ -21,7 +21,7 @@
         <div class="space-y-2" id="faq-list">
 
             <!-- Q1 -->
-            <div class="faq-item bg-white rounded-xl border border-stone-100 shadow-sm overflow-hidden">
+            <div class="faq-item card-hover bg-white rounded-xl border border-stone-100 shadow-sm overflow-hidden">
                 <button type="button"
                         class="faq-toggle w-full flex items-center justify-between gap-3 px-5 py-4 text-left">
                     <span class="text-sm font-semibold text-stone-800">Bagaimana cara melakukan pendaftaran?</span>
@@ -35,7 +35,7 @@
             </div>
 
             <!-- Q2 -->
-            <div class="faq-item bg-white rounded-xl border border-stone-100 shadow-sm overflow-hidden">
+            <div class="faq-item card-hover bg-white rounded-xl border border-stone-100 shadow-sm overflow-hidden">
                 <button type="button"
                         class="faq-toggle w-full flex items-center justify-between gap-3 px-5 py-4 text-left">
                     <span class="text-sm font-semibold text-stone-800">Apakah acara ini gratis?</span>
@@ -49,7 +49,7 @@
             </div>
 
             <!-- Q3 -->
-            <div class="faq-item bg-white rounded-xl border border-stone-100 shadow-sm overflow-hidden">
+            <div class="faq-item card-hover bg-white rounded-xl border border-stone-100 shadow-sm overflow-hidden">
                 <button type="button"
                         class="faq-toggle w-full flex items-center justify-between gap-3 px-5 py-4 text-left">
                     <span class="text-sm font-semibold text-stone-800">Apakah anak-anak boleh hadir?</span>
@@ -63,7 +63,7 @@
             </div>
 
             <!-- Q4 -->
-            <div class="faq-item bg-white rounded-xl border border-stone-100 shadow-sm overflow-hidden">
+            <div class="faq-item card-hover bg-white rounded-xl border border-stone-100 shadow-sm overflow-hidden">
                 <button type="button"
                         class="faq-toggle w-full flex items-center justify-between gap-3 px-5 py-4 text-left">
                     <span class="text-sm font-semibold text-stone-800">Bagaimana proses check-in?</span>
@@ -77,7 +77,7 @@
             </div>
 
             <!-- Q5 -->
-            <div class="faq-item bg-white rounded-xl border border-stone-100 shadow-sm overflow-hidden">
+            <div class="faq-item card-hover bg-white rounded-xl border border-stone-100 shadow-sm overflow-hidden">
                 <button type="button"
                         class="faq-toggle w-full flex items-center justify-between gap-3 px-5 py-4 text-left">
                     <span class="text-sm font-semibold text-stone-800">Apakah perlu membawa tiket?</span>
@@ -91,7 +91,7 @@
             </div>
 
             <!-- Q6 -->
-            <div class="faq-item bg-white rounded-xl border border-stone-100 shadow-sm overflow-hidden">
+            <div class="faq-item card-hover bg-white rounded-xl border border-stone-100 shadow-sm overflow-hidden">
                 <button type="button"
                         class="faq-toggle w-full flex items-center justify-between gap-3 px-5 py-4 text-left">
                     <span class="text-sm font-semibold text-stone-800">Di mana lokasi parkir?</span>
