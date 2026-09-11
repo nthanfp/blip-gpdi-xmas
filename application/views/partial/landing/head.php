@@ -10,6 +10,11 @@
 <!-- Favicon -->
 <link rel="icon" type="image/x-icon" href="<?php echo site_url('assets/icons/favicon.ico'); ?>" />
 
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
 <!-- Tailwind CSS -->
 <link rel="stylesheet" type="text/css" href="<?php echo site_url('assets/css/tailwind.css'); ?>">
 
@@ -24,10 +29,16 @@
         overflow-x: hidden;
         -webkit-text-size-adjust: 100%;
         -webkit-font-smoothing: antialiased;
+        scroll-behavior: smooth;
+        scroll-padding-top: 0;
     }
 
     body {
         font-family: 'Inter', sans-serif;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        font-family: 'Playfair Display', serif;
     }
 
     *,

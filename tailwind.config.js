@@ -30,7 +30,11 @@ module.exports = {
                     dark: '#6E1023',
                     light: '#E8B8C1',
                 }
-            }
+            },
+            fontFamily: {
+                heading: ['"Playfair Display"', 'serif'],
+                body: ['"Inter"', 'sans-serif'],
+            },
         }
     },
     plugins: [],
