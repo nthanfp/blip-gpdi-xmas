@@ -9,47 +9,47 @@
     <div class="hero-stars absolute inset-0 pointer-events-none"></div>
 
     <!-- Soft bokeh dots -->
-    <div class="absolute top-[10%] left-[15%] w-2 h-2 rounded-full bg-amber-400/20 blur-[1px] animate-pulse"></div>
-    <div class="absolute top-[25%] right-[20%] w-1.5 h-1.5 rounded-full bg-amber-300/15 blur-[1px] animate-pulse" style="animation-delay: 1s;"></div>
-    <div class="absolute bottom-[30%] left-[10%] w-1 h-1 rounded-full bg-amber-400/25 blur-[1px] animate-pulse" style="animation-delay: 2s;"></div>
-    <div class="absolute bottom-[20%] right-[25%] w-2 h-2 rounded-full bg-amber-300/15 blur-[1px] animate-pulse" style="animation-delay: 0.5s;"></div>
-    <div class="absolute top-[60%] left-[30%] w-1 h-1 rounded-full bg-amber-400/20 blur-[1px] animate-pulse" style="animation-delay: 1.5s;"></div>
+    <div class="absolute top-[10%] left-[15%] w-2 h-2 rounded-full bg-gold-400/20 blur-[1px] animate-pulse"></div>
+    <div class="absolute top-[25%] right-[20%] w-1.5 h-1.5 rounded-full bg-gold-300/15 blur-[1px] animate-pulse" style="animation-delay: 1s;"></div>
+    <div class="absolute bottom-[30%] left-[10%] w-1 h-1 rounded-full bg-gold-400/25 blur-[1px] animate-pulse" style="animation-delay: 2s;"></div>
+    <div class="absolute bottom-[20%] right-[25%] w-2 h-2 rounded-full bg-gold-300/15 blur-[1px] animate-pulse" style="animation-delay: 0.5s;"></div>
+    <div class="absolute top-[60%] left-[30%] w-1 h-1 rounded-full bg-gold-400/20 blur-[1px] animate-pulse" style="animation-delay: 1.5s;"></div>
 
     <!-- Content -->
     <div class="relative z-10 space-y-8 max-w-sm">
 
         <!-- Logo placeholder -->
-        <div class="w-20 h-20 mx-auto rounded-full border-2 border-amber-400/40 flex items-center justify-center">
-            <span class="text-xs font-semibold text-amber-400/80 tracking-wider uppercase">Logo</span>
+        <div class="w-20 h-20 mx-auto rounded-full border-2 border-gold-400/40 flex items-center justify-center">
+            <span class="text-xs font-semibold text-gold-400/80 tracking-wider uppercase">Logo</span>
         </div>
 
         <!-- Eyebrow label -->
-        <p class="text-[11px] font-semibold tracking-[0.25em] uppercase text-amber-400">
+        <p class="text-[11px] font-semibold tracking-[0.25em] uppercase text-gold-400">
             Christmas Celebration 2026
         </p>
 
         <!-- Decorative gold line -->
         <div class="flex items-center justify-center gap-3">
-            <span class="block w-8 h-px bg-amber-400/50"></span>
-            <span class="block w-1.5 h-1.5 rounded-full bg-amber-400/60"></span>
-            <span class="block w-8 h-px bg-amber-400/50"></span>
+            <span class="block w-8 h-px bg-gold-400/50"></span>
+            <span class="block w-1.5 h-1.5 rounded-full bg-gold-400/60"></span>
+            <span class="block w-8 h-px bg-gold-400/50"></span>
         </div>
 
         <!-- Main title -->
         <h1 class="text-4xl xl:text-5xl font-bold leading-tight text-white">
-            Joy to the World
+            From Glory<br>to Glory
         </h1>
 
         <!-- Subtitle -->
-        <p class="text-base font-medium text-amber-200/80">
+        <p class="text-base font-medium text-gold-200/80">
             Light in the Darkness
         </p>
 
         <!-- Decorative gold line -->
         <div class="flex items-center justify-center gap-3">
-            <span class="block w-12 h-px bg-amber-400/30"></span>
-            <span class="block w-1 h-1 rounded-full bg-amber-400/40"></span>
-            <span class="block w-12 h-px bg-amber-400/30"></span>
+            <span class="block w-12 h-px bg-gold-400/30"></span>
+            <span class="block w-1 h-1 rounded-full bg-gold-400/40"></span>
+            <span class="block w-12 h-px bg-gold-400/30"></span>
         </div>
 
         <!-- Bible verse -->
@@ -57,7 +57,7 @@
             <p class="text-sm italic text-stone-300/80 leading-relaxed">
                 "The light shines in the<br>darkness, and the darkness<br>has not overcome it."
             </p>
-            <cite class="block text-xs font-semibold text-amber-400/70 not-italic tracking-wide">
+            <cite class="block text-xs font-semibold text-gold-400/70 not-italic tracking-wide">
                 — John 1:5
             </cite>
         </blockquote>
@@ -65,7 +65,7 @@
         <!-- CTA Button -->
         <div class="pt-4">
             <a href="#sec-register"
-               class="inline-block px-8 py-3 rounded-full bg-amber-500 hover:bg-amber-600 text-red-950 font-semibold text-sm tracking-wide transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/25">
+               class="inline-block px-8 py-3 rounded-full bg-gold-500 hover:bg-gold-600 text-red-950 font-semibold text-sm tracking-wide transition-all duration-300 hover:shadow-lg hover:shadow-gold-500/25">
                 Daftar Sekarang
             </a>
         </div>

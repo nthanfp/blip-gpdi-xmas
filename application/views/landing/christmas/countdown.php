@@ -1,10 +1,10 @@
 <!-- Countdown Section -->
 <section class="py-20 sm:py-28 px-5 sm:px-8 bg-red-950">
-    <div class="max-w-md mx-auto text-center space-y-8">
+    <div class="max-w-md lg:max-w-lg mx-auto text-center space-y-8">
 
         <!-- Eyebrow -->
         <div class="space-y-4">
-            <p class="text-[11px] font-semibold tracking-[0.25em] uppercase text-amber-400">
+            <p class="text-[11px] font-semibold tracking-[0.25em] uppercase text-gold-400">
                 Countdown
             </p>
             <h2 class="text-2xl sm:text-3xl font-bold text-white leading-snug">
@@ -13,7 +13,7 @@
         </div>
 
         <!-- Countdown boxes -->
-        <div class="flex justify-center gap-3 sm:gap-4" id="xmas-countdown">
+        <div class="flex justify-center gap-2 sm:gap-3 md:gap-4" id="xmas-countdown">
 
             <div class="countdown-box">
                 <span class="countdown-num" id="cd-days">00</span>
@@ -47,10 +47,10 @@
 
 <style>
     .countdown-box {
-        @apply flex flex-col items-center justify-center w-16 h-20 sm:w-20 sm:h-24 rounded-xl bg-red-900/50 border border-amber-400/20;
+        @apply flex flex-col items-center justify-center w-16 h-20 sm:w-20 sm:h-24 rounded-xl bg-red-900/50 border border-gold-400/20;
     }
     .countdown-num {
-        @apply text-2xl sm:text-3xl font-bold text-amber-400 font-heading;
+        @apply text-2xl sm:text-3xl font-bold text-gold-400 font-heading;
     }
     .countdown-label {
         @apply text-[10px] sm:text-xs font-medium text-stone-400 uppercase tracking-wider mt-1;

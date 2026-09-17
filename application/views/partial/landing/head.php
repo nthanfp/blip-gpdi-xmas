@@ -25,12 +25,18 @@
     html,
     body {
         width: 100%;
-        min-height: 100dvh;
-        overflow-x: hidden;
         -webkit-text-size-adjust: 100%;
         -webkit-font-smoothing: antialiased;
         scroll-behavior: smooth;
         scroll-padding-top: 0;
+    }
+
+    /* Desktop: lock body scroll — only right panel scrolls */
+    @media (min-width: 1024px) {
+        html, body {
+            overflow: hidden;
+            height: 100vh;
+        }
     }
 
     body {
@@ -71,6 +77,12 @@
         transform: translateY(-2px);
         box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.08),
                     0 4px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+
+    /* ── Desktop right-panel scroll ── */
+    .xmas-scroll {
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain;
     }
 
     /* ── Reduced motion ── */

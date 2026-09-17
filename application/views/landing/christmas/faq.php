@@ -1,16 +1,16 @@
 <!-- FAQ Section -->
 <section class="py-20 sm:py-28 px-5 sm:px-8">
-    <div class="max-w-md mx-auto space-y-8">
+    <div class="max-w-md lg:max-w-lg mx-auto space-y-8">
 
         <!-- Header -->
         <div class="text-center space-y-4">
-            <p class="text-[11px] font-semibold tracking-[0.25em] uppercase text-amber-500">
+            <p class="text-[11px] font-semibold tracking-[0.25em] uppercase text-gold-500">
                 FAQ
             </p>
             <div class="flex items-center justify-center gap-3">
-                <span class="block w-8 h-px bg-amber-400/50"></span>
-                <span class="block w-1.5 h-1.5 rounded-full bg-amber-400/60"></span>
-                <span class="block w-8 h-px bg-amber-400/50"></span>
+                <span class="block w-8 h-px bg-gold-400/50"></span>
+                <span class="block w-1.5 h-1.5 rounded-full bg-gold-400/60"></span>
+                <span class="block w-8 h-px bg-gold-400/50"></span>
             </div>
             <h2 class="text-2xl sm:text-3xl font-bold text-stone-800 leading-snug">
                 Pertanyaan Umum

@@ -1,16 +1,16 @@
 <!-- Registration Form Section -->
 <section id="sec-register" class="py-20 sm:py-28 px-5 sm:px-8 bg-stone-100/50">
-    <div class="max-w-md mx-auto space-y-8">
+    <div class="max-w-md lg:max-w-lg mx-auto space-y-8">
 
         <!-- Header -->
         <div class="text-center space-y-4">
-            <p class="text-[11px] font-semibold tracking-[0.25em] uppercase text-amber-500">
+            <p class="text-[11px] font-semibold tracking-[0.25em] uppercase text-gold-500">
                 Register Now
             </p>
             <div class="flex items-center justify-center gap-3">
-                <span class="block w-8 h-px bg-amber-400/50"></span>
-                <span class="block w-1.5 h-1.5 rounded-full bg-amber-400/60"></span>
-                <span class="block w-8 h-px bg-amber-400/50"></span>
+                <span class="block w-8 h-px bg-gold-400/50"></span>
+                <span class="block w-1.5 h-1.5 rounded-full bg-gold-400/60"></span>
+                <span class="block w-8 h-px bg-gold-400/50"></span>
             </div>
             <h2 class="text-2xl sm:text-3xl font-bold text-stone-800 leading-snug">
                 Reserve Your Seat
@@ -28,7 +28,7 @@
 
                 <!-- Loading overlay (hidden) -->
                 <div id="reg-loading-overlay" class="hidden absolute inset-0 bg-white/70 backdrop-blur-sm rounded-2xl z-10 flex flex-col items-center justify-center gap-3">
-                    <i class="fas fa-spinner fa-spin text-amber-500 text-2xl"></i>
+                    <i class="fas fa-spinner fa-spin text-gold-500 text-2xl"></i>
                     <p class="text-sm font-semibold text-stone-600">Mendaftarkan...</p>
                 </div>
 
@@ -38,7 +38,7 @@
                         Nama Lengkap <span class="text-red-500">*</span>
                     </label>
                     <input type="text" id="reg-name" name="name" placeholder="Masukkan nama lengkap"
-                           class="reg-input reg-field w-full px-4 py-3 rounded-xl border border-stone-200 text-sm text-stone-800 placeholder-stone-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-amber-400/50 focus:border-amber-400">
+                           class="reg-input reg-field w-full px-4 py-3 rounded-xl border border-stone-200 text-sm text-stone-800 placeholder-stone-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gold-400/50 focus:border-gold-400">
                     <p class="reg-err-msg hidden text-[11px] text-red-500 mt-1"></p>
                 </div>
 
@@ -48,7 +48,7 @@
                         WhatsApp / Email <span class="text-red-500">*</span>
                     </label>
                     <input type="text" id="reg-contact" name="contact" placeholder="08xxxxxxxxxx / email@example.com"
-                           class="reg-input reg-field w-full px-4 py-3 rounded-xl border border-stone-200 text-sm text-stone-800 placeholder-stone-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-amber-400/50 focus:border-amber-400">
+                           class="reg-input reg-field w-full px-4 py-3 rounded-xl border border-stone-200 text-sm text-stone-800 placeholder-stone-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gold-400/50 focus:border-gold-400">
                     <p class="reg-err-msg hidden text-[11px] text-red-500 mt-1"></p>
                 </div>
 
@@ -58,7 +58,7 @@
                         Kategori <span class="text-red-500">*</span>
                     </label>
                     <select id="reg-category" name="category"
-                            class="reg-input reg-field w-full px-4 py-3 rounded-xl border border-stone-200 text-sm text-stone-800 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-amber-400/50 focus:border-amber-400 appearance-none bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22%239ca3af%22%3E%3Cpath%20fill-rule%3D%22evenodd%22%20d%3D%22M5.23%207.21a.75.75%200%20011.06.02L10%2011.168l3.71-3.938a.75.75%200%20111.08%201.04l-4.25%204.5a.75.75%200%2001-1.08%200l-4.25-4.5a.75.75%200%2001.02-1.06z%22%20clip-rule%3D%22evenodd%22%2F%3E%3C%2Fsvg%3E')] bg-[length:1.25rem] bg-[right_0.75rem_center] bg-no-repeat">
+                            class="reg-input reg-field w-full px-4 py-3 rounded-xl border border-stone-200 text-sm text-stone-800 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gold-400/50 focus:border-gold-400 appearance-none bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22%239ca3af%22%3E%3Cpath%20fill-rule%3D%22evenodd%22%20d%3D%22M5.23%207.21a.75.75%200%20011.06.02L10%2011.168l3.71-3.938a.75.75%200%20111.08%201.04l-4.25%204.5a.75.75%200%2001-1.08%200l-4.25-4.5a.75.75%200%2001.02-1.06z%22%20clip-rule%3D%22evenodd%22%2F%3E%3C%2Fsvg%3E')] bg-[length:1.25rem] bg-[right_0.75rem_center] bg-no-repeat">
                         <option value="" disabled selected>Pilih kategori</option>
                         <option value="jemaat">Jemaat</option>
                         <option value="pemuda">Pemuda</option>
@@ -74,7 +74,7 @@
                         Jumlah Kehadiran <span class="text-red-500">*</span>
                     </label>
                     <input type="number" id="reg-qty" name="qty" value="1" min="1" max="10"
-                           class="reg-input reg-field w-full px-4 py-3 rounded-xl border border-stone-200 text-sm text-stone-800 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-amber-400/50 focus:border-amber-400">
+                           class="reg-input reg-field w-full px-4 py-3 rounded-xl border border-stone-200 text-sm text-stone-800 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gold-400/50 focus:border-gold-400">
                 </div>
 
                 <!-- Sesi -->
@@ -85,16 +85,16 @@
                     <div class="flex gap-3">
                         <label class="sesi-option flex-1">
                             <input type="radio" name="session" value="1" class="sr-only peer" checked>
-                            <div class="cursor-pointer text-center px-3 py-3 rounded-xl border border-stone-200 text-sm text-stone-600 transition-all duration-200 peer-checked:border-amber-400 peer-checked:bg-amber-50 peer-checked:text-amber-700 hover:border-stone-300">
+                            <div class="cursor-pointer text-center px-3 py-3 rounded-xl border border-stone-200 text-sm text-stone-600 transition-all duration-200 peer-checked:border-gold-400 peer-checked:bg-gold-50 peer-checked:text-gold-700 hover:border-stone-300">
                                 <p class="font-semibold">Sesi 1</p>
-                                <p class="text-xs text-stone-400 peer-checked:text-amber-500">16:00</p>
+                                <p class="text-xs text-stone-400 peer-checked:text-gold-500">16:00</p>
                             </div>
                         </label>
                         <label class="sesi-option flex-1">
                             <input type="radio" name="session" value="2" class="sr-only peer">
-                            <div class="cursor-pointer text-center px-3 py-3 rounded-xl border border-stone-200 text-sm text-stone-600 transition-all duration-200 peer-checked:border-amber-400 peer-checked:bg-amber-50 peer-checked:text-amber-700 hover:border-stone-300">
+                            <div class="cursor-pointer text-center px-3 py-3 rounded-xl border border-stone-200 text-sm text-stone-600 transition-all duration-200 peer-checked:border-gold-400 peer-checked:bg-gold-50 peer-checked:text-gold-700 hover:border-stone-300">
                                 <p class="font-semibold">Sesi 2</p>
-                                <p class="text-xs text-stone-400 peer-checked:text-amber-500">19:00</p>
+                                <p class="text-xs text-stone-400 peer-checked:text-gold-500">19:00</p>
                             </div>
                         </label>
                     </div>
@@ -108,7 +108,7 @@
 
                 <!-- Submit button -->
                 <button type="button" id="reg-submit"
-                        class="w-full py-3.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-red-950 font-semibold text-sm tracking-wide transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/25 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-amber-400 focus:ring-offset-2">
+                        class="w-full py-3.5 rounded-xl bg-gold-500 hover:bg-gold-600 text-red-950 font-semibold text-sm tracking-wide transition-all duration-300 hover:shadow-lg hover:shadow-gold-500/25 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2">
                     <span id="reg-btn-text">Daftar Sekarang</span>
                     <span id="reg-btn-loading" class="hidden">
                         <i class="fas fa-spinner fa-spin mr-1"></i> Mendaftarkan...
@@ -139,7 +139,7 @@
                 </div>
 
                 <!-- Decorative -->
-                <div class="flex items-center justify-center gap-2 text-amber-400">
+                <div class="flex items-center justify-center gap-2 text-gold-400">
                     <i class="fas fa-star text-[10px]"></i>
                     <i class="fas fa-star text-xs"></i>
                     <i class="fas fa-star text-[10px]"></i>
@@ -147,7 +147,7 @@
 
                 <!-- Back button -->
                 <button type="button" id="reg-back-btn"
-                        class="inline-flex items-center gap-2 text-xs font-semibold text-amber-500 hover:text-amber-600 tracking-wide transition-colors">
+                        class="inline-flex items-center gap-2 text-xs font-semibold text-gold-500 hover:text-gold-600 tracking-wide transition-colors">
                     <i class="fas fa-arrow-left"></i> Kembali ke form
                 </button>
 

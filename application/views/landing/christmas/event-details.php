@@ -1,16 +1,16 @@
 <!-- Event Details Section -->
 <section class="py-20 sm:py-28 px-5 sm:px-8">
-    <div class="max-w-md mx-auto space-y-8">
+    <div class="max-w-md lg:max-w-lg mx-auto space-y-8">
 
         <!-- Header -->
         <div class="text-center space-y-4">
-            <p class="text-[11px] font-semibold tracking-[0.25em] uppercase text-amber-500">
+            <p class="text-[11px] font-semibold tracking-[0.25em] uppercase text-gold-500">
                 Event Details
             </p>
             <div class="flex items-center justify-center gap-3">
-                <span class="block w-8 h-px bg-amber-400/50"></span>
-                <span class="block w-1.5 h-1.5 rounded-full bg-amber-400/60"></span>
-                <span class="block w-8 h-px bg-amber-400/50"></span>
+                <span class="block w-8 h-px bg-gold-400/50"></span>
+                <span class="block w-1.5 h-1.5 rounded-full bg-gold-400/60"></span>
+                <span class="block w-8 h-px bg-gold-400/50"></span>
             </div>
             <h2 class="text-2xl sm:text-3xl font-bold text-stone-800 leading-snug">
                 Informasi Acara
@@ -22,8 +22,8 @@
 
             <!-- Date -->
             <div class="card-hover flex items-start gap-4 p-4 rounded-xl bg-white border border-stone-100 shadow-sm">
-                <div class="w-10 h-10 rounded-lg bg-amber-50 flex items-center justify-center shrink-0">
-                    <i class="fas fa-calendar-alt text-amber-500 text-base"></i>
+                <div class="w-10 h-10 rounded-lg bg-gold-50 flex items-center justify-center shrink-0">
+                    <i class="fas fa-calendar-alt text-gold-500 text-base"></i>
                 </div>
                 <div class="space-y-0.5">
                     <p class="text-xs font-semibold uppercase tracking-wider text-stone-500">Tanggal</p>
@@ -33,8 +33,8 @@
 
             <!-- Time -->
             <div class="card-hover flex items-start gap-4 p-4 rounded-xl bg-white border border-stone-100 shadow-sm">
-                <div class="w-10 h-10 rounded-lg bg-amber-50 flex items-center justify-center shrink-0">
-                    <i class="fas fa-clock text-amber-500 text-base"></i>
+                <div class="w-10 h-10 rounded-lg bg-gold-50 flex items-center justify-center shrink-0">
+                    <i class="fas fa-clock text-gold-500 text-base"></i>
                 </div>
                 <div class="space-y-0.5">
                     <p class="text-xs font-semibold uppercase tracking-wider text-stone-500">Waktu</p>
@@ -45,8 +45,8 @@
 
             <!-- Location -->
             <div class="card-hover flex items-start gap-4 p-4 rounded-xl bg-white border border-stone-100 shadow-sm">
-                <div class="w-10 h-10 rounded-lg bg-amber-50 flex items-center justify-center shrink-0">
-                    <i class="fas fa-map-marker-alt text-amber-500 text-base"></i>
+                <div class="w-10 h-10 rounded-lg bg-gold-50 flex items-center justify-center shrink-0">
+                    <i class="fas fa-map-marker-alt text-gold-500 text-base"></i>
                 </div>
                 <div class="space-y-0.5">
                     <p class="text-xs font-semibold uppercase tracking-wider text-stone-500">Lokasi</p>
@@ -57,8 +57,8 @@
 
             <!-- Dresscode -->
             <div class="card-hover flex items-start gap-4 p-4 rounded-xl bg-white border border-stone-100 shadow-sm">
-                <div class="w-10 h-10 rounded-lg bg-amber-50 flex items-center justify-center shrink-0">
-                    <i class="fas fa-tshirt text-amber-500 text-base"></i>
+                <div class="w-10 h-10 rounded-lg bg-gold-50 flex items-center justify-center shrink-0">
+                    <i class="fas fa-tshirt text-gold-500 text-base"></i>
                 </div>
                 <div class="space-y-0.5">
                     <p class="text-xs font-semibold uppercase tracking-wider text-stone-500">Dresscode</p>
@@ -67,7 +67,7 @@
                         <span class="text-stone-400 mx-1">•</span>
                         <span class="text-stone-700">White</span>
                         <span class="text-stone-400 mx-1">•</span>
-                        <span class="text-amber-500">Gold</span>
+                        <span class="text-gold-500">Gold</span>
                     </p>
                 </div>
             </div>
@@ -77,7 +77,7 @@
         <!-- Maps button -->
         <div class="text-center">
             <a href="https://www.google.com/maps" target="_blank" rel="noopener noreferrer"
-               class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-amber-500 hover:bg-amber-600 text-red-950 font-semibold text-sm tracking-wide transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/25 active:scale-95">
+               class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gold-500 hover:bg-gold-600 text-red-950 font-semibold text-sm tracking-wide transition-all duration-300 hover:shadow-lg hover:shadow-gold-500/25 active:scale-95">
                 <i class="fas fa-directions text-xs"></i>
                 Buka Petunjuk Arah
             </a>

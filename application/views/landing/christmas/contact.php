@@ -1,10 +1,10 @@
 <!-- Contact Section -->
 <section class="py-20 sm:py-28 px-5 sm:px-8 bg-stone-100/50">
-    <div class="max-w-md mx-auto text-center space-y-6">
+    <div class="max-w-md lg:max-w-lg mx-auto text-center space-y-6">
 
         <!-- Icon -->
-        <div class="w-14 h-14 mx-auto rounded-full bg-amber-50 flex items-center justify-center border border-amber-200">
-            <i class="fas fa-headset text-amber-500 text-xl"></i>
+        <div class="w-14 h-14 mx-auto rounded-full bg-gold-50 flex items-center justify-center border border-gold-200">
+            <i class="fas fa-headset text-gold-500 text-xl"></i>
         </div>
 
         <!-- Heading -->
