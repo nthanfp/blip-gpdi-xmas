@@ -6,12 +6,16 @@ class Landing extends CI_Controller
     public function __construct()
     {
         parent::__construct();
+        if (file_exists(APPPATH . 'config/db_bypass.php')) {
+            return;
+        }
         $this->load->model('Setpref_Model');
         $this->load->library('user_agent');
     }
 
     private function _is_maintenance()
     {
+        if (!isset($this->Setpref_Model)) return false;
         return $this->Setpref_Model->get_pref('maintenance_mode') === '1';
     }
 

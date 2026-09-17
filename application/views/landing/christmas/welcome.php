@@ -3,9 +3,9 @@
     <!-- Background image -->
     <div class="absolute inset-0 bg-cover bg-center bg-no-repeat" style="background-image: url('<?php echo site_url('assets/images/xmas/hero-1.jpg'); ?>');"></div>
     <!-- Dark overlay -->
-    <div class="absolute inset-0 bg-stone-900/75"></div>
-    <!-- Maroon tint gradient -->
-    <div class="absolute inset-0 bg-gradient-to-b from-red-950/60 via-transparent to-red-950/60"></div>
+    <div class="absolute inset-0 bg-red-950/80"></div>
+    <!-- Maroon depth gradient -->
+    <div class="absolute inset-0 bg-gradient-to-b from-red-950/90 via-red-950/60 to-red-950/90"></div>
 
     <div class="relative z-10 max-w-md lg:max-w-lg mx-auto text-center space-y-6">
 
