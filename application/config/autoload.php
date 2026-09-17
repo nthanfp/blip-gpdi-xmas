@@ -58,7 +58,7 @@ $autoload['packages'] = array();
 |
 |	$autoload['libraries'] = array('user_agent' => 'ua');
 */
-$autoload['libraries'] = array('database', 'session', 'form_validation');
+$autoload['libraries'] = file_exists(APPPATH . 'config/db_bypass.php') ? array('session', 'form_validation') : array('database', 'session', 'form_validation');
 
 /*
 | -------------------------------------------------------------------
