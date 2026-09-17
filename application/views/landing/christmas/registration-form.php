@@ -32,72 +32,53 @@
                     <p class="text-sm font-semibold text-stone-600">Mendaftarkan...</p>
                 </div>
 
-                <!-- Nama Lengkap -->
+                <!-- Nama Pendaftar -->
                 <div class="space-y-1.5">
                     <label for="reg-name" class="block text-xs font-semibold text-stone-700 tracking-wide">
-                        Nama Lengkap <span class="text-red-500">*</span>
+                        Nama Pendaftar <span class="text-red-500">*</span>
                     </label>
                     <input type="text" id="reg-name" name="name" placeholder="Masukkan nama lengkap"
                            class="reg-input reg-field w-full px-4 py-3 rounded-xl border border-stone-200 text-sm text-stone-800 placeholder-stone-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gold-400/50 focus:border-gold-400">
                     <p class="reg-err-msg hidden text-[11px] text-red-500 mt-1"></p>
                 </div>
 
-                <!-- WhatsApp / Email -->
+                <!-- No. Handphone -->
                 <div class="space-y-1.5">
-                    <label for="reg-contact" class="block text-xs font-semibold text-stone-700 tracking-wide">
-                        WhatsApp / Email <span class="text-red-500">*</span>
+                    <label for="reg-phone" class="block text-xs font-semibold text-stone-700 tracking-wide">
+                        No. Handphone <span class="text-red-500">*</span>
                     </label>
-                    <input type="text" id="reg-contact" name="contact" placeholder="08xxxxxxxxxx / email@example.com"
+                    <input type="tel" id="reg-phone" name="phone" placeholder="08xxxxxxxxxx"
                            class="reg-input reg-field w-full px-4 py-3 rounded-xl border border-stone-200 text-sm text-stone-800 placeholder-stone-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gold-400/50 focus:border-gold-400">
                     <p class="reg-err-msg hidden text-[11px] text-red-500 mt-1"></p>
                 </div>
 
-                <!-- Kategori -->
-                <div class="space-y-1.5">
-                    <label for="reg-category" class="block text-xs font-semibold text-stone-700 tracking-wide">
-                        Kategori <span class="text-red-500">*</span>
-                    </label>
-                    <select id="reg-category" name="category"
-                            class="reg-input reg-field w-full px-4 py-3 rounded-xl border border-stone-200 text-sm text-stone-800 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gold-400/50 focus:border-gold-400 appearance-none bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22%239ca3af%22%3E%3Cpath%20fill-rule%3D%22evenodd%22%20d%3D%22M5.23%207.21a.75.75%200%20011.06.02L10%2011.168l3.71-3.938a.75.75%200%20111.08%201.04l-4.25%204.5a.75.75%200%2001-1.08%200l-4.25-4.5a.75.75%200%2001.02-1.06z%22%20clip-rule%3D%22evenodd%22%2F%3E%3C%2Fsvg%3E')] bg-[length:1.25rem] bg-[right_0.75rem_center] bg-no-repeat">
-                        <option value="" disabled selected>Pilih kategori</option>
-                        <option value="jemaat">Jemaat</option>
-                        <option value="pemuda">Pemuda</option>
-                        <option value="anak">Anak-anak</option>
-                        <option value="tamu">Tamu</option>
-                    </select>
-                    <p class="reg-err-msg hidden text-[11px] text-red-500 mt-1"></p>
-                </div>
-
-                <!-- Jumlah Kehadiran -->
-                <div class="space-y-1.5">
-                    <label for="reg-qty" class="block text-xs font-semibold text-stone-700 tracking-wide">
-                        Jumlah Kehadiran <span class="text-red-500">*</span>
-                    </label>
-                    <input type="number" id="reg-qty" name="qty" value="1" min="1" max="10"
-                           class="reg-input reg-field w-full px-4 py-3 rounded-xl border border-stone-200 text-sm text-stone-800 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gold-400/50 focus:border-gold-400">
-                </div>
-
-                <!-- Sesi -->
-                <div class="space-y-2">
+                <!-- Data Jemaat (dynamic) -->
+                <div class="space-y-3">
                     <label class="block text-xs font-semibold text-stone-700 tracking-wide">
-                        Sesi <span class="text-red-500">*</span>
+                        Data Jemaat <span class="text-red-500">*</span>
+                        <span class="text-stone-400 font-normal ml-1">(termasuk nama pendaftar)</span>
                     </label>
-                    <div class="flex gap-3">
-                        <label class="sesi-option flex-1">
-                            <input type="radio" name="session" value="1" class="sr-only peer" checked>
-                            <div class="cursor-pointer text-center px-3 py-3 rounded-xl border border-stone-200 text-sm text-stone-600 transition-all duration-200 peer-checked:border-gold-400 peer-checked:bg-gold-50 peer-checked:text-gold-700 hover:border-stone-300">
-                                <p class="font-semibold">Sesi 1</p>
-                                <p class="text-xs text-stone-400 peer-checked:text-gold-500">16:00</p>
+
+                    <!-- Attendee list -->
+                    <div id="reg-attendees" class="space-y-3">
+                        <!-- Row 1 (default - pendaftar) -->
+                        <div class="attendee-row flex gap-2 items-end">
+                            <div class="flex-1 space-y-1.5">
+                                <input type="text" placeholder="Nama"
+                                       class="reg-att-name reg-field w-full px-3 py-2.5 rounded-xl border border-stone-200 text-sm text-stone-800 placeholder-stone-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gold-400/50 focus:border-gold-400">
                             </div>
-                        </label>
-                        <label class="sesi-option flex-1">
-                            <input type="radio" name="session" value="2" class="sr-only peer">
-                            <div class="cursor-pointer text-center px-3 py-3 rounded-xl border border-stone-200 text-sm text-stone-600 transition-all duration-200 peer-checked:border-gold-400 peer-checked:bg-gold-50 peer-checked:text-gold-700 hover:border-stone-300">
-                                <p class="font-semibold">Sesi 2</p>
-                                <p class="text-xs text-stone-400 peer-checked:text-gold-500">19:00</p>
+                            <div class="w-20 space-y-1.5">
+                                <input type="number" placeholder="Umur" min="0" max="120"
+                                       class="reg-att-age reg-field w-full px-3 py-2.5 rounded-xl border border-stone-200 text-sm text-stone-800 placeholder-stone-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gold-400/50 focus:border-gold-400">
                             </div>
-                        </label>
+                        </div>
                     </div>
+
+                    <!-- Add attendee button -->
+                    <button type="button" id="reg-add-att"
+                            class="flex items-center gap-1.5 text-xs font-semibold text-gold-500 hover:text-gold-600 transition-colors">
+                        <i class="fas fa-plus-circle text-sm"></i> Tambah Peserta
+                    </button>
                 </div>
 
                 <!-- Global error (hidden) -->
@@ -160,11 +141,13 @@
 <style>
     /* Error input state */
     .reg-field.reg-error {
-        @apply border-red-400 bg-red-50/50;
+        border-color: #f87171;
+        background-color: rgba(254, 226, 226, 0.5);
         box-shadow: 0 0 0 2px rgba(248, 113, 113, 0.15);
     }
     .reg-field.reg-error:focus {
-        @apply ring-red-400/50 border-red-400;
+        --tw-ring-color: rgba(248, 113, 113, 0.5);
+        border-color: #f87171;
     }
 
     /* Success animation */
@@ -208,7 +191,17 @@
 
     /* Disabled input during loading */
     .reg-field:disabled {
-        @apply opacity-50 cursor-not-allowed;
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    /* Attendee row remove button */
+    .attendee-remove {
+        color: #9ca3af;
+        transition: color 0.2s;
+    }
+    .attendee-remove:hover {
+        color: #ef4444;
     }
 </style>
 
@@ -224,11 +217,16 @@
     var formCard = document.getElementById('reg-form-card');
     var overlay = document.getElementById('reg-loading-overlay');
     var backBtn = document.getElementById('reg-back-btn');
-    var fields = document.querySelectorAll('.reg-field');
+    var attendeesWrap = document.getElementById('reg-attendees');
+    var addAttBtn = document.getElementById('reg-add-att');
+
+    function getFields() {
+        return document.querySelectorAll('.reg-field');
+    }
 
     function clearErrors() {
         errBox.classList.add('hidden');
-        fields.forEach(function (f) {
+        getFields().forEach(function (f) {
             f.classList.remove('reg-error');
         });
         document.querySelectorAll('.reg-err-msg').forEach(function (e) {
@@ -237,10 +235,9 @@
         });
     }
 
-    function showFieldError(fieldId, msg) {
-        var field = document.getElementById(fieldId);
-        var errEl = field.parentElement.querySelector('.reg-err-msg');
+    function showFieldError(field, msg) {
         if (field) field.classList.add('reg-error');
+        var errEl = field ? field.parentElement.querySelector('.reg-err-msg') : null;
         if (errEl) {
             errEl.textContent = msg;
             errEl.classList.remove('hidden');
@@ -248,29 +245,66 @@
     }
 
     function setInputsDisabled(state) {
-        fields.forEach(function (f) { f.disabled = state; });
+        getFields().forEach(function (f) { f.disabled = state; });
     }
 
+    /* Add attendee row */
+    addAttBtn.addEventListener('click', function () {
+        var row = document.createElement('div');
+        row.className = 'attendee-row flex gap-2 items-end';
+        row.innerHTML =
+            '<div class="flex-1 space-y-1.5">' +
+                '<input type="text" placeholder="Nama" class="reg-att-name reg-field w-full px-3 py-2.5 rounded-xl border border-stone-200 text-sm text-stone-800 placeholder-stone-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gold-400/50 focus:border-gold-400">' +
+            '</div>' +
+            '<div class="w-20 space-y-1.5">' +
+                '<input type="number" placeholder="Umur" min="0" max="120" class="reg-att-age reg-field w-full px-3 py-2.5 rounded-xl border border-stone-200 text-sm text-stone-800 placeholder-stone-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gold-400/50 focus:border-gold-400">' +
+            '</div>' +
+            '<button type="button" class="reg-remove-att pb-2.5 pl-1 attendee-remove">' +
+                '<i class="fas fa-times-circle text-base"></i>' +
+            '</button>';
+        attendeesWrap.appendChild(row);
+
+        /* Remove handler */
+        row.querySelector('.reg-remove-att').addEventListener('click', function () {
+            row.remove();
+        });
+    });
+
+    /* Submit */
     btn.addEventListener('click', function () {
         var name = document.getElementById('reg-name').value.trim();
-        var contact = document.getElementById('reg-contact').value.trim();
-        var category = document.getElementById('reg-category').value;
+        var phone = document.getElementById('reg-phone').value.trim();
+        var attNames = document.querySelectorAll('.reg-att-name');
+        var attAges = document.querySelectorAll('.reg-att-age');
 
         clearErrors();
-
         var hasError = false;
 
         if (!name) {
-            showFieldError('reg-name', 'Nama lengkap wajib diisi.');
+            showFieldError(document.getElementById('reg-name'), 'Nama pendaftar wajib diisi.');
             hasError = true;
         }
-        if (!contact) {
-            showFieldError('reg-contact', 'Nomor WhatsApp / Email wajib diisi.');
+        if (!phone) {
+            showFieldError(document.getElementById('reg-phone'), 'No. Handphone wajib diisi.');
             hasError = true;
         }
-        if (!category) {
-            showFieldError('reg-category', 'Silakan pilih kategori.');
+
+        /* Validate attendees */
+        if (attNames.length === 0) {
+            errMsg.textContent = 'Minimal harus ada 1 jemaat.';
+            errBox.classList.remove('hidden');
             hasError = true;
+        }
+
+        for (var i = 0; i < attNames.length; i++) {
+            if (!attNames[i].value.trim()) {
+                showFieldError(attNames[i], 'Nama wajib diisi.');
+                hasError = true;
+            }
+            if (!attAges[i].value.trim()) {
+                showFieldError(attAges[i], 'Umur wajib diisi.');
+                hasError = true;
+            }
         }
 
         if (hasError) {
@@ -300,10 +334,16 @@
 
         /* Reset form */
         document.getElementById('reg-name').value = '';
-        document.getElementById('reg-contact').value = '';
-        document.getElementById('reg-category').selectedIndex = 0;
-        document.getElementById('reg-qty').value = '1';
-        document.querySelector('input[name="session"][value="1"]').checked = true;
+        document.getElementById('reg-phone').value = '';
+        attendeesWrap.innerHTML =
+            '<div class="attendee-row flex gap-2 items-end">' +
+                '<div class="flex-1 space-y-1.5">' +
+                    '<input type="text" placeholder="Nama" class="reg-att-name reg-field w-full px-3 py-2.5 rounded-xl border border-stone-200 text-sm text-stone-800 placeholder-stone-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gold-400/50 focus:border-gold-400">' +
+                '</div>' +
+                '<div class="w-20 space-y-1.5">' +
+                    '<input type="number" placeholder="Umur" min="0" max="120" class="reg-att-age reg-field w-full px-3 py-2.5 rounded-xl border border-stone-200 text-sm text-stone-800 placeholder-stone-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gold-400/50 focus:border-gold-400">' +
+                '</div>' +
+            '</div>';
         btnText.classList.remove('hidden');
         btnLoad.classList.add('hidden');
         btn.disabled = false;

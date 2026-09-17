@@ -16,7 +16,7 @@
         </div>
 
         <!-- Contact button -->
-        <a href="https://wa.me/6282183328384" target="_blank" rel="noopener noreferrer"
+        <a href="https://wa.me/6288223296149" target="_blank" rel="noopener noreferrer"
            class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-green-500 hover:bg-green-600 text-white font-semibold text-sm tracking-wide transition-all duration-300 hover:shadow-lg hover:shadow-green-500/25 active:scale-95">
             <i class="fab fa-whatsapp text-base"></i>
             Hubungi Panitia
@@ -24,7 +24,7 @@
 
         <!-- Contact name -->
         <p class="text-xs text-stone-400">
-            CP: <span class="font-medium text-stone-500">Richard</span>
+            CP: <span class="font-medium text-stone-500">Debora Risty</span> · <span class="font-medium text-stone-500">+62 882-2329-6149</span>
         </p>
 
     </div>

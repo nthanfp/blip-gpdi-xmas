@@ -1,5 +1,5 @@
 <!-- Hero (Mobile - Full Width) -->
-<section class="lg:hidden relative flex flex-col items-center justify-center min-h-[85vh] px-5 sm:px-8 py-16 text-center text-white overflow-hidden">
+<section class="lg:hidden relative flex flex-col items-center justify-center min-h-screen px-5 sm:px-8 py-16 text-center text-white overflow-hidden">
 
     <!-- Background -->
     <div class="absolute inset-0 bg-gradient-to-b from-red-950 via-red-950 to-red-900"></div>
@@ -71,7 +71,7 @@
 
     </div>
 
-    <!-- Bottom fade -->
-    <div class="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-stone-50 to-transparent pointer-events-none"></div>
+    <!-- Bottom fade — blend into dark welcome section -->
+    <div class="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-stone-900 to-transparent pointer-events-none"></div>
 
 </section>

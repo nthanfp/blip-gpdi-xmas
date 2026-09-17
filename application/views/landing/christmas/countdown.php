@@ -39,7 +39,7 @@
 
         <!-- Event date reminder -->
         <p class="text-xs text-stone-400">
-            24 Desember 2026 · 18:00 WIB
+            20 Desember 2026 · 17:00 WIB
         </p>
 
     </div>
@@ -47,19 +47,55 @@
 
 <style>
     .countdown-box {
-        @apply flex flex-col items-center justify-center w-16 h-20 sm:w-20 sm:h-24 rounded-xl bg-red-900/50 border border-gold-400/20;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 4rem;
+        height: 5rem;
+        border-radius: 0.75rem;
+        background-color: rgba(127, 29, 29, 0.5);
+        border: 1px solid rgba(212, 175, 55, 0.2);
+    }
+    @media (min-width: 640px) {
+        .countdown-box {
+            width: 5rem;
+            height: 6rem;
+        }
     }
     .countdown-num {
-        @apply text-2xl sm:text-3xl font-bold text-gold-400 font-heading;
+        font-size: 1.5rem;
+        line-height: 2rem;
+        font-weight: 700;
+        color: #D4AF37;
+        font-family: 'Playfair Display', serif;
+    }
+    @media (min-width: 640px) {
+        .countdown-num {
+            font-size: 1.875rem;
+            line-height: 2.25rem;
+        }
     }
     .countdown-label {
-        @apply text-[10px] sm:text-xs font-medium text-stone-400 uppercase tracking-wider mt-1;
+        font-size: 0.625rem;
+        line-height: 0.75rem;
+        font-weight: 500;
+        color: #9ca3af;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-top: 0.25rem;
+    }
+    @media (min-width: 640px) {
+        .countdown-label {
+            font-size: 0.75rem;
+            line-height: 1rem;
+        }
     }
 </style>
 
 <script>
 (function () {
-    var target = new Date('2026-12-24T18:00:00+07:00').getTime();
+    var target = new Date('2026-12-20T17:00:00+07:00').getTime();
     var dEl = document.getElementById('cd-days');
     var hEl = document.getElementById('cd-hours');
     var mEl = document.getElementById('cd-mins');

@@ -1,5 +1,5 @@
 <meta charset="UTF-8" />
-<title>Internal Grup</title>
+<title>From Glory to Glory - Christmas GPdI Kopo Permai 2026</title>
 
 <meta name="theme-color" content="#ffffff">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
