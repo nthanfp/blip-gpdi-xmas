@@ -1,8 +1,13 @@
 <!-- Hero (Desktop - Left Panel) -->
-<div class="relative flex flex-col items-center justify-center h-full px-8 py-12 text-center text-white overflow-hidden">
+<div class="relative flex flex-col items-center justify-center h-full px-8 py-16 text-center text-white overflow-hidden">
 
-    <!-- Background: gradient + soft glow -->
-    <div class="absolute inset-0 bg-gradient-to-b from-red-950 via-red-950 to-red-900"></div>
+    <!-- Background image -->
+    <div class="absolute inset-0 bg-cover bg-center bg-no-repeat" style="background-image: url('<?php echo site_url('assets/images/christmas/JSN02206.jpg'); ?>');"></div>
+    <!-- Maroon overlay -->
+    <div class="absolute inset-0 bg-red-950/65"></div>
+    <!-- Depth gradient -->
+    <div class="absolute inset-0 bg-gradient-to-b from-red-950/70 via-red-950/45 to-red-950/80"></div>
+    <!-- Soft glow -->
     <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(245,158,11,0.08)_0%,_transparent_70%)]"></div>
 
     <!-- Decorative stars (CSS) -->
@@ -16,16 +21,14 @@
     <div class="absolute top-[60%] left-[30%] w-1 h-1 rounded-full bg-gold-400/20 blur-[1px] animate-pulse" style="animation-delay: 1.5s;"></div>
 
     <!-- Content -->
-    <div class="relative z-10 space-y-8 max-w-sm">
+    <div class="relative z-10 space-y-6 max-w-md">
 
-        <!-- Logo placeholder -->
-        <div class="w-20 h-20 mx-auto rounded-full border-2 border-gold-400/40 flex items-center justify-center">
-            <span class="text-xs font-semibold text-gold-400/80 tracking-wider uppercase">Logo</span>
-        </div>
+        <!-- Logo -->
+        <img src="<?php echo site_url('assets/images/christmas/gpdi.png'); ?>" alt="GPdI Kopo Permai" class="w-12 h-auto mx-auto drop-shadow-[0_4px_12px_rgba(0,0,0,0.5)]">
 
         <!-- Eyebrow label -->
         <p class="text-[11px] font-semibold tracking-[0.25em] uppercase text-gold-400">
-            Christmas Celebration 2026
+            GPdI Kopo Permai<br>Christmas Celebration 2026
         </p>
 
         <!-- Decorative gold line -->
@@ -36,14 +39,7 @@
         </div>
 
         <!-- Main title -->
-        <h1 class="text-4xl xl:text-5xl font-bold leading-tight text-white">
-            From Glory<br>to Glory
-        </h1>
-
-        <!-- Subtitle -->
-        <p class="text-base font-medium text-gold-200/80">
-            Light in the Darkness
-        </p>
+        <img src="<?php echo site_url('assets/images/christmas/from-glory.png'); ?>" alt="From Glory to Glory" class="w-full max-w-sm mx-auto drop-shadow-[0_4px_16px_rgba(0,0,0,0.6)]">
 
         <!-- Decorative gold line -->
         <div class="flex items-center justify-center gap-3">
@@ -55,10 +51,10 @@
         <!-- Bible verse -->
         <blockquote class="space-y-2">
             <p class="text-sm italic text-stone-300/80 leading-relaxed">
-                "The light shines in the<br>darkness, and the darkness<br>has not overcome it."
+                "And we all, who with unveiled faces contemplate the Lord's glory, are being transformed into his image with ever-increasing glory, which comes from the Lord, who is the Spirit."
             </p>
             <cite class="block text-xs font-semibold text-gold-400/70 not-italic tracking-wide">
-                — John 1:5
+                — 2 Corinthians 3:18 (NIV)
             </cite>
         </blockquote>
 
