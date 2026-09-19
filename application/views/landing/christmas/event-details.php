@@ -1,16 +1,27 @@
 <!-- Event Details Section -->
-<section class="py-20 sm:py-28 px-5 sm:px-8">
-    <div class="max-w-md lg:max-w-lg mx-auto space-y-8">
+<section class="relative py-20 sm:py-28 px-5 sm:px-8 overflow-hidden">
+    <!-- Subtle dot pattern -->
+    <div class="absolute inset-0 opacity-[0.03]" style="background-image: radial-gradient(circle, #1c1917 1px, transparent 1px); background-size: 24px 24px;"></div>
+    <!-- Radial gold glow -->
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(212,175,55,0.04)_0%,_transparent_60%)]"></div>
+
+    <!-- Top fade from countdown (red-950) -->
+    <div class="absolute top-0 left-0 right-0 h-16 bg-gradient-to-b from-red-950/30 to-transparent pointer-events-none"></div>
+    <!-- Bottom fade to registration (stone-100/50) -->
+    <div class="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-stone-100/50 to-transparent pointer-events-none"></div>
+
+    <div class="relative z-10 max-w-md lg:max-w-lg mx-auto space-y-8">
 
         <!-- Header -->
         <div class="text-center space-y-4">
             <p class="text-[11px] font-semibold tracking-[0.25em] uppercase text-gold-500">
                 Event Details
             </p>
+            <!-- Gradient accent line -->
             <div class="flex items-center justify-center gap-3">
-                <span class="block w-8 h-px bg-gold-400/50"></span>
+                <span class="block w-10 h-px bg-gradient-to-r from-transparent via-gold-400/60 to-transparent"></span>
                 <span class="block w-1.5 h-1.5 rounded-full bg-gold-400/60"></span>
-                <span class="block w-8 h-px bg-gold-400/50"></span>
+                <span class="block w-10 h-px bg-gradient-to-r from-transparent via-gold-400/60 to-transparent"></span>
             </div>
             <h2 class="text-2xl sm:text-3xl font-bold text-stone-800 leading-snug">
                 Informasi Acara
@@ -63,10 +74,8 @@
                 <div class="space-y-0.5">
                     <p class="text-xs font-semibold uppercase tracking-wider text-stone-500">Dresscode</p>
                     <p class="text-sm font-semibold text-stone-800">
-                        <span class="text-red-600">Red</span>
-                        <span class="text-stone-400 mx-1">•</span>
-                        <span class="text-stone-700">White</span>
-                        <span class="text-stone-400 mx-1">•</span>
+                        <span class="text-red-600">Merah</span>
+                        <span class="text-stone-400 mx-1">/</span>
                         <span class="text-gold-500">Gold</span>
                     </p>
                 </div>

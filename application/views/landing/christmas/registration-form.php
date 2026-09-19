@@ -1,6 +1,20 @@
 <!-- Registration Form Section -->
-<section id="sec-register" class="py-20 sm:py-28 px-5 sm:px-8 bg-stone-100/50">
-    <div class="max-w-md lg:max-w-lg mx-auto space-y-8">
+<section id="sec-register" class="relative py-20 sm:py-28 px-5 sm:px-8 overflow-hidden">
+    <!-- Warm gradient bg -->
+    <div class="absolute inset-0 bg-gradient-to-b from-stone-100/50 via-stone-100/60 to-stone-100/50"></div>
+    <!-- Subtle warm tint -->
+    <div class="absolute inset-0 bg-gradient-to-br from-red-950/[0.02] via-transparent to-gold-400/[0.02]"></div>
+    <!-- Dot texture -->
+    <div class="absolute inset-0 opacity-[0.03]" style="background-image: radial-gradient(circle, #1c1917 1px, transparent 1px); background-size: 24px 24px;"></div>
+    <!-- Radial gold glow -->
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(212,175,55,0.04)_0%,_transparent_60%)]"></div>
+
+    <!-- Top fade from event-details -->
+    <div class="absolute top-0 left-0 right-0 h-16 bg-gradient-to-b from-stone-50/80 to-transparent pointer-events-none"></div>
+    <!-- Bottom fade to speaker -->
+    <div class="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-stone-50/80 to-transparent pointer-events-none"></div>
+
+    <div class="relative z-10 max-w-md lg:max-w-lg mx-auto space-y-8">
 
         <!-- Header -->
         <div class="text-center space-y-4">
