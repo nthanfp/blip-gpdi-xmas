@@ -34,32 +34,23 @@
             <div id="gallery-track" class="flex gap-3 sm:gap-4 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-4 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                 
                 <?php 
-                $photos = [
-                    ['url' => 'https://picsum.photos/600/400?random=101', 'caption' => 'Ibadah Natal 2025'],
-                    ['url' => 'https://picsum.photos/600/400?random=102', 'caption' => 'Perayaan Sukacita'],
-                    ['url' => 'https://picsum.photos/600/400?random=103', 'caption' => 'Paduan Suara Natal'],
-                    ['url' => 'https://picsum.photos/600/400?random=104', 'caption' => 'Penyalaan Lilin'],
-                    ['url' => 'https://picsum.photos/600/400?random=105', 'caption' => 'Penampilan Spesial Anak'],
-                    ['url' => 'https://picsum.photos/600/400?random=106', 'caption' => 'Tim Musik & Praise'],
-                    ['url' => 'https://picsum.photos/600/400?random=107', 'caption' => 'Kebersamaan Jemaat'],
-                    ['url' => 'https://picsum.photos/600/400?random=108', 'caption' => 'Drama Natal'],
-                    ['url' => 'https://picsum.photos/600/400?random=109', 'caption' => 'Pemberitaan Firman'],
-                    ['url' => 'https://picsum.photos/600/400?random=110', 'caption' => 'Ramah Tamah'],
-                    ['url' => 'https://picsum.photos/600/400?random=111', 'caption' => 'Foto Bersama Pelayan'],
-                    ['url' => 'https://picsum.photos/600/400?random=112', 'caption' => 'Sesi Foto Jemaat'],
-                ];
-                foreach ($photos as $i => $photo): 
+                $total_photos = 12;
+                for ($i = 1; $i <= $total_photos; $i++): 
+                    $img_url = site_url('assets/images/christmas/gallery-' . $i . '.webp');
                 ?>
                 <div class="gallery-slide snap-center shrink-0 w-[82%] sm:w-[85%] relative rounded-2xl overflow-hidden border border-white/10 shadow-lg aspect-[4/3] bg-red-900/40">
-                    <img src="<?php echo $photo['url']; ?>" alt="<?php echo $photo['caption']; ?>" 
+                    <img src="<?php echo $img_url; ?>" alt="Dokumentasi Natal 2025 - <?php echo $i; ?>" loading="lazy"
                          class="w-full h-full object-cover">
-                    <div class="absolute inset-0 bg-gradient-to-t from-red-950/90 via-transparent to-transparent opacity-80"></div>
-                    <div class="absolute bottom-3 left-4 right-4 flex items-center justify-between text-xs text-white/90">
-                        <span class="font-medium tracking-wide"><?php echo $photo['caption']; ?></span>
-                        <span class="text-[10px] text-gold-400 font-semibold"><?php echo ($i + 1) . '/' . count($photos); ?></span>
+                    <!-- Overlay gradient tipis untuk keterbacaan indikator angka -->
+                    <div class="absolute inset-0 bg-gradient-to-t from-red-950/60 via-transparent to-transparent opacity-80 pointer-events-none"></div>
+                    <!-- Hanya indikator angka (tanpa teks caption) -->
+                    <div class="absolute bottom-3 right-4 flex items-center justify-end text-xs text-white/90">
+                        <span class="text-[10px] text-gold-400 font-semibold bg-red-950/40 px-2 py-0.5 rounded-full backdrop-blur-sm border border-gold-400/20">
+                            <?php echo $i . '/' . $total_photos; ?>
+                        </span>
                     </div>
                 </div>
-                <?php endforeach; ?>
+                <?php endfor; ?>
 
             </div>
 

@@ -62,11 +62,6 @@
 
         </div>
 
-        <!-- Event date reminder -->
-        <p class="text-xs text-stone-400">
-            20 Desember 2026 · 17:00 WIB
-        </p>
-
     </div>
 </section>
 

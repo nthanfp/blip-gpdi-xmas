@@ -39,7 +39,7 @@
             <div class="relative w-28 h-28 mx-auto">
                 <div class="w-full h-full rounded-full bg-gradient-to-br from-gold-400 to-gold-500 p-[2px]">
                     <div class="w-full h-full rounded-full bg-red-950 flex items-center justify-center overflow-hidden">
-                        <img src="https://picsum.photos/200/200?random=10" alt="Speaker"
+                        <img src="<?php echo site_url('assets/images/christmas/nathanael.jpg'); ?>" alt="Ps. Nathanael Ferry"
                              class="w-full h-full object-cover rounded-full">
                     </div>
                 </div>
