@@ -4,7 +4,7 @@
 
     <!-- Background image -->
     <div class="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style="background-image: url('<?php echo site_url('assets/images/christmas/hero.jpg'); ?>');"></div>
+        style="background-image: url('<?php echo site_url('assets/images/christmas/hero.webp'); ?>');"></div>
     <!-- Maroon overlay -->
     <div class="absolute inset-0 bg-red-950/65"></div>
     <!-- Depth gradient -->

@@ -23,7 +23,7 @@
                 <span class="block w-10 h-px bg-gradient-to-r from-transparent via-gold-400/60 to-transparent"></span>
             </div>
             <h2 class="text-2xl sm:text-3xl font-bold text-white leading-snug">
-                Dokumentasi Natal Tahun Lalu
+                Dokumentasi Natal 2025
             </h2>
         </div>
 
