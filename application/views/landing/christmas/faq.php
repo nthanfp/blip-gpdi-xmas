@@ -1,6 +1,9 @@
 <!-- FAQ Section -->
-<section class="py-20 sm:py-28 px-5 sm:px-8">
-    <div class="max-w-md lg:max-w-lg mx-auto space-y-8">
+<section class="relative py-20 sm:py-28 px-5 sm:px-8 overflow-hidden -mt-px">
+    <!-- Top fade from dark performers -->
+    <div class="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-stone-50 via-stone-50/80 to-transparent pointer-events-none z-10"></div>
+
+    <div class="relative z-10 max-w-md lg:max-w-lg mx-auto space-y-8 pt-10">
 
         <!-- Header -->
         <div class="text-center space-y-4">

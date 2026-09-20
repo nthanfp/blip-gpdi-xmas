@@ -1,5 +1,5 @@
 <!-- Registration Form Section -->
-<section id="sec-register" class="relative py-20 sm:py-28 px-5 sm:px-8 overflow-hidden">
+<section id="sec-register" class="relative py-20 sm:py-28 px-5 sm:px-8 overflow-hidden -mt-px">
     <!-- Warm gradient bg -->
     <div class="absolute inset-0 bg-gradient-to-b from-stone-100/50 via-stone-100/60 to-stone-100/50"></div>
     <!-- Subtle warm tint -->
@@ -12,9 +12,9 @@
     <!-- Top fade from event-details -->
     <div class="absolute top-0 left-0 right-0 h-16 bg-gradient-to-b from-stone-50/80 to-transparent pointer-events-none"></div>
     <!-- Bottom fade to speaker -->
-    <div class="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-stone-50/80 to-transparent pointer-events-none"></div>
+    <div class="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-red-950 via-red-950/80 to-transparent pointer-events-none z-10"></div>
 
-    <div class="relative z-10 max-w-md lg:max-w-lg mx-auto space-y-8">
+    <div class="relative z-10 max-w-md lg:max-w-lg mx-auto space-y-8 pb-12">
 
         <!-- Header -->
         <div class="text-center space-y-4">

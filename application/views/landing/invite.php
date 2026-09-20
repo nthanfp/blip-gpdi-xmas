@@ -51,6 +51,11 @@
                     <?php $this->load->view('landing/christmas/performers') ?>
                 </div>
 
+                <!-- Gallery -->
+                <div class="fi fi-delay-1">
+                    <?php $this->load->view('landing/christmas/gallery') ?>
+                </div>
+
                 <!-- FAQ -->
                 <div class="fi fi-delay-1">
                     <?php $this->load->view('landing/christmas/faq') ?>

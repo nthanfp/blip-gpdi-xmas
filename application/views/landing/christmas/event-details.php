@@ -1,5 +1,5 @@
 <!-- Event Details Section -->
-<section class="relative py-20 sm:py-28 px-5 sm:px-8 overflow-hidden">
+<section class="relative py-20 sm:py-28 px-5 sm:px-8 overflow-hidden -mt-px">
     <!-- Subtle dot pattern -->
     <div class="absolute inset-0 opacity-[0.03]" style="background-image: radial-gradient(circle, #1c1917 1px, transparent 1px); background-size: 24px 24px;"></div>
     <!-- Radial gold glow -->

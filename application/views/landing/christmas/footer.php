@@ -2,10 +2,9 @@
 <footer class="bg-red-950 text-white py-16 px-5 sm:px-8">
     <div class="max-w-md lg:max-w-lg mx-auto text-center space-y-6">
 
-        <!-- Logo placeholder -->
-        <div class="w-14 h-14 mx-auto rounded-full border border-gold-400/30 flex items-center justify-center">
-            <span class="text-[9px] font-semibold text-gold-400/70 tracking-wider uppercase">Logo</span>
-        </div>
+        <!-- Logo -->
+        <img src="<?php echo site_url('assets/images/christmas/gpdi.png'); ?>" alt="GPdI Kopo Permai"
+            class="w-12 h-auto mx-auto drop-shadow-[0_4px_12px_rgba(0,0,0,0.5)]">
 
         <!-- Christmas message -->
         <div class="space-y-2">

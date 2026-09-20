@@ -60,11 +60,12 @@
         <!-- Bible verse -->
         <blockquote class="space-y-2">
             <p class="text-sm italic text-stone-300/80 leading-relaxed">
-                "And we all, who with unveiled faces contemplate the Lord's glory, are being transformed into his image
-                with ever-increasing glory, which comes from the Lord, who is the Spirit."
+                "Dan kita semua mencerminkan kemuliaan Tuhan dengan muka yang tidak berselubung. Dan karena kemuliaan
+                itu datangnya dari Tuhan yang adalah Roh, maka kita diubah menjadi serupa dengan gambar-Nya, dalam
+                kemuliaan yang semakin besar."
             </p>
             <cite class="block text-xs font-semibold text-gold-400/70 not-italic tracking-wide">
-                — 2 Corinthians 3:18 (NIV)
+                — 2 Korintus 3:18 (TB)
             </cite>
         </blockquote>
 

@@ -1,5 +1,5 @@
 <!-- Countdown Section -->
-<section class="relative py-20 sm:py-28 px-5 sm:px-8 overflow-hidden">
+<section class="relative py-20 sm:py-28 px-5 sm:px-8 overflow-hidden -mt-px">
     <!-- Gradient background -->
     <div class="absolute inset-0 bg-gradient-to-b from-red-950 via-red-950 to-red-900"></div>
     <!-- Radial gold glow -->
