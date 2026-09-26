@@ -1,5 +1,5 @@
 <!-- Performers Section -->
-<section class="relative py-20 sm:py-28 px-5 sm:px-8 overflow-hidden bg-red-950 -mt-px">
+<section class="relative py-14 sm:py-20 px-5 sm:px-8 overflow-hidden bg-red-950 -mt-px">
     <!-- Dot texture -->
     <div class="absolute inset-0 opacity-[0.03]" style="background-image: radial-gradient(circle, #f5edd6 1px, transparent 1px); background-size: 24px 24px;"></div>
     <!-- Radial gold glow -->
@@ -15,10 +15,10 @@
     <div class="absolute top-[35%] right-[18%] w-1.5 h-1.5 rounded-full bg-gold-300/10 blur-[1px] animate-pulse" style="animation-delay: 1s;"></div>
     <div class="absolute bottom-[30%] left-[25%] w-1 h-1 rounded-full bg-gold-400/20 blur-[1px] animate-pulse" style="animation-delay: 2s;"></div>
 
-    <div class="relative z-10 max-w-md lg:max-w-lg mx-auto space-y-8 pt-10 pb-10">
+    <div class="relative z-10 max-w-md lg:max-w-lg mx-auto space-y-8">
 
         <!-- Header -->
-        <div class="text-center space-y-4">
+        <div class="text-center space-y-4" data-aos="fade-up">
             <p class="text-[11px] font-semibold tracking-[0.25em] uppercase text-gold-400">
                 Dimeriahkan Oleh
             </p>
@@ -32,52 +32,46 @@
             </h2>
         </div>
 
-        <!-- Performer cards grid -->
-        <div class="grid grid-cols-2 gap-3">
+        <!-- Performer list (1 row per card) -->
+        <div class="space-y-3">
 
-            <!-- Worship Leader -->
-            <div class="card-hover bg-white/10 backdrop-blur-sm rounded-2xl border border-white/10 shadow-sm p-5 text-center space-y-3">
-                <div class="w-14 h-14 mx-auto rounded-full bg-gold-400/10 flex items-center justify-center">
-                    <i class="fas fa-music text-gold-400 text-lg"></i>
+            <?php
+            $performers = [
+                ['img' => 'gallery-1.webp', 'no' => '01', 'tag' => 'Worship', 'title' => 'Worship Leader'],
+                ['img' => 'gallery-2.webp', 'no' => '02', 'tag' => 'Choir',    'title' => 'Christmas Choir'],
+                ['img' => 'gallery-3.webp', 'no' => '03', 'tag' => 'Music',    'title' => 'Music Team'],
+                ['img' => 'gallery-4.webp', 'no' => '04', 'tag' => 'Spesial',  'title' => 'Special'],
+            ];
+            foreach ($performers as $i => $p):
+                $isRev   = ($i % 2 === 1);
+                $reverse = $isRev ? 'flex-row-reverse' : '';
+                $textCls = $isRev ? 'flex-row-reverse text-right' : 'text-left';
+                $aos     = $isRev ? 'fade-left' : 'fade-right';
+                ?>
+
+            <!-- <?php echo $p['title']; ?> -->
+            <div class="group flex items-center gap-4 <?php echo $reverse; ?> rounded-2xl bg-white/10 hover:bg-white/[0.14] border border-white/10 hover:border-gold-400/40 backdrop-blur-sm p-3.5 transition-all duration-300"
+                 data-aos="<?php echo $aos; ?>" data-aos-delay="<?php echo $i * 80; ?>">
+
+                <!-- Foto -->
+                <div class="w-[88px] h-[88px] rounded-xl overflow-hidden ring-1 ring-white/20 shrink-0">
+                    <img src="<?php echo site_url('assets/images/christmas/' . $p['img']); ?>" alt="<?php echo $p['title']; ?>"
+                         loading="lazy"
+                         class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                 </div>
-                <div class="space-y-0.5">
-                    <p class="text-sm font-bold text-white">Worship Leader</p>
-                    <p class="text-[11px] text-stone-300">Memimpin pujian</p>
+
+                <!-- Teks -->
+                <div class="flex-1 min-w-0 flex items-center justify-between gap-3 <?php echo $textCls; ?>">
+                    <div class="min-w-0 space-y-1.5">
+                        <p class="text-[10px] font-bold uppercase tracking-widest text-gold-400 leading-none"><?php echo $p['tag']; ?></p>
+                        <p class="text-[15px] font-bold text-white leading-tight"><?php echo $p['title']; ?></p>
+                    </div>
+                    <span class="shrink-0 text-3xl font-black text-white/10 leading-none"><?php echo $p['no']; ?></span>
                 </div>
+
             </div>
 
-            <!-- Christmas Choir -->
-            <div class="card-hover bg-white/10 backdrop-blur-sm rounded-2xl border border-white/10 shadow-sm p-5 text-center space-y-3">
-                <div class="w-14 h-14 mx-auto rounded-full bg-gold-400/10 flex items-center justify-center">
-                    <i class="fas fa-users text-gold-400 text-lg"></i>
-                </div>
-                <div class="space-y-0.5">
-                    <p class="text-sm font-bold text-white">Christmas Choir</p>
-                    <p class="text-[11px] text-stone-300">Paduan suara</p>
-                </div>
-            </div>
-
-            <!-- Music Team -->
-            <div class="card-hover bg-white/10 backdrop-blur-sm rounded-2xl border border-white/10 shadow-sm p-5 text-center space-y-3">
-                <div class="w-14 h-14 mx-auto rounded-full bg-gold-400/10 flex items-center justify-center">
-                    <i class="fas fa-guitar text-gold-400 text-lg"></i>
-                </div>
-                <div class="space-y-0.5">
-                    <p class="text-sm font-bold text-white">Music Team</p>
-                    <p class="text-[11px] text-stone-300">Tim musik</p>
-                </div>
-            </div>
-
-            <!-- Special Performance -->
-            <div class="card-hover bg-white/10 backdrop-blur-sm rounded-2xl border border-white/10 shadow-sm p-5 text-center space-y-3">
-                <div class="w-14 h-14 mx-auto rounded-full bg-gold-400/10 flex items-center justify-center">
-                    <i class="fas fa-star text-gold-400 text-lg"></i>
-                </div>
-                <div class="space-y-0.5">
-                    <p class="text-sm font-bold text-white">Special</p>
-                    <p class="text-[11px] text-stone-300">Penampilan spesial</p>
-                </div>
-            </div>
+            <?php endforeach; ?>
 
         </div>
 

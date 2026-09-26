@@ -1,5 +1,5 @@
 <!-- Countdown Section -->
-<section class="relative py-20 sm:py-28 px-5 sm:px-8 overflow-hidden -mt-px">
+<section class="relative py-14 sm:py-20 px-5 sm:px-8 overflow-hidden -mt-px">
     <!-- Gradient background -->
     <div class="absolute inset-0 bg-gradient-to-b from-red-950 via-red-950 to-red-900"></div>
     <!-- Radial gold glow -->
@@ -8,7 +8,7 @@
     <!-- Top fade -->
     <div class="absolute top-0 left-0 right-0 h-16 bg-gradient-to-b from-red-950/80 to-transparent pointer-events-none"></div>
     <!-- Bottom fade -->
-    <div class="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-stone-50/10 to-transparent pointer-events-none"></div>
+    <div class="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-red-950 to-transparent pointer-events-none"></div>
 
     <!-- Bokeh dots -->
     <div class="absolute top-[10%] left-[15%] w-2 h-2 rounded-full bg-gold-400/15 blur-[1px] animate-pulse"></div>
@@ -28,7 +28,7 @@
     <div class="relative z-10 max-w-md lg:max-w-lg mx-auto text-center space-y-8">
 
         <!-- Eyebrow -->
-        <div class="space-y-4">
+        <div class="space-y-4" data-aos="fade-down">
             <p class="text-[11px] font-semibold tracking-[0.25em] uppercase text-gold-400">
                 Countdown
             </p>
@@ -38,7 +38,7 @@
         </div>
 
         <!-- Countdown boxes -->
-        <div class="flex justify-center gap-2 sm:gap-3 md:gap-4" id="xmas-countdown">
+        <div class="flex justify-center gap-2 sm:gap-3 md:gap-4" id="xmas-countdown" data-aos="zoom-in-up" data-aos-delay="150">
 
             <div class="countdown-box">
                 <span class="countdown-num" id="cd-days">00</span>

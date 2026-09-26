@@ -18,6 +18,9 @@
 <!-- Tailwind CSS -->
 <link rel="stylesheet" type="text/css" href="<?php echo site_url('assets/css/tailwind.css'); ?>">
 
+<!-- AOS (Animate On Scroll) -->
+<link rel="stylesheet" type="text/css" href="<?php echo site_url('assets/plugins/aos/aos.css'); ?>">
+
 <!-- Fontawesome Icons -->
 <link rel="stylesheet" type="text/css" href="<?php echo site_url('assets/plugins/fontawesome-free/css/all.min.css'); ?>" />
 
@@ -29,6 +32,16 @@
         -webkit-font-smoothing: antialiased;
         scroll-behavior: smooth;
         scroll-padding-top: 0;
+    }
+
+    /* AOS: paksa tampil normal jika user minta reduce motion */
+    @media (prefers-reduced-motion: reduce) {
+        [data-aos] {
+            opacity: 1 !important;
+            transform: none !important;
+            transition: none !important;
+            animation: none !important;
+        }
     }
 
     /* Desktop: lock body scroll — only right panel scrolls */

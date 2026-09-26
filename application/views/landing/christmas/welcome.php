@@ -1,5 +1,5 @@
 <!-- Welcome Section -->
-<section class="relative py-20 sm:py-28 px-5 sm:px-8 overflow-hidden">
+<section class="relative py-14 sm:py-20 px-5 sm:px-8 overflow-hidden">
     <!-- Background image -->
     <div class="absolute inset-0 bg-cover bg-center bg-no-repeat" style="background-image: url('<?php echo site_url('assets/images/xmas/hero-1.jpg'); ?>');"></div>
     <!-- Dark overlay -->
@@ -21,7 +21,7 @@
     <div class="absolute bottom-[35%] right-[15%] w-1.5 h-1.5 rounded-full bg-gold-300/10 blur-[1px] animate-pulse" style="animation-delay: 0.5s;"></div>
     <div class="absolute top-[55%] left-[25%] w-1 h-1 rounded-full bg-gold-400/15 blur-[1px] animate-pulse" style="animation-delay: 1.5s;"></div>
 
-    <div class="relative z-10 max-w-md lg:max-w-lg mx-auto text-center space-y-6">
+    <div class="relative z-10 max-w-md lg:max-w-lg mx-auto text-center space-y-6" data-aos="fade-up" data-aos-once="true">
 
         <!-- Eyebrow -->
         <p class="text-[11px] font-semibold tracking-[0.25em] uppercase text-gold-400">

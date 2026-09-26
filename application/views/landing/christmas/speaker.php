@@ -1,5 +1,5 @@
 <!-- Speaker Section -->
-<section class="relative py-20 sm:py-28 px-5 sm:px-8 overflow-hidden bg-red-950 -mt-px">
+<section class="relative py-14 sm:py-20 px-5 sm:px-8 overflow-hidden bg-red-950 -mt-px">
     <!-- Dot texture -->
     <div class="absolute inset-0 opacity-[0.03]" style="background-image: radial-gradient(circle, #f5edd6 1px, transparent 1px); background-size: 24px 24px;"></div>
     <!-- Radial gold glow -->
@@ -15,10 +15,10 @@
     <div class="absolute top-[40%] right-[15%] w-1.5 h-1.5 rounded-full bg-gold-300/10 blur-[1px] animate-pulse" style="animation-delay: 1s;"></div>
     <div class="absolute bottom-[25%] left-[20%] w-1 h-1 rounded-full bg-gold-400/20 blur-[1px] animate-pulse" style="animation-delay: 2s;"></div>
 
-    <div class="relative z-10 max-w-md lg:max-w-lg mx-auto space-y-8 pt-10 pb-10">
+    <div class="relative z-10 max-w-md lg:max-w-lg mx-auto space-y-8">
 
         <!-- Header -->
-        <div class="text-center space-y-4">
+        <div class="text-center space-y-4" data-aos="fade-up">
             <p class="text-[11px] font-semibold tracking-[0.25em] uppercase text-gold-400">
                 Featured Speaker
             </p>
@@ -33,7 +33,7 @@
         </div>
 
         <!-- Speaker card -->
-        <div class="card-hover bg-white/10 backdrop-blur-sm rounded-2xl border border-white/10 shadow-sm p-8 text-center space-y-5">
+        <div class="card-hover bg-white/10 backdrop-blur-sm rounded-2xl border border-white/10 shadow-sm p-8 text-center space-y-5" data-aos="zoom-in-up" data-aos-delay="120">
 
             <!-- Photo -->
             <div class="relative w-28 h-28 mx-auto">

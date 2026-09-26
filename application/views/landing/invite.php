@@ -5,7 +5,7 @@
     <?php $this->load->view('partial/landing/head.php') ?>
 </head>
 
-<body class="bg-stone-50 text-stone-800 antialiased">
+<body class="bg-red-950 text-stone-200 antialiased">
 
     <!-- ═══ DESKTOP: Split-screen — left fixed, right scrolls ═══ -->
     <div class="lg:flex lg:h-screen">
@@ -22,49 +22,31 @@
                 <?php $this->load->view('landing/christmas/hero-mobile') ?>
 
                 <!-- Welcome -->
-                <div class="fi fi-delay-1">
-                    <?php $this->load->view('landing/christmas/welcome') ?>
-                </div>
+                <?php $this->load->view('landing/christmas/welcome') ?>
 
                 <!-- Countdown -->
-                <div class="fi fi-delay-2">
-                    <?php $this->load->view('landing/christmas/countdown') ?>
-                </div>
+                <?php $this->load->view('landing/christmas/countdown') ?>
 
                 <!-- Event Details -->
-                <div class="fi fi-delay-1">
-                    <?php $this->load->view('landing/christmas/event-details') ?>
-                </div>
+                <?php $this->load->view('landing/christmas/event-details') ?>
 
                 <!-- Registration Form -->
-                <div class="fi fi-delay-2">
-                    <?php $this->load->view('landing/christmas/registration-form') ?>
-                </div>
+                <?php $this->load->view('landing/christmas/registration-form') ?>
 
                 <!-- Speaker -->
-                <div class="fi fi-delay-1">
-                    <?php $this->load->view('landing/christmas/speaker') ?>
-                </div>
+                <?php $this->load->view('landing/christmas/speaker') ?>
 
                 <!-- Performers -->
-                <div class="fi fi-delay-2">
-                    <?php $this->load->view('landing/christmas/performers') ?>
-                </div>
+                <?php $this->load->view('landing/christmas/performers') ?>
 
                 <!-- Gallery -->
-                <div class="fi fi-delay-1">
-                    <?php $this->load->view('landing/christmas/gallery') ?>
-                </div>
+                <?php $this->load->view('landing/christmas/gallery') ?>
 
                 <!-- FAQ -->
-                <div class="fi fi-delay-1">
-                    <?php $this->load->view('landing/christmas/faq') ?>
-                </div>
+                <?php $this->load->view('landing/christmas/faq') ?>
 
                 <!-- Contact -->
-                <div class="fi fi-delay-2">
-                    <?php $this->load->view('landing/christmas/contact') ?>
-                </div>
+                <?php $this->load->view('landing/christmas/contact') ?>
 
                 <!-- Footer -->
                 <?php $this->load->view('landing/christmas/footer') ?>
@@ -74,31 +56,6 @@
     </div>
 
     <?php $this->load->view('partial/landing/foot.php') ?>
-
-    <script>
-    (function () {
-        var items = document.querySelectorAll('.fi');
-        if ('IntersectionObserver' in window) {
-            /* Desktop: root = scrollable right panel. Mobile: root = viewport */
-            var root = null;
-            var scrollEl = document.querySelector('.xmas-scroll');
-            if (window.matchMedia('(min-width: 1024px)').matches && scrollEl) {
-                root = scrollEl;
-            }
-            var obs = new IntersectionObserver(function (entries) {
-                entries.forEach(function (e) {
-                    if (e.isIntersecting) {
-                        e.target.classList.add('fi-visible');
-                        obs.unobserve(e.target);
-                    }
-                });
-            }, { root: root, threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
-            items.forEach(function (el) { obs.observe(el); });
-        } else {
-            items.forEach(function (el) { el.classList.add('fi-visible'); });
-        }
-    })();
-    </script>
 </body>
 
 </html>

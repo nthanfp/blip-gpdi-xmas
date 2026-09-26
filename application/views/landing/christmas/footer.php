@@ -1,5 +1,5 @@
 <!-- Footer -->
-<footer class="bg-red-950 text-white py-16 px-5 sm:px-8">
+<footer class="bg-red-950 text-white py-12 px-5 sm:px-8">
     <div class="max-w-md lg:max-w-lg mx-auto text-center space-y-6">
 
         <!-- Logo -->

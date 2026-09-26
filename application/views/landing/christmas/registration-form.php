@@ -1,24 +1,24 @@
 <!-- Registration Form Section -->
-<section id="sec-register" class="relative py-20 sm:py-28 px-5 sm:px-8 overflow-hidden -mt-px">
-    <!-- Warm gradient bg -->
-    <div class="absolute inset-0 bg-gradient-to-b from-stone-100/50 via-stone-100/60 to-stone-100/50"></div>
+<section id="sec-register" class="relative py-14 sm:py-20 px-5 sm:px-8 overflow-hidden -mt-px bg-red-950">
+    <!-- Gradient bg -->
+    <div class="absolute inset-0 bg-gradient-to-b from-red-950 via-red-950 to-red-900"></div>
     <!-- Subtle warm tint -->
-    <div class="absolute inset-0 bg-gradient-to-br from-red-950/[0.02] via-transparent to-gold-400/[0.02]"></div>
+    <div class="absolute inset-0 bg-gradient-to-br from-red-950/[0.02] via-transparent to-gold-400/[0.03]"></div>
     <!-- Dot texture -->
-    <div class="absolute inset-0 opacity-[0.03]" style="background-image: radial-gradient(circle, #1c1917 1px, transparent 1px); background-size: 24px 24px;"></div>
+    <div class="absolute inset-0 opacity-[0.03]" style="background-image: radial-gradient(circle, #f5edd6 1px, transparent 1px); background-size: 24px 24px;"></div>
     <!-- Radial gold glow -->
-    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(212,175,55,0.04)_0%,_transparent_60%)]"></div>
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(212,175,55,0.06)_0%,_transparent_60%)]"></div>
 
     <!-- Top fade from event-details -->
-    <div class="absolute top-0 left-0 right-0 h-16 bg-gradient-to-b from-stone-50/80 to-transparent pointer-events-none"></div>
+    <div class="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-red-950 via-red-950/80 to-transparent pointer-events-none z-10"></div>
     <!-- Bottom fade to speaker -->
     <div class="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-red-950 via-red-950/80 to-transparent pointer-events-none z-10"></div>
 
-    <div class="relative z-10 max-w-md lg:max-w-lg mx-auto space-y-8 pb-12">
+    <div class="relative z-10 max-w-md lg:max-w-lg mx-auto space-y-8 pb-4">
 
         <!-- Header -->
-        <div class="text-center space-y-4">
-            <p class="text-[11px] font-semibold tracking-[0.25em] uppercase text-gold-500">
+        <div class="text-center space-y-4" data-aos="fade-up">
+            <p class="text-[11px] font-semibold tracking-[0.25em] uppercase text-gold-400">
                 Register Now
             </p>
             <div class="flex items-center justify-center gap-3">
@@ -26,10 +26,10 @@
                 <span class="block w-1.5 h-1.5 rounded-full bg-gold-400/60"></span>
                 <span class="block w-8 h-px bg-gold-400/50"></span>
             </div>
-            <h2 class="text-2xl sm:text-3xl font-bold text-stone-800 leading-snug">
+            <h2 class="text-2xl sm:text-3xl font-bold text-white leading-snug">
                 Reserve Your Seat
             </h2>
-            <p class="text-sm text-stone-500 leading-relaxed">
+            <p class="text-sm text-stone-300 leading-relaxed">
                 Daftarkan diri Anda dan keluarga untuk merayakan Natal bersama kami.
             </p>
         </div>
@@ -38,22 +38,12 @@
         <div id="reg-form-wrap">
 
             <!-- Form card -->
-            <div id="reg-form-card" class="bg-white rounded-2xl border border-stone-100 shadow-sm p-6 sm:p-8 space-y-5 relative">
+            <div id="reg-form-card" class="bg-white rounded-2xl border border-stone-100 shadow-sm p-6 sm:p-8 space-y-5 relative" data-aos="fade-up" data-aos-delay="120">
 
                 <!-- Loading overlay (hidden) -->
                 <div id="reg-loading-overlay" class="hidden absolute inset-0 bg-white/70 backdrop-blur-sm rounded-2xl z-10 flex flex-col items-center justify-center gap-3">
                     <i class="fas fa-spinner fa-spin text-gold-500 text-2xl"></i>
                     <p class="text-sm font-semibold text-stone-600">Mendaftarkan...</p>
-                </div>
-
-                <!-- Nama Pendaftar -->
-                <div class="space-y-1.5">
-                    <label for="reg-name" class="block text-xs font-semibold text-stone-700 tracking-wide">
-                        Nama Pendaftar <span class="text-red-500">*</span>
-                    </label>
-                    <input type="text" id="reg-name" name="name" placeholder="Masukkan nama lengkap"
-                           class="reg-input reg-field w-full px-4 py-3 rounded-xl border border-stone-200 text-sm text-stone-800 placeholder-stone-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gold-400/50 focus:border-gold-400">
-                    <p class="reg-err-msg hidden text-[11px] text-red-500 mt-1"></p>
                 </div>
 
                 <!-- No. Handphone -->
@@ -70,7 +60,6 @@
                 <div class="space-y-3">
                     <label class="block text-xs font-semibold text-stone-700 tracking-wide">
                         Data Jemaat <span class="text-red-500">*</span>
-                        <span class="text-stone-400 font-normal ml-1">(termasuk nama pendaftar)</span>
                     </label>
 
                     <!-- Attendee list -->
@@ -93,6 +82,32 @@
                             class="flex items-center gap-1.5 text-xs font-semibold text-gold-500 hover:text-gold-600 transition-colors">
                         <i class="fas fa-plus-circle text-sm"></i> Tambah Peserta
                     </button>
+                </div>
+
+                <!-- Pilihan Lantai (hanya 1) -->
+                <div class="space-y-2">
+                    <label class="block text-xs font-semibold text-stone-700 tracking-wide">
+                        Lantai <span class="text-red-500">*</span>
+                    </label>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="relative">
+                            <input type="radio" name="reg-floor" id="reg-floor-1" value="Lantai 1" class="peer sr-only">
+                            <label for="reg-floor-1"
+                                   class="block rounded-xl border border-stone-200 p-4 cursor-pointer transition-all duration-200 hover:border-gold-400 peer-checked:border-gold-400 peer-checked:bg-gold-400/10 peer-checked:ring-2 peer-checked:ring-gold-400/40">
+                                <span class="block text-sm font-bold text-stone-800">Lantai 1</span>
+                                <span class="block text-[11px] text-stone-500 mt-1">Sisa <span class="font-semibold text-gold-600">120</span> kursi</span>
+                            </label>
+                        </div>
+                        <div class="relative">
+                            <input type="radio" name="reg-floor" id="reg-floor-2" value="Lantai 2" class="peer sr-only">
+                            <label for="reg-floor-2"
+                                   class="block rounded-xl border border-stone-200 p-4 cursor-pointer transition-all duration-200 hover:border-gold-400 peer-checked:border-gold-400 peer-checked:bg-gold-400/10 peer-checked:ring-2 peer-checked:ring-gold-400/40">
+                                <span class="block text-sm font-bold text-stone-800">Lantai 2</span>
+                                <span class="block text-[11px] text-stone-500 mt-1">Sisa <span class="font-semibold text-gold-600">85</span> kursi</span>
+                            </label>
+                        </div>
+                    </div>
+                    <p id="reg-floor-err" class="reg-err-msg hidden text-[11px] text-red-500">Silakan pilih lantai terlebih dahulu.</p>
                 </div>
 
                 <!-- Global error (hidden) -->
@@ -284,9 +299,15 @@
         });
     });
 
+    /* Sembunyikan error lantai saat memilih */
+    document.querySelectorAll('input[name="reg-floor"]').forEach(function (r) {
+        r.addEventListener('change', function () {
+            document.getElementById('reg-floor-err').classList.add('hidden');
+        });
+    });
+
     /* Submit */
     btn.addEventListener('click', function () {
-        var name = document.getElementById('reg-name').value.trim();
         var phone = document.getElementById('reg-phone').value.trim();
         var attNames = document.querySelectorAll('.reg-att-name');
         var attAges = document.querySelectorAll('.reg-att-age');
@@ -294,13 +315,19 @@
         clearErrors();
         var hasError = false;
 
-        if (!name) {
-            showFieldError(document.getElementById('reg-name'), 'Nama pendaftar wajib diisi.');
-            hasError = true;
-        }
         if (!phone) {
             showFieldError(document.getElementById('reg-phone'), 'No. Handphone wajib diisi.');
             hasError = true;
+        }
+
+        /* Validasi lantai */
+        var floorErr = document.getElementById('reg-floor-err');
+        var floor = document.querySelector('input[name="reg-floor"]:checked');
+        if (!floor) {
+            floorErr.classList.remove('hidden');
+            hasError = true;
+        } else {
+            floorErr.classList.add('hidden');
         }
 
         /* Validate attendees */
@@ -347,7 +374,6 @@
         formWrap.classList.remove('hidden');
 
         /* Reset form */
-        document.getElementById('reg-name').value = '';
         document.getElementById('reg-phone').value = '';
         attendeesWrap.innerHTML =
             '<div class="attendee-row flex gap-2 items-end">' +
@@ -364,6 +390,11 @@
         overlay.classList.add('hidden');
         setInputsDisabled(false);
         clearErrors();
+
+        /* Reset pilihan lantai */
+        var checkedFloor = document.querySelector('input[name="reg-floor"]:checked');
+        if (checkedFloor) checkedFloor.checked = false;
+        document.getElementById('reg-floor-err').classList.add('hidden');
     });
 })();
 </script>
