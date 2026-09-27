@@ -91,19 +91,19 @@
                     </label>
                     <div class="grid grid-cols-2 gap-3">
                         <div class="relative">
-                            <input type="radio" name="reg-floor" id="reg-floor-1" value="Lantai 1" class="peer sr-only">
+                            <input type="radio" name="reg-floor" id="reg-floor-1" value="1" class="peer sr-only">
                             <label for="reg-floor-1"
                                    class="block rounded-xl border border-stone-200 p-4 cursor-pointer transition-all duration-200 hover:border-gold-400 peer-checked:border-gold-400 peer-checked:bg-gold-400/10 peer-checked:ring-2 peer-checked:ring-gold-400/40">
                                 <span class="block text-sm font-bold text-stone-800">Lantai 1</span>
-                                <span class="block text-[11px] text-stone-500 mt-1">Sisa <span class="font-semibold text-gold-600">120</span> kursi</span>
+                                <span class="block text-[11px] text-stone-500 mt-1">Sisa <span class="font-semibold text-gold-600" id="seat-l1">-</span> kursi</span>
                             </label>
                         </div>
                         <div class="relative">
-                            <input type="radio" name="reg-floor" id="reg-floor-2" value="Lantai 2" class="peer sr-only">
+                            <input type="radio" name="reg-floor" id="reg-floor-2" value="2" class="peer sr-only">
                             <label for="reg-floor-2"
                                    class="block rounded-xl border border-stone-200 p-4 cursor-pointer transition-all duration-200 hover:border-gold-400 peer-checked:border-gold-400 peer-checked:bg-gold-400/10 peer-checked:ring-2 peer-checked:ring-gold-400/40">
                                 <span class="block text-sm font-bold text-stone-800">Lantai 2</span>
-                                <span class="block text-[11px] text-stone-500 mt-1">Sisa <span class="font-semibold text-gold-600">85</span> kursi</span>
+                                <span class="block text-[11px] text-stone-500 mt-1">Sisa <span class="font-semibold text-gold-600" id="seat-l2">-</span> kursi</span>
                             </label>
                         </div>
                     </div>
@@ -145,6 +145,9 @@
                     <h3 class="text-lg font-bold text-stone-800">Pendaftaran Berhasil!</h3>
                     <p class="text-sm text-stone-500 leading-relaxed max-w-xs mx-auto">
                         Terima kasih telah melakukan pendaftaran. Kami akan mengirimkan konfirmasi ke kontak yang Anda berikan.
+                    </p>
+                    <p id="reg-ref-code" class="hidden text-xs text-stone-600">
+                        Kode registrasi: <span class="font-bold text-gold-600" id="reg-ref-value"></span>
                     </p>
                 </div>
 
@@ -248,6 +251,23 @@
     var backBtn = document.getElementById('reg-back-btn');
     var attendeesWrap = document.getElementById('reg-attendees');
     var addAttBtn = document.getElementById('reg-add-att');
+    var endpointSeats = '<?php echo site_url('landing/registration_seats'); ?>';
+    var endpointSubmit = '<?php echo site_url('landing/registration_submit'); ?>';
+
+    /* Muat sisa kursi real-time */
+    function loadSeats() {
+        fetch(endpointSeats, { credentials: 'same-origin' })
+            .then(function (r) { return r.json(); })
+            .then(function (res) {
+                if (!res.success || !res.data || !res.data.floors) return;
+                res.data.floors.forEach(function (f) {
+                    var el = document.getElementById('seat-l' + f.floor);
+                    if (el) el.textContent = f.remaining;
+                });
+            })
+            .catch(function () { /* diamkan: angka tetap '-' */ });
+    }
+    loadSeats();
 
     function getFields() {
         return document.querySelectorAll('.reg-field');
@@ -318,6 +338,9 @@
         if (!phone) {
             showFieldError(document.getElementById('reg-phone'), 'No. Handphone wajib diisi.');
             hasError = true;
+        } else if (!/^0[0-9]{9,13}$/.test(phone)) {
+            showFieldError(document.getElementById('reg-phone'), 'Format No. Handphone tidak valid (contoh: 081234567890).');
+            hasError = true;
         }
 
         /* Validasi lantai */
@@ -361,11 +384,66 @@
         overlay.classList.remove('hidden');
         setInputsDisabled(true);
 
-        /* Simulate submission */
-        setTimeout(function () {
-            formWrap.classList.add('hidden');
-            sucBox.classList.remove('hidden');
-        }, 1800);
+        /* Kumpulkan payload */
+        var attendees = [];
+        for (var j = 0; j < attNames.length; j++) {
+            attendees.push({
+                name: attNames[j].value.trim(),
+                age: attAges[j].value.trim()
+            });
+        }
+
+        /* Submit nyata */
+        var payload = new FormData();
+        payload.append('phone', phone);
+        payload.append('floor', floor.value);
+        attendees.forEach(function (a, idx) {
+            payload.append('attendees[' + idx + '][name]', a.name);
+            payload.append('attendees[' + idx + '][age]', a.age);
+        });
+
+        function restoreUI() {
+            btnText.classList.remove('hidden');
+            btnLoad.classList.add('hidden');
+            btn.disabled = false;
+            overlay.classList.add('hidden');
+            setInputsDisabled(false);
+        }
+
+        fetch(endpointSubmit, {
+            method: 'POST',
+            body: payload,
+            credentials: 'same-origin'
+        })
+            .then(function (r) { return r.json(); })
+            .then(function (res) {
+                restoreUI();
+                if (!res.success) {
+                    errMsg.textContent = res.message || 'Pendaftaran gagal. Coba lagi.';
+                    errBox.classList.remove('hidden');
+                    formCard.classList.add('reg-shake');
+                    setTimeout(function () { formCard.classList.remove('reg-shake'); }, 500);
+                    loadSeats();
+                    return;
+                }
+                var refEl = document.getElementById('reg-ref-code');
+                if (res.data && res.data.ref_code) {
+                    document.getElementById('reg-ref-value').textContent = res.data.ref_code;
+                    refEl.classList.remove('hidden');
+                } else {
+                    refEl.classList.add('hidden');
+                }
+                formWrap.classList.add('hidden');
+                sucBox.classList.remove('hidden');
+                loadSeats();
+            })
+            .catch(function () {
+                restoreUI();
+                errMsg.textContent = 'Terjadi gangguan jaringan. Coba lagi.';
+                errBox.classList.remove('hidden');
+                formCard.classList.add('reg-shake');
+                setTimeout(function () { formCard.classList.remove('reg-shake'); }, 500);
+            });
     });
 
     /* Back to form */

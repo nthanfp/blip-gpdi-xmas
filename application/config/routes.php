@@ -55,6 +55,8 @@ $route['translate_uri_dashes'] = FALSE;
 
 $route['landing/invite'] = 'landing/invite';
 $route['landing/invite/(:any)'] = 'landing/invite/$1';
+$route['landing/registration_seats'] = 'landing/registration_seats';
+$route['landing/registration_submit'] = 'landing/registration_submit';
 $route['landing/(:any)'] = 'landing/index/$1';
 $route['activities/userguide'] = 'activities/userguide/index';
 $route['activities/userguide/module/(:any)'] = 'activities/userguide/module/$1';
