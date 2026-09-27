@@ -17,8 +17,24 @@ class Global_Model extends CI_Model
     function get_autoid_seq($table)
     {
         $result = $this->db->query("SELECT AUTO_INCREMENT AS id FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = '" . $table . "'")->row();
-        $maxid = ($result) ? $result->id : null;
-        if ($maxid == '' || !isset($maxid)) {
+        $maxid = ($result && $result->id !== null && $result->id !== '') ? $result->id : null;
+
+        // Tabel tidak punya AUTO_INCREMENT (NULL) -> fallback ke MAX(id)+1
+        if ($maxid === null) {
+            $pk = $this->db->query(
+                "SELECT COLUMN_NAME FROM information_schema.STATISTICS
+                 WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = '" . $table . "'
+                   AND SEQ_IN_INDEX = 1
+                   AND (INDEX_NAME = 'PRIMARY' OR NON_UNIQUE = 0)
+                 ORDER BY (INDEX_NAME = 'PRIMARY') DESC, INDEX_NAME ASC
+                 LIMIT 1"
+            )->row();
+            if ($pk) {
+                $maxid = $this->db->query("SELECT MAX(`" . $pk->COLUMN_NAME . "`) + 1 AS id FROM `" . $table . "`")->row()->id;
+            }
+        }
+
+        if ($maxid === '' || !isset($maxid) || $maxid === null) {
             $maxid = 1;
         }
         return $maxid;

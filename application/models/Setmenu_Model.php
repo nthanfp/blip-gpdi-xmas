@@ -95,7 +95,7 @@ class Setmenu_Model extends CI_Model
 
         $total = $this->db->count_all_results('', false);
 
-        $this->db->order_by('"order"', 'ASC');
+        $this->db->order_by('`order`', 'ASC');
         $this->db->order_by('set_menuid', 'ASC');
         $this->db->limit($per_page, $offset);
         $rows = $this->db->get()->result();
@@ -303,7 +303,7 @@ class Setmenu_Model extends CI_Model
             ? (int) $item->parent_set_menuid
             : null;
 
-        $this->db->select('set_menuid, "order" AS sort_order, name');
+        $this->db->select('set_menuid, `order` AS sort_order, name');
         $this->db->from($this->_table);
         $this->db->where('suspended', 0);
         if ($parent_id !== null) {
@@ -314,7 +314,7 @@ class Setmenu_Model extends CI_Model
             $this->db->or_where('parent_set_menuid', 0);
             $this->db->group_end();
         }
-        $this->db->order_by('"order"', 'ASC');
+        $this->db->order_by('`order`', 'ASC');
         $this->db->order_by('name', 'ASC');
         $siblings = $this->db->get()->result();
 
@@ -368,10 +368,10 @@ class Setmenu_Model extends CI_Model
 
     public function data_option_parent()
     {
-        $rows = $this->db->select('set_menuid, name, path, "order" AS sort_order, icon')
+        $rows = $this->db->select('set_menuid, name, path, `order` AS sort_order, icon')
             ->from($this->_table)
             ->where('suspended', 0)
-            ->order_by('"order"', 'ASC')
+            ->order_by('`order`', 'ASC')
             ->order_by('name', 'ASC')
             ->get()
             ->result();
@@ -387,10 +387,10 @@ class Setmenu_Model extends CI_Model
     {
         $exclude_set_menuid = $this->normalize_menuid($exclude_set_menuid);
 
-        $rows = $this->db->select('set_menuid, parent_set_menuid, name, path, "order" AS sort_order')
+        $rows = $this->db->select('set_menuid, parent_set_menuid, name, path, `order` AS sort_order')
             ->from($this->_table)
             ->where('suspended', 0)
-            ->order_by('"order"', 'ASC')
+            ->order_by('`order`', 'ASC')
             ->order_by('name', 'ASC')
             ->get()
             ->result();
@@ -546,14 +546,14 @@ class Setmenu_Model extends CI_Model
             return [];
         }
 
-        $allowed_rows = $this->db->select('b.set_menuid, b.parent_set_menuid, b.name, b.path, b."order" AS sort_order, b.icon')
+        $allowed_rows = $this->db->select('b.set_menuid, b.parent_set_menuid, b.name, b.path, b.`order` AS sort_order, b.icon')
             ->from('set_menu_admin a')
             ->join('set_menu b', 'b.set_menuid = a.set_menuid', 'inner')
             ->where('a.mst_adminid', (int) $current_user_id)
             ->where('b.suspended', 0)
             ->where("COALESCE(a.view, 1) = 1", null, false)
             ->order_by('b.parent_set_menuid', 'ASC')
-            ->order_by('b."order"', 'ASC')
+            ->order_by('b.`order`', 'ASC')
             ->order_by('b.name', 'ASC')
             ->get()
             ->result();
@@ -562,11 +562,11 @@ class Setmenu_Model extends CI_Model
             return [];
         }
 
-        $all_rows = $this->db->select('set_menuid, parent_set_menuid, name, path, "order" AS sort_order, icon')
+        $all_rows = $this->db->select('set_menuid, parent_set_menuid, name, path, `order` AS sort_order, icon')
             ->from($this->_table)
             ->where('suspended', 0)
             ->order_by('parent_set_menuid', 'ASC')
-            ->order_by('"order"', 'ASC')
+            ->order_by('`order`', 'ASC')
             ->order_by('name', 'ASC')
             ->get()
             ->result();

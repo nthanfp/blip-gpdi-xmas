@@ -58,10 +58,10 @@ class LogAdmin_Model extends CI_Model
 
     public function data_option_menu()
     {
-        $rows = $this->db->select('set_menuid, parent_set_menuid, name, path, "order" AS sort_order')
+        $rows = $this->db->select('set_menuid, parent_set_menuid, name, path, `order` AS sort_order')
             ->from('set_menu')
             ->where('suspended', 0)
-            ->order_by('"sort_order"', 'ASC')
+            ->order_by('`sort_order`', 'ASC')
             ->get()
             ->result();
 

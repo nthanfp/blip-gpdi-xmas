@@ -19,7 +19,7 @@ if (typeof firebase !== "undefined") {
 	messaging.onBackgroundMessage(function (payload) {
 		var data = payload.data || {};
 		var notif = payload.notification || {};
-		var title = notif.title || data.title || "IG Admin";
+		var title = notif.title || data.title || "GPDI KOPO PERMAI";
 		var body = notif.body || data.body || "";
 
 		if ("setAppBadge" in self.navigator) {
@@ -31,7 +31,7 @@ if (typeof firebase !== "undefined") {
 		var showPromise = self.registration
 			.showNotification(title, {
 				body: body,
-				icon: "./assets/icons/itg_logo.png",
+				icon: "./assets/images/christmas/gpdi.png",
 				badge: "./assets/icons/android-chrome-192x192.png",
 				data: { click_url: data.click_url || "./index.php/activities/dashboard" },
 			})

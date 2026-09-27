@@ -134,7 +134,7 @@
                                 <input type="text" name="path" id="path" class="form-control" autocomplete="off">
                             </div>
 
-                            <div class="form-row d-none">
+                            <div class="form-row">
                                 <div class="form-group col-md-4">
                                     <label>Order</label>
                                     <input type="number" name="order" id="order" class="form-control" min="0" step="1"

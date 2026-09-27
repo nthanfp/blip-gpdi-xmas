@@ -1,6 +1,6 @@
 {
-    "name": "ITG CI3 Starter",
-    "short_name": "ITG_CI3_STARTER",
+    "name": "GPDI KOPO PERMAI",
+    "short_name": "GPDI_KOPO_PERMAI",
     "description": "-",
     "start_url": "./activities/dashboard",
     "scope": "./",
@@ -10,8 +10,8 @@
     "orientation": "portrait-primary",
     "icons": [
         {
-            "src": "assets/icons/itg_logo.png",
-            "sizes": "1024x1024",
+            "src": "assets/images/christmas/gpdi.png",
+            "sizes": "500x500",
             "purpose": "any"
         }
     ],

@@ -335,9 +335,9 @@ if (!function_exists('render_topnav_menu_items')) {
 
     <aside class="main-sidebar sidebar-dark-secondary elevation-4">
         <a href="<?= site_url('activities/dashboard') ?>" class="brand-link">
-            <img src="<?php echo base_url('assets/icons/logo.png'); ?>" alt="Logo" class="brand-image"
-                style="opacity: .8; filter: brightness(0) invert(1);">
-            <span class="brand-text font-weight-bold mx-2">INTERNAL GRUP</span>
+            <img src="<?php echo base_url('assets/images/christmas/gpdi.png'); ?>" alt="Logo" class="brand-image"
+                style="opacity: .8;">
+            <span class="brand-text font-weight-bold mx-2">GPDI KOPO PERMAI</span>
         </a>
 
         <div class="sidebar">
