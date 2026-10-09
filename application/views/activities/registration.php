@@ -12,47 +12,50 @@
         <div class="content-wrapper py-4 px-4 text-sm">
 
             <!-- Stats -->
-            <div class="row mb-2" id="statsRow">
-                <div class="col-6 col-md-3 mb-2">
-                    <div class="card card-outline card-info mb-0">
-                        <div class="card-body py-2 px-3">
-                            <div class="text-muted text-xs">Lantai 1</div>
-                            <div class="font-weight-bold" id="statFloor1">-</div>
+            <div class="row" id="statsRow">
+                <div class="col-12 col-md-3 mb-2">
+                    <div class="info-box shadow-sm">
+                        <span class="info-box-icon bg-secondary"><i class="fas fa-layer-group"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">Lantai 1</span>
+                            <span class="info-box-number" id="statFloor1">-</span>
                         </div>
+                        <!-- /.info-box-content -->
                     </div>
+                    <!-- /.info-box -->
                 </div>
-                <div class="col-6 col-md-3 mb-2">
-                    <div class="card card-outline card-success mb-0">
-                        <div class="card-body py-2 px-3">
-                            <div class="text-muted text-xs">Lantai 2</div>
-                            <div class="font-weight-bold" id="statFloor2">-</div>
+                <div class="col-12 col-md-3 mb-2">
+                    <div class="info-box shadow-sm">
+                        <span class="info-box-icon bg-secondary"><i class="fas fa-layer-group"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">Lantai 2</span>
+                            <span class="info-box-number" id="statFloor2">-</span>
                         </div>
+                        <!-- /.info-box-content -->
                     </div>
+                    <!-- /.info-box -->
                 </div>
-                <div class="col-6 col-md-3 mb-2">
-                    <div class="card card-outline card-secondary mb-0">
-                        <div class="card-body py-2 px-3">
-                            <div class="text-muted text-xs">Total Pendaftar</div>
-                            <div class="font-weight-bold" id="statTotal">-</div>
+                <div class="col-12 col-md-3 mb-2">
+                    <div class="info-box shadow-sm">
+                        <span class="info-box-icon bg-secondary"><i class="fas fa-users"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">Total Pendaftar</span>
+                            <span class="info-box-number" id="statTotal">-</span>
                         </div>
+                        <!-- /.info-box-content -->
                     </div>
+                    <!-- /.info-box -->
                 </div>
-                <div class="col-6 col-md-3 mb-2">
-                    <div class="card card-outline card-warning mb-0">
-                        <div class="card-body py-2 px-3">
-                            <div class="text-muted text-xs">Menunggu Konfirmasi</div>
-                            <div class="font-weight-bold" id="statPending">-</div>
+                <div class="col-12 col-md-3 mb-2">
+                    <div class="info-box shadow-sm">
+                        <span class="info-box-icon bg-secondary"><i class="fas fa-hourglass-half"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">Menunggu Konfirmasi</span>
+                            <span class="info-box-number" id="statPending">-</span>
                         </div>
+                        <!-- /.info-box-content -->
                     </div>
-                </div>
-            </div>
-
-            <div class="row mb-2">
-                <div class="col-12 d-flex justify-content-between align-items-center">
-                    <div></div>
-                    <div>
-                        <span class="text-muted text-xs">Pendaftaran Natal</span>
-                    </div>
+                    <!-- /.info-box -->
                 </div>
             </div>
 
@@ -142,10 +145,10 @@
 
         <!-- Modal Detail -->
         <div class="modal fade" id="modalDetail" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog">
+            <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Detail Pendaftaran</h5>
+                        <h5 class="modal-title"><i class="fas fa-clipboard-list mr-1"></i> Detail Pendaftaran</h5>
                         <button type="button" class="close" data-dismiss="modal">
                             <span>&times;</span>
                         </button>
@@ -166,7 +169,7 @@
     <?php $this->load->view('partial/activities/foot.php') ?>
 
     <script>
-        $(function() {
+        $(function () {
             const endpoints = {
                 list: '<?= site_url("activities/registration/data_list") ?>',
                 stats: '<?= site_url("activities/registration/data_stats") ?>',
@@ -214,17 +217,17 @@
                     url: endpoints.stats,
                     type: 'GET',
                     dataType: 'json',
-                    success: function(res) {
+                    success: function (res) {
                         if (!res.success || !res.data) return
                         const floors = res.data.floors || []
                         const t = res.data.totals || {}
 
                         floors.forEach((f) => {
                             const el = f.floor === 1 ? $('#statFloor1') : $('#statFloor2')
-                            el.html(`${f.remaining} <span class="text-muted font-weight-normal">/ ${f.capacity} kursi (terdaftar ${f.registered})</span>`)
+                            el.html(`${f.remaining} <span class="text-muted font-weight-normal">/ ${f.capacity} Kursi</span>`)
                         })
 
-                        $('#statTotal').html(`${Number(t.registration || 0)} <span class="text-muted font-weight-normal">pendaftaran &middot; ${Number(t.people || 0)} orang</span>`)
+                        $('#statTotal').html(`${Number(t.people || 0)}  <span class="text-muted font-weight-normal"> Orang</span>`)
                         $('#statPending').text(Number(t.pending || 0))
                     }
                 })
@@ -242,12 +245,12 @@
                         floor: state.floor,
                         status: state.status
                     },
-                    beforeSend: function() {
+                    beforeSend: function () {
                         $.LoadingOverlay('show', {
                             background: 'rgba(0, 0, 0, 0.25)'
                         });
                     },
-                    success: function(res) {
+                    success: function (res) {
                         if (!res.success) {
                             Swal.fire('Error', res.message || 'Failed to load data', 'error')
                             return
@@ -339,11 +342,11 @@
 
                         pagination.html(items.join(''))
                     },
-                    error: function(xhr) {
+                    error: function (xhr) {
                         console.error(xhr.responseText);
                         Swal.fire('Error', 'Server error (' + xhr.status + ')', 'error')
                     },
-                    complete: function() {
+                    complete: function () {
                         $.LoadingOverlay('hide');
                     }
                 })
@@ -354,7 +357,7 @@
                 loadStats()
             }
 
-            $('#btnApply').on('click', function() {
+            $('#btnApply').on('click', function () {
                 state.page = 1
                 state.search = $('#search').val().trim()
                 state.floor = $('#filterFloor').val()
@@ -363,7 +366,7 @@
                 refresh()
             })
 
-            $('#btnReset').on('click', function() {
+            $('#btnReset').on('click', function () {
                 $('#search').val('')
                 $('#filterFloor').val('')
                 $('#filterStatus').val('')
@@ -376,7 +379,7 @@
                 refresh()
             })
 
-            $('#pagination').on('click', '.page-link', function(e) {
+            $('#pagination').on('click', '.page-link', function (e) {
                 e.preventDefault()
                 const page = parseInt($(this).data('page'), 10)
                 if (!page || $(this).closest('.page-item').hasClass('disabled') || $(this).closest('.page-item').hasClass('active')) {
@@ -387,7 +390,7 @@
             })
 
             /* Detail */
-            $(document).on('click', '.btn-detail', function() {
+            $(document).on('click', '.btn-detail', function () {
                 const id = $(this).data('id')
                 $('#detailBody').html('<div class="text-center text-muted py-3">Loading...</div>')
                 $('#modalDetail').modal('show')
@@ -397,33 +400,40 @@
                     type: 'GET',
                     dataType: 'json',
                     data: { id: id },
-                    success: function(res) {
+                    success: function (res) {
                         if (!res.success) {
-                            $('#detailBody').html('<div class="text-danger">Not found</div>')
+                            $('#detailBody').html('<div class="alert alert-warning mb-0 py-2 text-sm"><i class="fas fa-exclamation-triangle mr-1"></i> Data tidak ditemukan.</div>')
                             return
                         }
                         const d = res.data
                         const attendees = d.attendees || []
                         const rows = attendees.map((a, i) => `
                             <tr>
-                                <td>${i + 1}</td>
+                                <td class="text-center text-muted" style="width:36px">${i + 1}</td>
                                 <td>${escapeHtml(a.name)} ${Number(a.is_primary) === 1 ? '<span class="badge badge-info">Pendaftar</span>' : ''}</td>
-                                <td>${escapeHtml(a.age)} th</td>
+                                <td class="text-right text-nowrap" style="width:90px">${escapeHtml(a.age)} th</td>
                             </tr>`).join('')
 
                         $('#detailBody').html(`
-                            <table class="table table-sm table-bordered mb-3">
-                                <tr><th style="width:35%">Kode</th><td><code>${escapeHtml(d.ref_code || '-')}</code></td></tr>
-                                <tr><th>No. Handphone</th><td>${escapeHtml(d.phone || '-')}</td></tr>
-                                <tr><th>Lantai</th><td>${escapeHtml(d.floor_name || ('Lantai ' + d.floor))}</td></tr>
-                                <tr><th>Status</th><td>${statusBadge(d.status)}</td></tr>
-                                <tr><th>Tanggal Daftar</th><td>${escapeHtml(formatDate(d.created_date))}</td></tr>
-                                <tr><th>Jumlah Jemaat</th><td>${attendees.length} orang</td></tr>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h6 class="mb-0 text-sm"><i class="fas fa-clipboard-list mr-1 text-muted"></i> Data Pendaftaran</h6>
+                                ${statusBadge(d.status)}
+                            </div>
+                            <table class="table table-sm table-bordered mb-3 bg-white text-sm">
+                                <tr><th class="bg-light" style="width:38%">Kode</th><td><code class="text-dark">${escapeHtml(d.ref_code || '-')}</code></td></tr>
+                                <tr><th class="bg-light">No. Handphone</th><td><a href="tel:${escapeHtml(d.phone || '')}">${escapeHtml(d.phone || '-')}</a></td></tr>
+                                <tr><th class="bg-light">Lantai</th><td>${escapeHtml(d.floor_name || ('Lantai ' + d.floor))}</td></tr>
+                                <tr><th class="bg-light">Tanggal Daftar</th><td>${escapeHtml(formatDate(d.created_date))}</td></tr>
+                                <tr><th class="bg-light">Jumlah Jemaat</th><td><strong>${attendees.length}</strong> orang</td></tr>
                             </table>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h6 class="mb-0 text-sm"><i class="fas fa-users mr-1 text-muted"></i> Daftar Jemaat</h6>
+                                <span class="badge badge-secondary">${attendees.length} orang</span>
+                            </div>
                             <div class="table-responsive">
-                                <table class="table table-sm table-striped mb-0">
-                                    <thead><tr><th>#</th><th>Nama</th><th>Umur</th></tr></thead>
-                                    <tbody>${rows || '<tr><td colspan="3" class="text-center text-muted">No attendees</td></tr>'}</tbody>
+                                <table class="table table-sm table-striped table-bordered mb-0 text-sm">
+                                    <thead><tr><th class="text-center" style="width:36px">#</th><th>Nama</th><th class="text-right" style="width:90px">Umur</th></tr></thead>
+                                    <tbody>${rows || '<tr><td colspan="3" class="text-center text-muted py-3">Belum ada data jemaat</td></tr>'}</tbody>
                                 </table>
                             </div>`)
                     }
@@ -438,7 +448,7 @@
                     icon: 'question',
                     showCancelButton: true,
                     confirmButtonText: 'Ya'
-                }).then(function(res) {
+                }).then(function (res) {
                     if (!res.isConfirmed) return
 
                     $.ajax({
@@ -446,10 +456,10 @@
                         type: 'POST',
                         dataType: 'json',
                         data: { id: id, status: status },
-                        beforeSend: function() {
+                        beforeSend: function () {
                             $.LoadingOverlay('show', { background: 'rgba(0, 0, 0, 0.25)' });
                         },
-                        success: function(response) {
+                        success: function (response) {
                             if (!response.success) {
                                 Swal.fire('Error', response.message || 'Failed to update status', 'error')
                                 return
@@ -457,10 +467,10 @@
                             Swal.fire('Success', response.message || 'Status updated', 'success')
                             refresh()
                         },
-                        complete: function() {
+                        complete: function () {
                             $.LoadingOverlay('hide');
                         },
-                        error: function(xhr) {
+                        error: function (xhr) {
                             console.error(xhr.responseText);
                             Swal.fire('Error', 'Server error (' + xhr.status + ')', 'error')
                         }
@@ -468,16 +478,16 @@
                 })
             }
 
-            $(document).on('click', '.btn-confirm', function() {
+            $(document).on('click', '.btn-confirm', function () {
                 changeStatus($(this).data('id'), 1, 'Confirm this registration?', 'Pendaftaran akan ditandai Confirmed.')
             })
 
-            $(document).on('click', '.btn-cancel', function() {
+            $(document).on('click', '.btn-cancel', function () {
                 changeStatus($(this).data('id'), 2, 'Cancel this registration?', 'Pendaftaran akan ditandai Cancelled dan kursi dilepas.')
             })
 
             /* Delete */
-            $(document).on('click', '.btn-delete', function() {
+            $(document).on('click', '.btn-delete', function () {
                 const id = $(this).data('id')
 
                 Swal.fire({
@@ -487,7 +497,7 @@
                     showCancelButton: true,
                     confirmButtonColor: '#d33',
                     confirmButtonText: 'Delete'
-                }).then(function(res) {
+                }).then(function (res) {
                     if (!res.isConfirmed) return
 
                     $.ajax({
@@ -495,10 +505,10 @@
                         type: 'POST',
                         dataType: 'json',
                         data: { id: id },
-                        beforeSend: function() {
+                        beforeSend: function () {
                             $.LoadingOverlay('show', { background: 'rgba(0, 0, 0, 0.25)' });
                         },
-                        success: function(response) {
+                        success: function (response) {
                             if (!response.success) {
                                 Swal.fire('Error', response.message || 'Failed to delete', 'error')
                                 return
@@ -506,10 +516,10 @@
                             Swal.fire('Success', response.message || 'Deleted', 'success')
                             refresh()
                         },
-                        complete: function() {
+                        complete: function () {
                             $.LoadingOverlay('hide');
                         },
-                        error: function(xhr) {
+                        error: function (xhr) {
                             console.error(xhr.responseText);
                             Swal.fire('Error', 'Server error (' + xhr.status + ')', 'error')
                         }
