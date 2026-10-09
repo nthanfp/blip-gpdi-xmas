@@ -115,7 +115,7 @@
                             displayName = db.name
                         }
                     })
-                    $currentDBName.text(displayName || res.data[0].display)
+                    $currentDBName.text(displayName || res.data[0].name)
                 })
         }
 
