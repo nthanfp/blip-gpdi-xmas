@@ -83,6 +83,12 @@
     <div class="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-red-950 to-transparent pointer-events-none">
     </div>
 
+    <!-- Bottom decoration -->
+    <div class="absolute bottom-0 left-0 right-0 pointer-events-none select-none" aria-hidden="true">
+        <img src="<?php echo site_url('assets/images/christmas/desktop_bottom.png'); ?>" alt=""
+            class="block w-full h-auto">
+    </div>
+
 </div>
 
 <style>

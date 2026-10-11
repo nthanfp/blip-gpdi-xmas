@@ -148,7 +148,7 @@ class Landing extends CI_Controller
             'SELECT COUNT(a.attendeeid) AS people
              FROM act_xmas_registration r
              JOIN act_xmas_attendee a ON a.registrationid = r.registrationid
-             WHERE r.floor = ? AND r.status <> 2',
+             WHERE r.floor = ? AND r.status <> 2 AND a.status <> 2',
             [$floor]
         )->row()->people;
 

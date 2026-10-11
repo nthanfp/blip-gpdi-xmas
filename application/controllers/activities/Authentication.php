@@ -136,12 +136,12 @@ class Authentication extends CI_Controller
     public function logout()
     {
         $this->load->model('Auth_Model');
-        $this->load->model('Notification_Model');
+        // $this->load->model('Notification_Model'); // TODO: aktifkan kembali saat tabel act_admin_fcm_tokens sudah ada
 
-        $current_user = $this->Auth_Model->current_user();
-        if ($current_user && isset($current_user->mst_adminid)) {
-            $this->Notification_Model->remove_tokens_by_admin($current_user->mst_adminid);
-        }
+        // $current_user = $this->Auth_Model->current_user();
+        // if ($current_user && isset($current_user->mst_adminid)) {
+        //     $this->Notification_Model->remove_tokens_by_admin($current_user->mst_adminid);
+        // }
 
         $this->Auth_Model->logout();
         redirect(site_url('activities/authentication/login'));

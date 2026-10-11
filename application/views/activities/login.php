@@ -1,266 +1,250 @@
-<?php
-// Brand mode: 'logo' or 'text'
-$brand_mode = 'text'; // Change to 'text' for text-only brand
-$brand_title = 'INTERNAL';
-$brand_subtitle = 'GRUP';
-?>
-
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 
 <head>
-    <!-- Head -->
-    <?php $this->load->view('partial/activities/head.php') ?>
+    <meta charset="UTF-8" />
+    <title>Login - GPdI Kopo Permai</title>
 
-    <!-- Additional Style (Global) -->
-    <style>
-        html,
+    <meta name="theme-color" content="#450a0a">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <meta name="csrf-token-value" content="<?php echo $this->security->get_csrf_hash(); ?>">
+    <meta name="csrf-token-name" content="<?php echo $this->security->get_csrf_token_name(); ?>">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="<?php echo site_url('assets/icons/favicon.ico'); ?>" />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <link rel="stylesheet" type="text/css" href="<?php echo site_url('assets/css/tailwind.css'); ?>">
+
+    <!-- Fontawesome Icons -->
+    <link rel="stylesheet" type="text/css" href="<?php echo site_url('assets/plugins/fontawesome-free/css/all.min.css'); ?>" />
+
+    <!-- Sweetalert CSS -->
+    <link rel="stylesheet" type="text/css" href="<?php echo site_url('assets/plugins/sweetalert2/sweetalert2.min.css'); ?>" />
+
+    <style type="text/css">
         body {
-            height: 100dvh;
-            overflow: hidden;
+            font-family: 'Inter', sans-serif;
         }
 
-        body {
-            background:
-                linear-gradient(180deg,
-                    rgba(30, 30, 30, 0.72) 0%,
-                    rgba(10, 10, 10, 0.88) 100%),
-                url('<?php echo site_url('assets/images/bg-warehouse.jpg'); ?>') no-repeat center center fixed;
-
-            background-size: cover;
-            background-position: center;
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-family: 'Playfair Display', serif;
         }
 
-        body.swal2-height-auto {
-            height: 100dvh !important;
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
         }
 
-        .login-shell {
-            min-height: 100dvh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 24px 16px;
-            position: relative;
-        }
-
-        .login-shell::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            pointer-events: none;
-        }
-
-        .login-card-wrap {
-            width: 100%;
-            max-width: 480px;
-            position: relative;
-            z-index: 1;
-        }
-
-        .login-brand {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-        }
-
-        .login-brand-mark {
-            width: 54px;
-            height: 54px;
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg,
-                    #4a4a4a,
-                    #222222);
-            color: #fff;
-            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
-        }
-
-        .login-brand-text {
-            color: #fff;
-            line-height: 1;
-        }
-
-        .login-brand-text .title {
-            font-size: 1.5rem;
-            font-weight: 800;
-            letter-spacing: 1px;
-        }
-
-        .login-brand-text .subtitle {
-            font-size: .78rem;
-            color: rgba(255, 255, 255, 0.72);
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            margin-top: 4px;
-        }
-
-        .login-panel {
-            background: rgba(255, 255, 255, 0.12);
-            border: 1px solid rgba(255, 255, 255, 0.16);
-            backdrop-filter: blur(18px);
-            -webkit-backdrop-filter: blur(18px);
-            border-radius: 24px;
-            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.34);
-            overflow: hidden;
-        }
-
-        .login-panel .card-header {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-            padding: 22px 20px 16px;
-        }
-
-        .login-panel .card-header a {
-            color: #fff;
-            text-decoration: none;
-        }
-
-        .login-panel .card-body {
-            padding: 22px 20px 24px;
-        }
-
-        .login-help {
-            color: rgba(255, 255, 255, 0.78);
-            font-size: .85rem;
-            line-height: 1.55;
-            margin-bottom: 18px;
-        }
-
-        .login-field .input-group-text {
-            background: rgba(255, 255, 255, 0.10);
-            color: rgba(255, 255, 255, 0.95);
-            border-color: rgba(255, 255, 255, 0.12);
-        }
-
-        .login-field .form-control {
-            background: rgba(255, 255, 255, 0.12);
-            color: #fff;
-            border-color: rgba(255, 255, 255, 0.12);
-        }
-
-        .login-field .form-control::placeholder {
-            color: rgba(255, 255, 255, 0.62);
-        }
-
-        .login-field .form-control:focus {
-            background: rgba(255, 255, 255, 0.16);
-            color: #fff;
-            border-color: rgba(255, 255, 255, 0.28);
-            box-shadow: 0 0 0 .2rem rgba(255, 255, 255, 0.10);
-        }
-
-        .login-button {
-            background: linear-gradient(90deg,
-                    #1c1c1c 0%,
-                    #303030 50%,
-                    #1c1c1c 100%);
-            border: 0;
-            color: #ffffff;
-            font-weight: 600;
-            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
-            transition: all 0.25s ease;
-        }
-
-        .login-button:hover {
-            background: linear-gradient(90deg,
-                    #262626 0%,
-                    #3a3a3a 50%,
-                    #262626 100%);
-            transform: translateY(-1px);
-        }
-
-        #error-login {
-            color: #e0e0e0 !important;
-            font-size: .85rem;
-            margin-bottom: 12px;
-            min-height: 18px;
+        .login-stars {
+            background-image:
+                radial-gradient(1px 1px at 20% 30%, rgba(245, 158, 11, 0.4) 0%, transparent 100%),
+                radial-gradient(1px 1px at 80% 20%, rgba(245, 158, 11, 0.3) 0%, transparent 100%),
+                radial-gradient(1px 1px at 40% 70%, rgba(245, 158, 11, 0.25) 0%, transparent 100%),
+                radial-gradient(1px 1px at 60% 50%, rgba(255, 255, 255, 0.15) 0%, transparent 100%),
+                radial-gradient(1px 1px at 10% 80%, rgba(245, 158, 11, 0.2) 0%, transparent 100%),
+                radial-gradient(1.5px 1.5px at 90% 60%, rgba(245, 158, 11, 0.3) 0%, transparent 100%),
+                radial-gradient(1px 1px at 50% 10%, rgba(255, 255, 255, 0.2) 0%, transparent 100%),
+                radial-gradient(1px 1px at 30% 90%, rgba(245, 158, 11, 0.15) 0%, transparent 100%),
+                radial-gradient(1.5px 1.5px at 70% 85%, rgba(245, 158, 11, 0.25) 0%, transparent 100%),
+                radial-gradient(1px 1px at 15% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 100%);
         }
 
         #selectedDatabase option {
-            background: #2d2d2d;
-            color: #fff;
-        }
-
-        .qrtag-logo {
-            height: 70px;
-
-            background-color: #fff;
-
-            -webkit-mask-image: url("<?php echo site_url(); ?>assets/images/qrtag-landscape.png");
-            mask-image: url("<?php echo site_url(); ?>assets/images/qrtag-landscape.png");
-
-            -webkit-mask-repeat: no-repeat;
-            mask-repeat: no-repeat;
-
-            -webkit-mask-position: center;
-            mask-position: center;
-
-            -webkit-mask-size: contain;
-            mask-size: contain;
+            background: #ffffff;
+            color: #1c1917;
         }
     </style>
 </head>
 
-<body class="hold-transition login-page">
-    <div class="login-shell">
-        <div class="login-card-wrap">
-            <div class="card card-outline card-secondary border-0 login-panel" id="card-login">
-                <div class="card-header text-center">
-                    <?php if ($brand_mode === 'logo'): ?>
-                    <div class="qrtag-logo">
+<body class="bg-red-950 text-stone-200 antialiased">
+
+    <div class="relative min-h-[100dvh] flex items-center justify-center px-5 py-10 overflow-hidden">
+
+        <!-- Background image -->
+        <div class="absolute inset-0 bg-cover bg-center bg-no-repeat"
+            style="background-image: url('<?php echo site_url('assets/images/christmas/hero.webp'); ?>');"></div>
+        <!-- Maroon overlay -->
+        <div class="absolute inset-0 bg-red-950/75"></div>
+        <!-- Depth gradient -->
+        <div class="absolute inset-0 bg-gradient-to-b from-red-950/80 via-red-950/50 to-red-950/90"></div>
+        <!-- Soft glow -->
+        <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(245,158,11,0.08)_0%,_transparent_70%)]">
+        </div>
+
+        <!-- Decorative stars (CSS) -->
+        <div class="login-stars absolute inset-0 pointer-events-none"></div>
+
+        <!-- Soft bokeh dots -->
+        <div class="absolute top-[10%] left-[15%] w-2 h-2 rounded-full bg-gold-400/20 blur-[1px] animate-pulse"></div>
+        <div class="absolute top-[25%] right-[20%] w-1.5 h-1.5 rounded-full bg-gold-300/15 blur-[1px] animate-pulse"
+            style="animation-delay: 1s;"></div>
+        <div class="absolute bottom-[30%] left-[10%] w-1 h-1 rounded-full bg-gold-400/25 blur-[1px] animate-pulse"
+            style="animation-delay: 2s;"></div>
+        <div class="absolute bottom-[20%] right-[25%] w-2 h-2 rounded-full bg-gold-300/15 blur-[1px] animate-pulse"
+            style="animation-delay: 0.5s;"></div>
+        <div class="absolute top-[60%] left-[30%] w-1 h-1 rounded-full bg-gold-400/20 blur-[1px] animate-pulse"
+            style="animation-delay: 1.5s;"></div>
+
+        <!-- Card -->
+        <div class="relative z-10 w-full max-w-sm sm:max-w-md">
+            <div id="card-login" class="bg-white rounded-2xl border border-stone-100 shadow-sm p-6 sm:p-8 space-y-6">
+
+                <!-- Header -->
+                <div class="text-center space-y-3">
+                    <img src="<?php echo site_url('assets/images/christmas/gpdi.png'); ?>" alt="GPdI Kopo Permai"
+                        class="w-12 h-auto mx-auto drop-shadow-[0_4px_12px_rgba(0,0,0,0.3)]">
+
+                    <p class="text-[11px] font-semibold tracking-[0.25em] uppercase text-gold-600">
+                        GPdI Kopo Permai
+                    </p>
+
+                    <div class="flex items-center justify-center gap-3">
+                        <span class="block w-8 h-px bg-gold-400/50"></span>
+                        <span class="block w-1.5 h-1.5 rounded-full bg-gold-400/60"></span>
+                        <span class="block w-8 h-px bg-gold-400/50"></span>
                     </div>
-                    <?php else: ?>
-                    <div class="login-brand">
-                        <div class="login-brand-text">
-                            <div class="title"><?php echo $brand_title; ?> <?php echo $brand_subtitle; ?></div>
-                        </div>
-                    </div>
-                    <?php endif; ?>
+
+                    <h1 class="text-2xl font-bold text-stone-800 leading-snug">
+                        Admin Login
+                    </h1>
+                    <p class="text-sm text-stone-500">
+                        Silakan login untuk mengelola data Natal 2026.
+                    </p>
                 </div>
-                <div class="card-body">
-                    <form action="" id="form-login" method="POST">
-                        <div class="input-group mb-3 login-field">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text" style="border-radius:12px 0 0 12px"><i class="fas fa-user"></i></span>
-                            </div>
-                            <input type="text" class="form-control" name="username" placeholder="Username"
-                                autocomplete="off" required style="border-radius:0 12px 12px 0">
+
+                <!-- Form -->
+                <form action="" id="form-login" method="POST" class="space-y-4">
+
+                    <!-- Username -->
+                    <div class="space-y-1.5">
+                        <label for="login-username" class="block text-xs font-semibold text-stone-700 tracking-wide">
+                            Username <span class="text-red-500">*</span>
+                        </label>
+                        <div class="relative">
+                            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-stone-400 pointer-events-none">
+                                <i class="fas fa-user text-sm"></i>
+                            </span>
+                            <input type="text" id="login-username" name="username" placeholder="Username"
+                                autocomplete="off" required
+                                class="login-field w-full pl-10 pr-4 py-3 rounded-xl border border-stone-200 text-sm text-stone-800 placeholder-stone-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gold-400/50 focus:border-gold-400">
                         </div>
-                        <div class="input-group mb-3 login-field">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text" style="border-radius:12px 0 0 12px"><i class="fas fa-lock"></i></span>
-                            </div>
-                            <input type="password" class="form-control" name="password" id="login-password" placeholder="Password"
-                                autocomplete="off" required style="border-radius:0">
-                            <div class="input-group-append">
-                                <button class="btn btn-outline-light toggle-pw" type="button" data-target="login-password" style="border-radius:0 12px 12px 0;border-color:rgba(255,255,255,0.12);background:rgba(255,255,255,0.10);color:rgba(255,255,255,0.95)">
-                                    <i class="fas fa-eye"></i>
-                                </button>
-                            </div>
+                    </div>
+
+                    <!-- Password -->
+                    <div class="space-y-1.5">
+                        <label for="login-password" class="block text-xs font-semibold text-stone-700 tracking-wide">
+                            Password <span class="text-red-500">*</span>
+                        </label>
+                        <div class="relative">
+                            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-stone-400 pointer-events-none">
+                                <i class="fas fa-lock text-sm"></i>
+                            </span>
+                            <input type="password" id="login-password" name="password" placeholder="Password"
+                                autocomplete="off" required
+                                class="login-field w-full pl-10 pr-12 py-3 rounded-xl border border-stone-200 text-sm text-stone-800 placeholder-stone-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gold-400/50 focus:border-gold-400">
+                            <button type="button"
+                                class="toggle-pw absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-lg text-stone-400 hover:text-gold-600 hover:bg-gold-50 transition-colors"
+                                data-target="login-password" title="Show password">
+                                <i class="fas fa-eye text-sm"></i>
+                            </button>
                         </div>
-                        <div class="input-group mb-3 login-field">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text" style="border-radius:12px 0 0 12px"><i class="fas fa-database"></i></span>
-                            </div>
-                            <select class="form-control" name="selected_database" id="selectedDatabase" style="background:rgba(255,255,255,0.12);color:#fff;border:none">
+                    </div>
+
+                    <!-- Database -->
+                    <div class="space-y-1.5">
+                        <label for="selectedDatabase" class="block text-xs font-semibold text-stone-700 tracking-wide">
+                            Database <span class="text-red-500">*</span>
+                        </label>
+                        <div class="relative">
+                            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-stone-400 pointer-events-none">
+                                <i class="fas fa-database text-sm"></i>
+                            </span>
+                            <select name="selected_database" id="selectedDatabase" required
+                                class="login-field w-full pl-10 pr-4 py-3 rounded-xl border border-stone-200 text-sm text-stone-800 bg-white transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gold-400/50 focus:border-gold-400 appearance-none">
                                 <option value="">Loading databases...</option>
                             </select>
+                            <span
+                                class="absolute right-3.5 top-1/2 -translate-y-1/2 text-stone-400 pointer-events-none">
+                                <i class="fas fa-chevron-down text-xs"></i>
+                            </span>
                         </div>
-                        <button type="submit" class="btn btn-block text-white font-weight-semibold btn-login login-button">
-                            <i class="fas fa-arrow-right-to-bracket mr-2"></i> Login
-                        </button>
-                    </form>
-                </div>
+                    </div>
+
+                    <!-- Submit -->
+                    <button type="submit"
+                        class="w-full py-3 rounded-xl bg-gold-500 hover:bg-gold-600 text-red-950 font-semibold text-sm tracking-wide transition-all duration-300 hover:shadow-lg hover:shadow-gold-500/25 mt-2">
+                        <i class="fas fa-arrow-right-to-bracket mr-2"></i> Login
+                    </button>
+
+                </form>
             </div>
+
+            <!-- Footer credit -->
+            <p class="text-center text-[11px] text-stone-400 mt-6 tracking-wide">
+                From Glory to Glory &mdash; Christmas Celebration 2026
+            </p>
         </div>
+
     </div>
 
-    <!-- Foot (js/library) -->
-    <?php $this->load->view('partial/activities/foot.php') ?>
+    <!-- Jquery -->
+    <script type="text/javascript" src="<?php echo base_url('assets/js/jquery.min.js'); ?>"></script>
+
+    <!-- SweetAlert2 -->
+    <script type="text/javascript" src="<?php echo base_url('assets/plugins/sweetalert2/sweetalert2.min.js'); ?>"></script>
+
+    <!-- Loading Overlay -->
+    <script type="text/javascript" src="<?php echo base_url('assets/js/loadingoverlay.min.js'); ?>"></script>
+
+    <!-- CSRF: auto-include token in all AJAX POST -->
+    <script type="text/javascript">
+        (function() {
+            function getCookie(name) {
+                var match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+                return match ? decodeURIComponent(match[2]) : null;
+            }
+
+            $(document).ajaxSend(function(e, xhr, settings) {
+                if (settings.type.toUpperCase() !== 'POST') return;
+
+                var tokenName = $('meta[name="csrf-token-name"]').attr('content') || 'csrf_test_name';
+                var tokenValue = $('meta[name="csrf-token-value"]').attr('content') || getCookie('csrf_cookie_name');
+                if (!tokenValue) {
+                    console.warn('[CSRF] Token not found, skipping');
+                    return;
+                }
+
+                if (settings.data instanceof FormData) {
+                    if (!settings.data.has(tokenName)) {
+                        settings.data.append(tokenName, tokenValue);
+                    }
+                    return;
+                }
+
+                if (typeof settings.data === 'string') {
+                    if (settings.data.indexOf(tokenName + '=') !== -1) return;
+                    settings.data += '&' + tokenName + '=' + encodeURIComponent(tokenValue);
+                } else if (settings.data) {
+                    settings.data[tokenName] = tokenValue;
+                } else {
+                    settings.data = tokenName + '=' + encodeURIComponent(tokenValue);
+                }
+            });
+        })();
+    </script>
 
     <script type="text/javascript">
         var urlParams = new URLSearchParams(window.location.search)

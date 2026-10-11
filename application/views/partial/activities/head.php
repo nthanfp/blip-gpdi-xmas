@@ -151,6 +151,25 @@
         display: none;
     }
 
+    /* ===== Sidebar: indent dropdown children — hanya saat sidebar terbuka ===== */
+    body:not(.sidebar-collapse) .nav-sidebar .nav-treeview > .nav-item > .nav-link,
+    body.sidebar-collapse .main-sidebar:hover .nav-sidebar .nav-treeview > .nav-item > .nav-link,
+    body.sidebar-collapse .main-sidebar.sidebar-focused .nav-sidebar .nav-treeview > .nav-item > .nav-link {
+        padding-left: 2.5rem;
+    }
+
+    body:not(.sidebar-collapse) .nav-sidebar .nav-treeview > .nav-item > .nav-treeview > .nav-item > .nav-link,
+    body.sidebar-collapse .main-sidebar:hover .nav-sidebar .nav-treeview > .nav-item > .nav-treeview > .nav-item > .nav-link,
+    body.sidebar-collapse .main-sidebar.sidebar-focused .nav-sidebar .nav-treeview > .nav-item > .nav-treeview > .nav-item > .nav-link {
+        padding-left: 3.25rem;
+    }
+
+    body:not(.sidebar-collapse) .nav-sidebar .nav-treeview > .nav-item > .nav-treeview > .nav-item > .nav-treeview > .nav-item > .nav-link,
+    body.sidebar-collapse .main-sidebar:hover .nav-sidebar .nav-treeview > .nav-item > .nav-treeview > .nav-item > .nav-treeview > .nav-item > .nav-link,
+    body.sidebar-collapse .main-sidebar.sidebar-focused .nav-sidebar .nav-treeview > .nav-item > .nav-treeview > .nav-item > .nav-treeview > .nav-item > .nav-link {
+        padding-left: 4rem;
+    }
+
     /* ===== Sidebar hidden ===== */
     body.layout-top-nav .main-sidebar {
         display: none;
