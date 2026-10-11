@@ -117,20 +117,6 @@
        Luxurious gold gradient accents (Christmas)
        ══════════════════════════════════════════════ */
 
-    /* Gold text → gradient mengkilap */
-    .text-gold-300,
-    .text-gold-400,
-    .text-gold-500,
-    .text-gold-600,
-    .text-gold-700,
-    .text-gold-400\/70 {
-        background-image: linear-gradient(135deg, #fdf3c4 0%, #eedd9b 22%, #d4af37 48%, #b8912f 72%, #f3e3a5 100%);
-        -webkit-background-clip: text;
-        background-clip: text;
-        -webkit-text-fill-color: transparent;
-        color: transparent;
-    }
-
     /* Gold solid (button/CTA) → gradient bercahaya */
     .bg-gold-400,
     .bg-gold-500,
