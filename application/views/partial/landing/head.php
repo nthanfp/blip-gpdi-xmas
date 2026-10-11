@@ -112,4 +112,40 @@
             transition: none !important;
         }
     }
+
+    /* ══════════════════════════════════════════════
+       Luxurious gold gradient accents (Christmas)
+       ══════════════════════════════════════════════ */
+
+    /* Gold text → gradient mengkilap */
+    .text-gold-300,
+    .text-gold-400,
+    .text-gold-500,
+    .text-gold-600,
+    .text-gold-700,
+    .text-gold-400\/70 {
+        background-image: linear-gradient(135deg, #fdf3c4 0%, #eedd9b 22%, #d4af37 48%, #b8912f 72%, #f3e3a5 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        color: transparent;
+    }
+
+    /* Gold solid (button/CTA) → gradient bercahaya */
+    .bg-gold-400,
+    .bg-gold-500,
+    .bg-gold-600 {
+        background-image: linear-gradient(135deg, #f9e7ad 0%, #e8d48b 22%, #d4af37 48%, #b8912f 72%, #eedd9b 100%) !important;
+    }
+
+    /* Hover state tombol gold */
+    .hover\:bg-gold-600:hover {
+        background-image: linear-gradient(135deg, #eedd9b 0%, #d4af37 30%, #a8893b 62%, #dcc764 100%) !important;
+    }
+
+    /* Garis/dot dekorasi emas → gradient lembut */
+    .bg-gold-400\/50,
+    .bg-gold-400\/60 {
+        background-image: linear-gradient(90deg, transparent 0%, #e8d48b 25%, #d4af37 50%, #e8d48b 75%, transparent 100%) !important;
+    }
 </style>

@@ -39,7 +39,7 @@
             <div class="relative w-28 h-28 mx-auto">
                 <div class="w-full h-full rounded-full bg-gradient-to-br from-gold-400 to-gold-500 p-[2px]">
                     <div class="w-full h-full rounded-full bg-red-950 flex items-center justify-center overflow-hidden">
-                        <img src="<?php echo site_url('assets/images/christmas/nathanael.jpg'); ?>" alt="Ps. Nathanael Ferry"
+                        <img src="<?php echo site_url('assets/images/christmas/pdt-harapan.webp'); ?>" alt="Pdt. Harapan Nainggolan, M.Th"
                              class="w-full h-full object-cover rounded-full">
                     </div>
                 </div>
@@ -51,14 +51,9 @@
 
             <!-- Name & title -->
             <div class="space-y-1">
-                <h3 class="text-lg font-bold text-white">Ps. Nathanael Ferry</h3>
-                <p class="text-xs font-semibold uppercase tracking-wider text-gold-400">GPdI Graha Rancamanyar</p>
+                <h3 class="text-lg font-bold text-white">Pdt. Harapan Nainggolan, M.Th</h3>
+                <p class="text-xs font-semibold uppercase tracking-wider text-gold-400">Pembimas Kristen DKI Jakarta</p>
             </div>
-
-            <!-- Brief bio -->
-            <p class="text-xs text-stone-300 leading-relaxed max-w-xs mx-auto">
-                Menginspirasi komunitas untuk merayakan sukacita Natal dengan penuh makna dan kebersamaan.
-            </p>
 
         </div>
 
