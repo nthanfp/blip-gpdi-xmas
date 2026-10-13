@@ -1,3 +1,8 @@
+<?php
+/* Database selector: hanya tampil di lokal (localhost/127.0.0.1), di server production disembunyikan */
+$isLocalEnv = (isset($_SERVER['HTTP_HOST']) &&
+    (strpos($_SERVER['HTTP_HOST'], 'localhost') !== false || strpos($_SERVER['HTTP_HOST'], '127.0.0.1') !== false));
+?>
 <!DOCTYPE html>
 <html lang="id">
 
@@ -160,7 +165,8 @@
                         </div>
                     </div>
 
-                    <!-- Database -->
+                    <?php if ($isLocalEnv) : ?>
+                    <!-- Database (hanya lokal) -->
                     <div class="space-y-1.5">
                         <label for="selectedDatabase" class="block text-xs font-semibold text-stone-700 tracking-wide">
                             Database <span class="text-red-500">*</span>
@@ -179,6 +185,7 @@
                             </span>
                         </div>
                     </div>
+                    <?php endif; ?>
 
                     <!-- Submit -->
                     <button type="submit"
@@ -248,6 +255,7 @@
         var preselectedDB = urlParams.get('db')
 
         function loadDatabases() {
+            if (!$('#selectedDatabase').length) return
             $.getJSON('<?= site_url("activities/authentication/get_databases") ?>')
                 .done(function(res) {
                     if (res.success && res.data && res.data.length > 0) {
