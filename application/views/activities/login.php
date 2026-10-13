@@ -120,9 +120,6 @@
                     <h1 class="text-2xl font-bold text-stone-800 leading-snug">
                         Admin Login
                     </h1>
-                    <p class="text-sm text-stone-500">
-                        Silakan login untuk mengelola data Natal 2026.
-                    </p>
                 </div>
 
                 <!-- Form -->
