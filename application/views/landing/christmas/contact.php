@@ -1,5 +1,7 @@
 <!-- Contact Section -->
 <section class="relative py-14 sm:py-20 px-5 sm:px-8 overflow-hidden -mt-px bg-red-950">
+    <!-- Gradient bg (warm close sebelum footer) -->
+    <div class="absolute inset-0 bg-gradient-to-b from-red-950 via-red-900/60 to-red-950"></div>
     <!-- Dot texture -->
     <div class="absolute inset-0 opacity-[0.03]" style="background-image: radial-gradient(circle, #f5edd6 1px, transparent 1px); background-size: 24px 24px;"></div>
     <!-- Radial gold glow -->
@@ -7,6 +9,8 @@
 
     <!-- Top fade from FAQ -->
     <div class="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-red-950 via-red-950/80 to-transparent pointer-events-none z-10"></div>
+    <!-- Bottom fade to footer -->
+    <div class="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-red-950 via-red-950/80 to-transparent pointer-events-none z-10"></div>
 
     <div class="relative z-10 max-w-md lg:max-w-lg mx-auto text-center space-y-6">
 

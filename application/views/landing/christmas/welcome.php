@@ -5,7 +5,7 @@
     <!-- Dark overlay -->
     <div class="absolute inset-0 bg-red-950/80"></div>
     <!-- Maroon depth gradient -->
-    <div class="absolute inset-0 bg-gradient-to-b from-red-950/90 via-red-950/60 to-red-950/90"></div>
+    <div class="absolute inset-0 bg-gradient-to-b from-red-950/90 via-red-900/60 to-red-950"></div>
     <!-- Radial gold glow -->
     <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(212,175,55,0.06)_0%,_transparent_70%)]"></div>
 

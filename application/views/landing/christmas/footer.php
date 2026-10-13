@@ -1,6 +1,10 @@
 <!-- Footer -->
-<footer class="bg-red-950 text-white py-12 px-5 sm:px-8">
-    <div class="max-w-md lg:max-w-lg mx-auto text-center space-y-6">
+<footer class="relative bg-red-950 text-white py-12 px-5 sm:px-8 overflow-hidden">
+    <!-- Warm gradient close -->
+    <div class="absolute inset-0 bg-gradient-to-b from-red-950 via-red-900/40 to-red-950"></div>
+    <!-- Radial gold glow -->
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,_rgba(212,175,55,0.08)_0%,_transparent_60%)]"></div>
+    <div class="relative z-10 max-w-md lg:max-w-lg mx-auto text-center space-y-6">
 
         <!-- Logo -->
         <img src="<?php echo site_url('assets/images/christmas/gpdi.png'); ?>" alt="GPdI Kopo Permai"

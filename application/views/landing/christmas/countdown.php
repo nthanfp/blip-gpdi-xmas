@@ -1,14 +1,14 @@
 <!-- Countdown Section -->
 <section class="relative py-14 sm:py-20 px-5 sm:px-8 overflow-hidden -mt-px">
     <!-- Gradient background -->
-    <div class="absolute inset-0 bg-gradient-to-b from-red-950 via-red-950 to-red-900"></div>
+    <div class="absolute inset-0 bg-gradient-to-b from-red-950 via-red-900 to-red-900"></div>
     <!-- Radial gold glow -->
     <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(212,175,55,0.06)_0%,_transparent_70%)]"></div>
 
     <!-- Top fade -->
     <div class="absolute top-0 left-0 right-0 h-16 bg-gradient-to-b from-red-950/80 to-transparent pointer-events-none"></div>
     <!-- Bottom fade -->
-    <div class="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-red-950 to-transparent pointer-events-none"></div>
+    <div class="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-red-900 to-transparent pointer-events-none"></div>
 
     <!-- Bokeh dots -->
     <div class="absolute top-[10%] left-[15%] w-2 h-2 rounded-full bg-gold-400/15 blur-[1px] animate-pulse"></div>

@@ -1,5 +1,7 @@
 <!-- Performers Section -->
 <section class="relative py-14 sm:py-20 px-5 sm:px-8 overflow-hidden bg-red-950 -mt-px">
+    <!-- Gradient bg (sedikit hangat di tengah) -->
+    <div class="absolute inset-0 bg-gradient-to-b from-red-950 via-red-900/45 to-red-950"></div>
     <!-- Dot texture -->
     <div class="absolute inset-0 opacity-[0.03]" style="background-image: radial-gradient(circle, #f5edd6 1px, transparent 1px); background-size: 24px 24px;"></div>
     <!-- Radial gold glow -->

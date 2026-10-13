@@ -1,5 +1,7 @@
 <!-- Gallery Section -->
 <section class="relative py-14 sm:py-20 px-5 sm:px-8 overflow-hidden bg-red-950 -mt-px">
+    <!-- Gradient bg -->
+    <div class="absolute inset-0 bg-gradient-to-b from-red-950 via-red-900/70 to-red-900/70"></div>
     <!-- Dot texture -->
     <div class="absolute inset-0 opacity-[0.03]" style="background-image: radial-gradient(circle, #f5edd6 1px, transparent 1px); background-size: 24px 24px;"></div>
     <!-- Radial gold glow -->
@@ -7,8 +9,8 @@
 
     <!-- Top fade from performers -->
     <div class="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-red-950 via-red-950/80 to-transparent pointer-events-none z-10"></div>
-    <!-- Bottom fade to FAQ -->
-    <div class="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-red-950 via-red-950/80 to-transparent pointer-events-none z-10"></div>
+    <!-- Bottom fade to FAQ (red-900/70) -->
+    <div class="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-red-900/70 via-red-900/60 to-transparent pointer-events-none z-10"></div>
 
     <div class="relative z-10 max-w-md lg:max-w-lg mx-auto space-y-6">
 

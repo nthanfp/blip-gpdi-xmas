@@ -1,9 +1,9 @@
 <!-- Registration Form Section -->
 <section id="sec-register" class="relative py-14 sm:py-20 px-5 sm:px-8 overflow-hidden -mt-px bg-red-950">
-    <!-- Gradient bg -->
-    <div class="absolute inset-0 bg-gradient-to-b from-red-950 via-red-950 to-red-900"></div>
+    <!-- Gradient bg (highlight section: lebih hangat) -->
+    <div class="absolute inset-0 bg-gradient-to-b from-red-950 via-red-900 to-red-900"></div>
     <!-- Subtle warm tint -->
-    <div class="absolute inset-0 bg-gradient-to-br from-red-950/[0.02] via-transparent to-gold-400/[0.03]"></div>
+    <div class="absolute inset-0 bg-gradient-to-br from-red-950/[0.02] via-transparent to-gold-400/[0.05]"></div>
     <!-- Dot texture -->
     <div class="absolute inset-0 opacity-[0.03]" style="background-image: radial-gradient(circle, #f5edd6 1px, transparent 1px); background-size: 24px 24px;"></div>
     <!-- Radial gold glow -->
@@ -11,8 +11,8 @@
 
     <!-- Top fade from event-details -->
     <div class="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-red-950 via-red-950/80 to-transparent pointer-events-none z-10"></div>
-    <!-- Bottom fade to speaker -->
-    <div class="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-red-950 via-red-950/80 to-transparent pointer-events-none z-10"></div>
+    <!-- Bottom fade to speaker (red-900) -->
+    <div class="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-red-900 via-red-900/80 to-transparent pointer-events-none z-10"></div>
 
     <div class="relative z-10 max-w-md lg:max-w-lg mx-auto space-y-8 pb-4">
 
