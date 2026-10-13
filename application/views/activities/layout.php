@@ -98,6 +98,34 @@
             border-color: #ffc107;
         }
 
+        .seating-map .seat[data-seat] {
+            cursor: pointer;
+        }
+
+        /* State warna seat (UI saja — logic DB menyusul) */
+        .seating-map .seat.seat-confirmed {
+            background: #198754;
+            border-color: #146c43;
+            color: #fff;
+        }
+
+        .seating-map .seat.seat-confirmed:hover {
+            background: #157347;
+            border-color: #0f5132;
+        }
+
+        .seating-map .seat.seat-selected {
+            background: #f59f00;
+            border-color: #e8590c;
+            color: #212529;
+            box-shadow: 0 0 0 2px rgba(245, 159, 0, .4);
+        }
+
+        .seating-map .seat.seat-selected:hover {
+            background: #e8590c;
+            color: #fff;
+        }
+
         .seating-map .seat.seat-table {
             background: #212529;
             border-color: #212529;
@@ -154,16 +182,26 @@
         .seating-map .legend {
             display: flex;
             flex-wrap: wrap;
-            gap: .75rem;
+            gap: .5rem 1.25rem; /* jarak antar item legend: rapat & seragam */
             font-size: .68rem;
             color: #495057;
             align-items: center;
+        }
+
+        .seating-map .legend > span {
+            margin: 0;
+            white-space: nowrap;
         }
 
         .seating-map .legend .seat {
             cursor: default;
             flex: 0 0 var(--seat-size);
             width: var(--seat-size);
+            margin: 0 .5rem 0 0; /* jarak swatch -> teks seragam */
+        }
+
+        .seating-map .legend .stage-bar {
+            margin: 0 .5rem 0 0;
         }
     </style>
 </head>
@@ -175,119 +213,61 @@
         <div class="content-wrapper py-4 px-4 text-sm">
 
             <?php
-            /* ---------- Floor data (source: context/SYSTEM/0002-Seating-Layout.md) ---------- */
+            /* ---------- Seating data dari database (act_seating_floor / _row / _slot)
+               Seed: sql/2026-10-13-00001.sql — source awal context/SYSTEM/0002-Seating-Layout.md ---------- */
 
-            $floor1Rows = [
-                ['groups' => [5, 2, 2, 2, 2, 4], 'table_after' => [1, 3]], /* meja hitam: lorong 7|8 dan 11|12 */
-                ['groups' => [5, 5, 5, 4]],
-                ['groups' => [5, 5, 5, 4]],
-                ['groups' => [5, 4, 4, 4], 'empty_after' => [1], 'empty_before' => [2]], /* seat empty: kanan blok 61–64, kiri blok 65–68 */
-                ['groups' => [5, 5, 5, 4]],
-                ['groups' => [4, 5, 5, 3], 'empty_before' => [0], 'empty_after' => [3]], /* seat empty: kiri blok 92–95, kanan blok 106–108 */
-                ['groups' => [5, 5, 5, 4]],
-                ['groups' => [5, 5, 5, 4]],
-                ['groups' => [5, 5, 5, 4]],
-                ['groups' => [5, 5, 5, 4]],
-                ['groups' => [4, 5, 5, 3], 'empty_before' => [0], 'empty_after' => [3]], /* seat empty: kiri 185, kanan 201 */
-                ['groups' => [4, 5, 5, 4], 'empty_before' => [0]], /* seat empty: kiri 202 */
-                ['groups' => [4, 5, 5, 4], 'empty_before' => [0]], /* seat empty: kiri 220 */
-                ['groups' => [4, 5, 5, 4], 'empty_before' => [0]], /* seat empty: kiri 238 */
-                ['groups' => [3, 4, 4, 4], 'empty_before' => [0, 0], 'pillar_split' => [1 => 3, 2 => 1]], /* seat empty 2x kiri 256; pilar lebar-seat sesudah 261 & 263 */
-                ['groups' => [5, 5, 3], 'empty_after' => [2], 'hidden_before' => [271 => [5]]], /* seat empty: kanan 283; hidden: kiri 271 = blok 5 */
-                ['groups' => [5, 5, 4], 'hidden_before' => [284 => [5]]], /* hidden: kiri 284 = blok 5 */
-                ['groups' => [4], 'hidden_before' => [298 => [5, 5, 5]]], /* hidden: kiri 298 = blok 5 x3 */
-                ['label' => '302', 'groups' => [7], 'hidden_before' => [302 => [2, 5, 5]], 'no_aisle' => true], /* row 302 = di dalam ruangan; tempel kanan, tanpa gap/gang sama sekali */
-            ];
+            $floors = $this->db->order_by('sort_order')->get('act_seating_floor')->result_array();
+            $all_rows = $this->db->order_by('floor_id, sort_order')->get('act_seating_row')->result_array();
+            $all_slots = $this->db->order_by('row_id, sort_order')->get('act_seating_slot')->result_array();
 
-            $floor1Back = [
-                ['label' => '309', 'groups' => [2]],
-                ['label' => '311', 'groups' => [2]],
-            ];
+            $rows_by_floor = [];
+            foreach ($all_rows as $r) {
+                $rows_by_floor[$r['floor_id']][] = $r;
+            }
+            $slots_by_row = [];
+            foreach ($all_slots as $s) {
+                $slots_by_row[$s['row_id']][] = $s;
+            }
 
-            $floor2Rows = array_fill(0, 9, ['groups' => [5, 9, 5]]);
-
-            function seating_render_rows($rows, $start_number = 1, $norm_units = 19, $norm_aisles = 3)
+            function seating_render_rows($rows, $start_number, $norm_units, $norm_aisles)
             {
                 $n = (int) $start_number;
                 $html = '';
 
                 foreach ($rows as $i => $row) {
-                    $row_no = $i + 1;
-                    $table_after = $row['table_after'] ?? [];
-                    $row_no_aisle = !empty($row['no_aisle']); /* baris ini tanpa gang sama sekali */
+                    /* snake: baris ganjil-index (1,3,5...) dibaca kanan->kiri */
+                    $reverse = ($i % 2 === 1);
+                    $row_no_aisle = !empty($row['no_aisle']);
 
                     $children = [];
                     $units = 0;
                     $aisles = 0;
+                    $row_first = $n; /* nomor seat pertama baris ini */
+                    $seat_slot = 0; /* slot seat visual kiri->kanan (untuk penomoran snake) */
 
-                    $flush_run = function (&$run) use (&$children, &$units) {
-                        if (!empty($run)) {
-                            $children[] = ['t' => 'seats', 'from' => $run[0], 'count' => count($run)];
-                            $units += count($run);
-                            $run = [];
-                        }
-                    };
+                    /* Slot DB = urutan visual kiri->kanan (mirror struktur children lama) */
+                    foreach ($row['slots'] as $sl) {
+                        $type = $sl['type'];
+                        $uc = (int) $sl['units'];
+                        $cnt = (int) $sl['seat_count'];
 
-                    foreach ($row['groups'] as $gi => $count) {
-                        if ($gi > 0) {
-                            if (in_array($gi - 1, $table_after)) {
-                                $children[] = ['t' => 'table'];
-                                $units += 1;
-                            } else {
-                                $children[] = ['t' => 'aisle'];
-                                $aisles += 1;
-                            }
-                        }
-
-                        foreach (array_keys($row['empty_before'] ?? [], $gi) as $_blank) {
-                            $children[] = ['t' => 'blank'];
+                        if ($type === 'seat') {
+                            $children[] = ['t' => 'seats', 'from' => $n, 'count' => $cnt];
+                            $units += $cnt;
+                            $n += $cnt;
+                        } elseif ($type === 'aisle') {
+                            $children[] = ['t' => 'aisle'];
+                            $aisles += 1;
+                        } elseif ($type === 'hidden') {
+                            $children[] = ['t' => 'hidden', 'size' => $uc];
+                            $units += $uc;
+                        } elseif ($type === 'table') {
+                            $children[] = ['t' => 'table'];
                             $units += 1;
-                        }
-
-                        $split = $row['pillar_split'][$gi] ?? null;
-                        $run = [];
-                        $pillar_placed = false;
-
-                        for ($s = 0; $s < $count; $s++) {
-                            $seatno = $n;
-
-                            if (isset($row['hidden_before'][$seatno])) {
-                                $flush_run($run);
-                                foreach ($row['hidden_before'][$seatno] as $size) {
-                                    $children[] = ['t' => 'hidden', 'size' => (int) $size];
-                                    $units += (int) $size;
-                                    if (!$row_no_aisle && (int) $size === 5) { /* tetap ada gang/akses setelah blok hidden 5 */
-                                        $children[] = ['t' => 'aisle'];
-                                        $aisles += 1;
-                                    }
-                                }
-                            }
-
-                            if ($split !== null && !$pillar_placed && count($run) >= (int) $split) {
-                                $flush_run($run);
-                                $children[] = ['t' => 'pillar'];
-                                $units += 1;
-                                $pillar_placed = true;
-                            }
-
-                            $run[] = $seatno;
-                            $n++;
-
-                            if (isset($row['hidden_after'][$seatno])) {
-                                $flush_run($run);
-                                foreach ($row['hidden_after'][$seatno] as $size) {
-                                    $children[] = ['t' => 'hidden', 'size' => (int) $size];
-                                    $units += (int) $size;
-                                    if (!$row_no_aisle && (int) $size === 5) { /* tetap ada gang/akses setelah blok hidden 5 */
-                                        $children[] = ['t' => 'aisle'];
-                                        $aisles += 1;
-                                    }
-                                }
-                            }
-                        }
-                        $flush_run($run);
-
-                        foreach (array_keys($row['empty_after'] ?? [], $gi) as $_blank) {
+                        } elseif ($type === 'pillar') {
+                            $children[] = ['t' => 'pillar'];
+                            $units += 1;
+                        } elseif ($type === 'empty') {
                             $children[] = ['t' => 'blank'];
                             $units += 1;
                         }
@@ -300,6 +280,10 @@
                         $children[] = ['t' => 'pad', 'size' => $pad];
                         $units += $pad;
                     }
+
+                    /* Snake flow: urutan child (posisi hidden/table/pillar/empty) TIDAK diubah —
+                       hanya nomor seat yang diisi sesuai arah baca baris ini */
+                    $row_last = $n - 1;
 
                     $cells = '';
                     foreach ($children as $ch) {
@@ -326,8 +310,13 @@
                         } elseif ($ch['t'] === 'seats') {
                             $cells .= '<div class="seat-block" style="flex-grow: ' . $ch['count'] . '">';
                             for ($s = 0; $s < $ch['count']; $s++) {
-                                $no = $ch['from'] + $s;
-                                $cells .= '<div class="seat" title="Seat ' . $no . '">' . $no . '</div>';
+                                /* snake: slot visual kiri->kanan diisi nomor naik (baris normal)
+                                   atau turun (baris balik) supaya urutan baca sambung-menyambung */
+                                $no = $reverse
+                                    ? ($row_last - $seat_slot)
+                                    : ($row_first + $seat_slot);
+                                $seat_slot++;
+                                $cells .= '<div class="seat" data-seat="' . $no . '" title="Seat ' . $no . '">' . $no . '</div>';
                             }
                             $cells .= '</div>';
                         }
@@ -338,115 +327,106 @@
                         $cells .= '<div class="seat-aisle"></div>';
                     }
 
-                    $label = isset($row['label']) ? $row['label'] : (string) $row_no;
+                    if (!empty($row['divider_caption'])) { /* pemisah area (mis. FoH) sebelum baris ini */
+                        $html .= '<div class="seat-divider"></div>';
+                        $html .= '<div class="seat-caption"><i class="fas fa-arrow-alt-circle-down mr-1"></i> ' . htmlspecialchars($row['divider_caption']) . '</div>';
+                    }
+
+                    $label = ($row['label'] !== null && $row['label'] !== '') ? $row['label'] : (string) ($i + 1);
                     $html .= '<div class="seat-row"><div class="row-label">' . htmlspecialchars($label) . '</div>' . $cells . '</div>';
                 }
 
                 return ['html' => $html, 'next' => $n];
             }
 
-            $f1 = seating_render_rows($floor1Rows, 1);
-            $f1_count = $f1['next'] - 1; /* expect 301 */
-            $f1_back = seating_render_rows($floor1Back, $f1['next']);
-            $f1_total = $f1_back['next'] - 1; /* expect 312 */
-            $f2 = seating_render_rows($floor2Rows, 1);
-            $f2_total = $f2['next'] - 1; /* expect 171 */
+            /* Render semua floor dari data DB — snake paritas dihitung dari urutan baris,
+               jadi baris back (FoH) sambung otomatis tanpa parameter terpisah */
+            $floor_render = [];
+            $grand_total = 0;
+            foreach ($floors as $f) {
+                $rows = $rows_by_floor[$f['id']] ?? [];
+                foreach ($rows as &$r) {
+                    $r['slots'] = $slots_by_row[$r['id']] ?? [];
+                }
+                unset($r);
+
+                $res = seating_render_rows($rows, (int) $f['start_number'], (int) $f['norm_units'], (int) $f['norm_aisles']);
+                $count = $res['next'] - (int) $f['start_number'];
+                $grand_total += $count;
+                $floor_render[] = [
+                    'floor' => $f,
+                    'html' => $res['html'],
+                    'count' => $count,
+                    'first' => (int) $f['start_number'],
+                    'last' => $res['next'] - 1,
+                ];
+            }
             ?>
 
             <!-- Summary -->
             <div class="row">
+                <?php foreach ($floor_render as $fr) : ?>
                 <div class="col-12 col-md-4 mb-2">
                     <div class="info-box shadow-sm">
-                        <span class="info-box-icon bg-secondary"><i class="fas fa-layer-group"></i></span>
+                        <span class="info-box-icon bg-secondary"><i class="<?php echo htmlspecialchars($fr['floor']['icon_class']); ?>"></i></span>
                         <div class="info-box-content">
-                            <span class="info-box-text">Floor 1 (Main)</span>
-                            <span class="info-box-number"><?php echo (int) $f1_total; ?> seats</span>
+                            <span class="info-box-text"><?php echo htmlspecialchars($fr['floor']['name']); ?></span>
+                            <span class="info-box-number"><?php echo (int) $fr['count']; ?> seats</span>
                         </div>
                     </div>
                 </div>
-                <div class="col-12 col-md-4 mb-2">
-                    <div class="info-box shadow-sm">
-                        <span class="info-box-icon bg-secondary"><i class="fas fa-chair"></i></span>
-                        <div class="info-box-content">
-                            <span class="info-box-text">Floor 2 (Balcony)</span>
-                            <span class="info-box-number"><?php echo (int) $f2_total; ?> seats</span>
-                        </div>
-                    </div>
-                </div>
+                <?php endforeach; ?>
                 <div class="col-12 col-md-4 mb-2">
                     <div class="info-box shadow-sm">
                         <span class="info-box-icon bg-secondary"><i class="fas fa-couch"></i></span>
                         <div class="info-box-content">
                             <span class="info-box-text">Grand Total</span>
-                            <span class="info-box-number"><?php echo (int) ($f1_total + $f2_total); ?> seats</span>
+                            <span class="info-box-number"><?php echo (int) $grand_total; ?> seats</span>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Legend -->
-            <div class="card card-outline card-secondary">
-                <div class="card-header py-1 px-2">
-                    <h3 class="card-title text-sm py-1 mb-0"><i class="fas fa-map mr-1"></i> Seating Layout</h3>
-                </div>
-                <div class="card-body py-2 seating-map">
-                    <div class="legend mb-2">
-                        <span class="d-inline-flex align-items-center"><span class="seat me-1">1</span> Seat</span>
-                        <span class="d-inline-flex align-items-center"><span class="seat seat-table me-1"></span> Table</span>
-                        <span class="d-inline-flex align-items-center"><span class="seat seat-pillar-box me-1"></span> Pillar</span>
-                        <span class="d-inline-flex align-items-center"><span class="stage-bar px-2 py-1 me-1" style="font-size:.6rem;">STAGE</span> Stage</span>
-                        <span class="text-muted">Viewed from above &mdash; stage at the front (top)</span>
-                    </div>
-                </div>
-            </div>
-
+            <!-- Floors -->
             <div class="row align-items-start">
-                <!-- ===== Floor 1 ===== -->
+                <?php foreach ($floor_render as $fr) :
+                    $f = $fr['floor']; ?>
+                <!-- ===== <?php echo htmlspecialchars($f['name']); ?> ===== -->
                 <div class="col-12 mb-3">
                     <div class="card card-outline card-secondary mb-0 h-100">
                         <div class="card-header py-1 px-2">
-                            <h3 class="card-title text-sm py-1 mb-0"><i class="fas fa-building mr-1"></i> Floor 1 — Main Hall (Seats 1–<?php echo (int) $f1_total; ?>)</h3>
+                            <h3 class="card-title text-sm py-1 mb-0"><i class="<?php echo htmlspecialchars($f['icon_class']); ?> mr-1"></i> <?php echo htmlspecialchars($f['name']); ?> (Seats <?php echo (int) $fr['first']; ?>–<?php echo (int) $fr['last']; ?>)</h3>
                         </div>
-                        <div class="card-body py-2 seating-map">
+                        <div class="card-body py-2 seating-map" data-floor="<?php echo (int) $f['id']; ?>">
                             <div class="map-scroll">
                                 <div style="min-width: 460px; width: 100%;">
                                     <div class="stage-bar">PANGGUNG / STAGE</div>
                                     <div class="stage-arrow"><i class="fas fa-arrow-down"></i> audience</div>
 
-                                    <?php echo $f1['html']; ?>
-
-                                    <div class="seat-divider"></div>
-                                    <div class="seat-caption"><i class="fas fa-arrow-alt-circle-down mr-1"></i> Back area / FoH (Seats 309–312)</div>
-                                    <?php echo $f1_back['html']; ?>
+                                    <?php echo $fr['html']; ?>
                                 </div>
                             </div>
-                            <div class="legend mt-2">
-                                <span>Pilar penyangga: baris 15 (sesudah kursi 261 &amp; 263)</span>
-                            </div>
+                            <?php if (!empty($f['caption'])) : ?>
+                            <div class="seat-caption mt-2"><?php echo htmlspecialchars($f['caption']); ?></div>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>
+                <?php endforeach; ?>
+            </div>
 
-                <!-- ===== Floor 2 ===== -->
-                <div class="col-12 mb-3">
-                    <div class="card card-outline card-secondary mb-0 h-100">
-                        <div class="card-header py-1 px-2">
-                            <h3 class="card-title text-sm py-1 mb-0"><i class="fas fa-layer-group mr-1"></i> Floor 2 — Balcony / Mezzanine (Seats 1–<?php echo (int) $f2_total; ?>)</h3>
-                        </div>
-                        <div class="card-body py-2 seating-map">
-                            <div class="map-scroll">
-                                <div style="min-width: 460px; width: 100%;">
-                                    <div class="stage-bar">PANGGUNG / STAGE</div>
-                                    <div class="stage-arrow"><i class="fas fa-arrow-down"></i> audience</div>
-
-                                    <?php echo $f2['html']; ?>
-
-                                    <div class="seat-divider"></div>
-                                    <div class="seat-caption">3 sections: Left (5) &middot; Center (9) &middot; Right (5) per row &mdash; 9 rows</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+            <!-- Legend (paling bawah, tanpa card) -->
+            <div class="seating-map">
+                <div class="seat-divider mb-2"></div>
+                <div class="legend mb-0">
+                    <span class="d-inline-flex align-items-center"><span class="seat me-2">1</span> Available</span>
+                    <span class="d-inline-flex align-items-center"><span class="seat seat-confirmed me-2"></span> Confirmed</span>
+                    <span class="d-inline-flex align-items-center"><span class="seat seat-selected me-2"></span> Selected</span>
+                    <span class="d-inline-flex align-items-center"><span class="seat seat-blank me-2"></span> Empty</span>
+                    <span class="d-inline-flex align-items-center"><span class="seat seat-table me-2"></span> Table</span>
+                    <span class="d-inline-flex align-items-center"><span class="seat seat-pillar-box me-2"></span> Pillar</span>
+                    <span class="d-inline-flex align-items-center"><span class="stage-bar px-2 py-1 me-2" style="font-size:.6rem;">STAGE</span> Stage</span>
+                    <span class="text-muted">Viewed from above &mdash; stage at the front (top)</span>
                 </div>
             </div>
 
@@ -456,6 +436,33 @@
     </div>
 
     <?php $this->load->view('partial/activities/foot.php') ?>
+
+    <script>
+        (function () {
+            /* Preview warna state — SEMUA CONTOH, logic DB belum ada */
+            var demoConfirmed = { 1: [3, 4, 5], 2: [2, 3] };
+            var demoSelected = { 1: [8], 2: [] };
+
+            $(function () {
+                $('.seating-map[data-floor] .seat[data-seat]').each(function () {
+                    var floor = parseInt($(this).closest('[data-floor]').data('floor'), 10);
+                    var no = parseInt($(this).data('seat'), 10);
+                    if ((demoConfirmed[floor] || []).indexOf(no) !== -1) {
+                        $(this).addClass('seat-confirmed');
+                    }
+                    if ((demoSelected[floor] || []).indexOf(no) !== -1) {
+                        $(this).addClass('seat-selected');
+                    }
+                });
+            });
+
+            /* Multi-select: klik seat available <-> selected; seat confirmed tidak bisa dipilih */
+            $(document).on('click', '.seating-map .seat[data-seat]', function () {
+                if ($(this).hasClass('seat-confirmed')) return;
+                $(this).toggleClass('seat-selected');
+            });
+        })();
+    </script>
 </body>
 
 </html>
