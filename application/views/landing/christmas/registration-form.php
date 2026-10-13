@@ -135,8 +135,8 @@
 
                 <!-- Animated checkmark -->
                 <div class="reg-check-ring mx-auto">
-                    <div class="w-20 h-20 rounded-full bg-green-50 border-2 border-green-200 flex items-center justify-center">
-                        <i class="fas fa-check text-green-500 text-3xl reg-check-icon"></i>
+                    <div class="w-20 h-20 mx-auto rounded-full bg-green-50 border-2 border-green-200 flex items-center justify-center">
+                        <i class="fas fa-check text-green-500 text-3xl leading-none reg-check-icon"></i>
                     </div>
                 </div>
 
