@@ -630,12 +630,18 @@
                         }
                         const d = res.data
                         const attendees = d.attendees || []
+                        const seatBadge = (a) => {
+                            if (a.seat_number) return `<span class="badge badge-success">Seat ${a.seat_number}</span>`
+                            if (a.status == 1) return `<span class="badge badge-warning">No seat</span>`
+                            return `<span class="text-muted">&mdash;</span>`
+                        }
                         const rows = attendees.map((a, i) => `
                             <tr>
                                 <td class="text-center text-muted" style="width:36px">${i + 1}</td>
                                 <td>${escapeHtml(upperName(a.name))}</td>
                                 <td class="text-right text-nowrap" style="width:80px">${escapeHtml(a.age)} yrs</td>
                                 <td class="text-center text-nowrap" style="width:100px">${statusBadge(a.status)}</td>
+                                <td class="text-center text-nowrap" style="width:90px">${seatBadge(a)}</td>
                             </tr>`).join('')
 
                         $('#detailBody').html(`
@@ -651,8 +657,8 @@
                             </div>
                             <div class="table-responsive">
                                 <table class="table table-sm table-striped table-bordered mb-0 text-sm">
-                                    <thead><tr><th class="text-center" style="width:36px">#</th><th>Name</th><th class="text-right" style="width:80px">Age</th><th class="text-center" style="width:100px">Status</th></tr></thead>
-                                    <tbody>${rows || '<tr><td colspan="4" class="text-center text-muted py-3">No attendees yet</td></tr>'}</tbody>
+                                    <thead><tr><th class="text-center" style="width:36px">#</th><th>Name</th><th class="text-right" style="width:80px">Age</th><th class="text-center" style="width:100px">Status</th><th class="text-center" style="width:90px">Seat</th></tr></thead>
+                                    <tbody>${rows || '<tr><td colspan="5" class="text-center text-muted py-3">No attendees yet</td></tr>'}</tbody>
                                 </table>
                             </div>`)
                     }

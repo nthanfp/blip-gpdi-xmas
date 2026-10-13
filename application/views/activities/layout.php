@@ -203,6 +203,65 @@
         .seating-map .legend .stage-bar {
             margin: 0 .5rem 0 0;
         }
+
+        /* ===== Seat assign toolbar ===== */
+        #seatToolbar .form-control-sm {
+            font-size: .85rem;
+        }
+
+        /* Tanpa !important — supaya jQuery .hide() (inline display:none) tetap menang */
+        #seatRegEmpty {
+            display: flex;
+            align-items: center;
+            min-height: 38px;
+        }
+
+        #seatSearchResults {
+            display: none;
+        }
+
+        #seatSearchResults.show {
+            display: block;
+        }
+
+        #seatSearchResults .list-group-item {
+            cursor: pointer;
+            padding: .4rem .6rem;
+            font-size: .8rem;
+        }
+
+        #seatSearchResults .list-group-item:hover,
+        #seatSearchResults .list-group-item.active {
+            background-color: #e9ecef;
+        }
+
+        .seat-attendee-item {
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+            padding: .25rem .5rem;
+            border: 1px solid #dee2e6;
+            border-radius: .25rem;
+            margin-bottom: .3rem;
+            font-size: .8rem;
+            cursor: pointer;
+        }
+
+        .seat-attendee-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        .seat-attendee-item input {
+            margin: 0;
+        }
+
+        .seating-map .seat.seat-releasable {
+            box-shadow: 0 0 0 2px rgba(220, 53, 69, .45);
+        }
+
+        .seating-map .seat[data-reg]:not([data-reg="0"]) {
+            cursor: pointer;
+        }
     </style>
 </head>
 
@@ -229,7 +288,26 @@
                 $slots_by_row[$s['row_id']][] = $s;
             }
 
-            function seating_render_rows($rows, $start_number, $norm_units, $norm_aisles)
+            /* State per kursi (derived dari act_seating_seat + attendee.status):
+               hanya attendee confirmed (status=1) yang dianggap terisi */
+            $seat_state = [];
+            $seat_q = $this->db->query(
+                'SELECT s.floor_id, s.seat_number, s.registrationid AS seat_regid, a.status AS attendee_status, a.name AS attendee_name, r.ref_code
+                 FROM act_seating_seat s
+                 LEFT JOIN act_xmas_attendee a ON a.attendeeid = s.attendeeid
+                 LEFT JOIN act_xmas_registration r ON r.registrationid = s.registrationid
+                 ORDER BY s.floor_id, s.seat_number'
+            );
+            foreach ($seat_q->result_array() as $sr) {
+                $seat_state[(int) $sr['floor_id']][(int) $sr['seat_number']] = [
+                    'confirmed' => ((int) ($sr['attendee_status'] ?? 0) === 1),
+                    'name' => (string) ($sr['attendee_name'] ?? ''),
+                    'ref' => (string) ($sr['ref_code'] ?? ''),
+                    'regid' => (int) ($sr['seat_regid'] ?? 0),
+                ];
+            }
+
+            function seating_render_rows($rows, $start_number, $norm_units, $norm_aisles, $seat_state = [])
             {
                 $n = (int) $start_number;
                 $html = '';
@@ -316,7 +394,20 @@
                                     ? ($row_last - $seat_slot)
                                     : ($row_first + $seat_slot);
                                 $seat_slot++;
-                                $cells .= '<div class="seat" data-seat="' . $no . '" title="Seat ' . $no . '">' . $no . '</div>';
+                                $st = $seat_state[$no] ?? null;
+                                $cls = 'seat';
+                                $title = 'Seat ' . $no;
+                                $regid = 0;
+                                if (!empty($st['confirmed'])) {
+                                    $cls .= ' seat-confirmed';
+                                    $regid = (int) ($st['regid'] ?? 0);
+                                    if ($st['name'] !== '') {
+                                        $title .= ' — ' . $st['name']
+                                            . ($st['ref'] !== '' ? ' (' . $st['ref'] . ')' : '')
+                                            . ' — Confirmed';
+                                    }
+                                }
+                                $cells .= '<div class="' . $cls . '" data-seat="' . $no . '" data-reg="' . $regid . '" title="' . htmlspecialchars($title) . '">' . $no . '</div>';
                             }
                             $cells .= '</div>';
                         }
@@ -350,7 +441,7 @@
                 }
                 unset($r);
 
-                $res = seating_render_rows($rows, (int) $f['start_number'], (int) $f['norm_units'], (int) $f['norm_aisles']);
+                $res = seating_render_rows($rows, (int) $f['start_number'], (int) $f['norm_units'], (int) $f['norm_aisles'], $seat_state[(int) $f['id']] ?? []);
                 $count = $res['next'] - (int) $f['start_number'];
                 $grand_total += $count;
                 $floor_render[] = [
@@ -368,7 +459,7 @@
                 <?php foreach ($floor_render as $fr) : ?>
                 <div class="col-12 col-md-4 mb-2">
                     <div class="info-box shadow-sm">
-                        <span class="info-box-icon bg-secondary"><i class="<?php echo htmlspecialchars($fr['floor']['icon_class']); ?>"></i></span>
+                        <span class="info-box-icon bg-secondary"><i class="fas <?php echo htmlspecialchars($fr['floor']['icon_class']); ?>"></i></span>
                         <div class="info-box-content">
                             <span class="info-box-text"><?php echo htmlspecialchars($fr['floor']['name']); ?></span>
                             <span class="info-box-number"><?php echo (int) $fr['count']; ?> seats</span>
@@ -378,10 +469,49 @@
                 <?php endforeach; ?>
                 <div class="col-12 col-md-4 mb-2">
                     <div class="info-box shadow-sm">
-                        <span class="info-box-icon bg-secondary"><i class="fas fa-couch"></i></span>
+                        <span class="info-box-icon bg-secondary"><i class="fas fa-building"></i></span>
                         <div class="info-box-content">
                             <span class="info-box-text">Grand Total</span>
                             <span class="info-box-number"><?php echo (int) $grand_total; ?> seats</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Assign Seats Toolbar (admin) -->
+            <div class="card card-outline card-secondary mb-3" id="seatToolbar">
+                <div class="card-header py-1 px-2">
+                    <h3 class="card-title text-sm py-1 mb-0"><i class="fas fa-user-check mr-1"></i> Assign Seats</h3>
+                </div>
+                <div class="card-body py-2">
+                    <div class="row">
+                        <div class="col-12 col-md-5 mb-2 mb-md-0">
+                            <label class="mb-1 d-block"><i class="fas fa-search mr-1 text-muted"></i> Cari Registrasi <small class="text-muted">(kode / HP / nama)</small></label>
+                            <input type="text" class="form-control form-control-sm" id="seatSearch" placeholder="GPxxxx / 08xx / nama" autocomplete="off">
+                            <div id="seatSearchResults" class="list-group mt-1"></div>
+                            <small class="text-muted d-block mt-1">Registrasi <b>pending</b> tetap muncul (badge kuning) — attendeenya harus <b>Confirmed</b> dulu di menu Registration sebelum bisa di-assign kursi.</small>
+                        </div>
+                        <div class="col-12 col-md-7">
+                            <div id="seatRegEmpty" class="text-muted">
+                                <i class="fas fa-info-circle mr-1"></i> Cari registrasi untuk mulai assign / release kursi.
+                            </div>
+                            <div id="seatRegPanel" style="display:none">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <div>
+                                        <strong id="seatRegTitle" class="text-sm"></strong><br>
+                                        <small class="text-muted" id="seatRegMeta"></small>
+                                    </div>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary" id="seatRegClear" title="Clear selection">&times;</button>
+                                </div>
+                                <div id="seatRegAttendees" class="mb-2" style="max-height:150px;overflow:auto"></div>
+                                <div class="d-flex align-items-center flex-wrap">
+                                    <span class="badge badge-info mr-2" id="seatSelCount">0 seat(s) selected</span>
+                                    <span class="badge badge-warning mr-2 d-none" id="seatAttCount">0 attendee(s)</span>
+                                    <button type="button" class="btn btn-sm btn-primary mr-1" id="seatAssignBtn" disabled><i class="fas fa-chair mr-1"></i> Assign</button>
+                                    <button type="button" class="btn btn-sm btn-outline-danger" id="seatReleaseBtn" disabled><i class="fas fa-undo mr-1"></i> Release</button>
+                                    <small class="text-muted d-block w-100 mt-1">Klik kursi di denah: kursi kosong = assign, kursi milik registrasi ini (outline merah) = release.</small>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -395,7 +525,7 @@
                 <div class="col-12 mb-3">
                     <div class="card card-outline card-secondary mb-0 h-100">
                         <div class="card-header py-1 px-2">
-                            <h3 class="card-title text-sm py-1 mb-0"><i class="<?php echo htmlspecialchars($f['icon_class']); ?> mr-1"></i> <?php echo htmlspecialchars($f['name']); ?> (Seats <?php echo (int) $fr['first']; ?>–<?php echo (int) $fr['last']; ?>)</h3>
+                            <h3 class="card-title text-sm py-1 mb-0"><i class="fas <?php echo htmlspecialchars($f['icon_class']); ?> mr-1"></i> <?php echo htmlspecialchars($f['name']); ?> (Seats <?php echo (int) $fr['first']; ?>–<?php echo (int) $fr['last']; ?>)</h3>
                         </div>
                         <div class="card-body py-2 seating-map" data-floor="<?php echo (int) $f['id']; ?>">
                             <div class="map-scroll">
@@ -439,27 +569,289 @@
 
     <script>
         (function () {
-            /* Preview warna state — SEMUA CONTOH, logic DB belum ada */
-            var demoConfirmed = { 1: [3, 4, 5], 2: [2, 3] };
-            var demoSelected = { 1: [8], 2: [] };
+            var seatSearchEndpoint = '<?php echo site_url("activities/layout/seat_search") ?>';
+            var seatAttendeesEndpoint = '<?php echo site_url("activities/layout/seat_attendees") ?>';
+            var seatAssignEndpoint = '<?php echo site_url("activities/layout/seat_assign") ?>';
+            var seatReleaseEndpoint = '<?php echo site_url("activities/layout/seat_release") ?>';
 
-            $(function () {
-                $('.seating-map[data-floor] .seat[data-seat]').each(function () {
-                    var floor = parseInt($(this).closest('[data-floor]').data('floor'), 10);
-                    var no = parseInt($(this).data('seat'), 10);
-                    if ((demoConfirmed[floor] || []).indexOf(no) !== -1) {
-                        $(this).addClass('seat-confirmed');
-                    }
-                    if ((demoSelected[floor] || []).indexOf(no) !== -1) {
-                        $(this).addClass('seat-selected');
-                    }
+            /* State registrasi aktif + multi-select kursi (client-side).
+               Available = hijau siap assign; confirmed reg aktif (outline merah) = siap release. */
+            var currentReg = null;
+            var searchTimer = null;
+            var lastSearchRows = {};
+
+            function escapeHtml(val) {
+                return $('<div>').text(val == null ? '' : String(val)).html();
+            }
+
+            function toast(icon, title, text) {
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: icon,
+                    title: title,
+                    text: text || '',
+                    showConfirmButton: false,
+                    timer: 4000,
+                    timerProgressBar: true
                 });
+            }
+
+            function selectedSeats() {
+                var seats = [];
+                $('.seating-map .seat.seat-selected').each(function () {
+                    seats.push({
+                        number: parseInt($(this).data('seat'), 10),
+                        reg: parseInt($(this).data('reg'), 10) || 0
+                    });
+                });
+                return seats;
+            }
+
+            function checkedAttendees() {
+                var ids = [];
+                $('#seatRegAttendees input[type="checkbox"]:checked').each(function () {
+                    ids.push(parseInt($(this).val(), 10));
+                });
+                return ids;
+            }
+
+            function updateButtons() {
+                var seats = selectedSeats();
+                var atts = checkedAttendees();
+                var freeCount = 0;
+                var regCount = 0;
+                seats.forEach(function (s) {
+                    if (s.reg) regCount++; else freeCount++;
+                });
+
+                $('#seatSelCount').text(seats.length + ' seat(s) selected');
+                if (currentReg) {
+                    $('#seatAttCount').removeClass('d-none').text(atts.length + ' attendee(s) checked');
+                }
+
+                var canAssign = !!(currentReg && freeCount > 0 && freeCount === atts.length && regCount === 0);
+                var canRelease = !!(currentReg && regCount > 0 && regCount === seats.length && freeCount === 0);
+                $('#seatAssignBtn').prop('disabled', !canAssign);
+                $('#seatReleaseBtn').prop('disabled', !canRelease);
+            }
+
+            function clearSeatSelection() {
+                $('.seating-map .seat.seat-selected').removeClass('seat-selected');
+            }
+
+            function markReleasableSeats(regId) {
+                $('.seating-map .seat').removeClass('seat-releasable');
+                if (regId) {
+                    $('.seating-map .seat[data-reg="' + regId + '"]').addClass('seat-releasable');
+                }
+            }
+
+            function renderAttendees(attendees) {
+                var html = '';
+                var hasPending = false;
+                (attendees || []).forEach(function (a) {
+                    var seated = a.seat_number ? 'Seat ' + a.seat_number : 'No seat';
+                    var badgeCls = a.seat_number ? 'badge-success' : 'badge-secondary';
+                    var checked = '';
+                    var disabled = '';
+                    var statusTag = '';
+                    if (a.status == 1) {
+                        checked = a.seat_number ? '' : 'checked';
+                    } else {
+                        hasPending = true;
+                        disabled = 'disabled';
+                        statusTag = '<span class="badge badge-warning mr-1">Pending</span>';
+                    }
+                    html +=
+                        '<label class="seat-attendee-item mb-1" title="' + (disabled ? 'Attendee belum confirmed — confirm dulu di menu Registration' : '') + '">' +
+                        '<input type="checkbox" value="' + a.attendeeid + '" ' + checked + ' ' + disabled + '>' +
+                        statusTag +
+                        '<span class="flex-grow-1">' + escapeHtml(a.name) + '</span>' +
+                        '<span class="badge ' + badgeCls + '">' + escapeHtml(seated) + '</span>' +
+                        '</label>';
+                });
+                $('#seatRegAttendees').html(html || '<div class="text-muted">No attendees</div>');
+                if (hasPending) {
+                    $('#seatRegAttendees').prepend(
+                        '<div class="alert alert-warning py-1 px-2 mb-1 text-xs" style="font-size:.75rem">' +
+                        '<i class="fas fa-exclamation-triangle mr-1"></i> Attendee <b>pending</b> tidak bisa dipilih kursi. ' +
+                        'Confirm dulu di menu <a href="<?= site_url("activities/registration") ?>" target="_blank">Registration</a>.' +
+                        '</div>'
+                    );
+                }
+            }
+
+            function selectReg(reg) {
+                reg.registrationid = parseInt(reg.registrationid, 10) || 0;
+                reg.floor = parseInt(reg.floor, 10) || 0;
+                currentReg = reg;
+                clearSeatSelection();
+                markReleasableSeats(reg.registrationid);
+                $('#seatRegEmpty').hide();
+                $('#seatRegPanel').show();
+                $('#seatRegTitle').text(reg.ref_code + ' — Floor ' + reg.floor);
+                var pendingN = parseInt(reg.pending_count, 10) || 0;
+                var confN = parseInt(reg.confirmed_count, 10) || 0;
+                $('#seatRegMeta').html(
+                    escapeHtml(reg.phone || '') + ' · <b>' + confN + ' confirmed</b> (' + (parseInt(reg.seated_count, 10) || 0) + ' seated)' +
+                    (pendingN ? ' · <span class="text-warning">' + pendingN + ' pending</span>' : '')
+                );
+                if (confN === 0) {
+                    toast('info', 'Belum ada attendee confirmed', 'Confirm dulu di menu Registration sebelum assign kursi');
+                }
+                $('#seatSearchResults').empty().removeClass('show');
+
+                $.getJSON(seatAttendeesEndpoint, { registrationid: reg.registrationid })
+                    .done(function (res) {
+                        if (!res.success) {
+                            toast('error', 'Failed', res.message);
+                            return;
+                        }
+                        renderAttendees(res.data.attendees);
+                        updateButtons();
+                    })
+                    .fail(function () {
+                        toast('error', 'Error', 'Could not reach server');
+                    });
+            }
+
+            function clearReg() {
+                currentReg = null;
+                clearSeatSelection();
+                markReleasableSeats(0);
+                $('#seatRegAttendees').empty();
+                $('#seatRegTitle').text('');
+                $('#seatRegMeta').empty();
+                $('#seatRegPanel').hide();
+                $('#seatRegEmpty').show();
+                $('#seatAssignBtn, #seatReleaseBtn').prop('disabled', true);
+                $('#seatAttCount').addClass('d-none');
+                $('#seatSelCount').text('0 seat(s) selected');
+            }
+
+            /* Search */
+            $('#seatSearch').on('input', function () {
+                var q = $.trim($(this).val());
+                clearTimeout(searchTimer);
+                if (!q) {
+                    $('#seatSearchResults').empty().removeClass('show');
+                    return;
+                }
+                searchTimer = setTimeout(function () {
+                    $.getJSON(seatSearchEndpoint, { q: q })
+                        .done(function (res) {
+                            var $box = $('#seatSearchResults');
+                            $box.empty();
+                            lastSearchRows = {};
+                            if (!res.success || !res.data || !res.data.length) {
+                                $box.html('<div class="list-group-item text-muted">Tidak ada registrasi cocok. Coba kode GPxxxx / no. HP / nama.</div>').addClass('show');
+                                return;
+                            }
+                            res.data.forEach(function (r) {
+                                lastSearchRows[r.registrationid] = r;
+                                var conf = parseInt(r.confirmed_count, 10) || 0;
+                                var pend = parseInt(r.pending_count, 10) || 0;
+                                var statusBadge = conf > 0
+                                    ? '<span class="badge badge-success">Ready</span>'
+                                    : '<span class="badge badge-warning">Pending</span>';
+                                $box.append(
+                                    '<button type="button" class="list-group-item list-group-item-action" data-regid="' + r.registrationid + '">' +
+                                    '<div class="d-flex justify-content-between align-items-start">' +
+                                    '<strong>' + escapeHtml(r.ref_code) + '</strong> ' + statusBadge +
+                                    '</div>' +
+                                    '<small class="text-muted d-block">Floor ' + escapeHtml(r.floor) + ' · ' + escapeHtml(r.phone || '') +
+                                    ' · ' + conf + ' confirmed' + (pend ? ' · ' + pend + ' pending' : '') + ' · ' + (parseInt(r.seated_count, 10) || 0) + ' seated</small>' +
+                                    '</button>'
+                                );
+                            });
+                            $box.addClass('show');
+                        })
+                        .fail(function () {
+                            toast('error', 'Error', 'Could not reach server');
+                        });
+                }, 350);
             });
 
-            /* Multi-select: klik seat available <-> selected; seat confirmed tidak bisa dipilih */
+            $('#seatSearchResults').on('click', '[data-regid]', function () {
+                var regid = $(this).data('regid');
+                var r = lastSearchRows[regid];
+                if (!r) return;
+                selectReg(r);
+            });
+
+            $('#seatRegClear').on('click', clearReg);
+
+            $('#seatRegAttendees').on('change', 'input[type="checkbox"]', updateButtons);
+
+            /* Seat click */
             $(document).on('click', '.seating-map .seat[data-seat]', function () {
-                if ($(this).hasClass('seat-confirmed')) return;
-                $(this).toggleClass('seat-selected');
+                var $s = $(this);
+                if ($s.hasClass('seat-confirmed')) {
+                    if (currentReg && parseInt($s.data('reg'), 10) === currentReg.registrationid) {
+                        $s.toggleClass('seat-selected');
+                        updateButtons();
+                    }
+                    return;
+                }
+                $s.toggleClass('seat-selected');
+                updateButtons();
+            });
+
+            /* Assign */
+            $('#seatAssignBtn').on('click', function () {
+                var $btn = $(this);
+                var atts = checkedAttendees();
+                var seats = selectedSeats().map(function (s) { return s.number; }).sort(function (a, b) { return a - b; });
+                if (!currentReg || !atts.length || !seats.length) return;
+
+                $btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin mr-1"></i> Saving...');
+                $.post(seatAssignEndpoint, {
+                    registrationid: currentReg.registrationid,
+                    floor_id: currentReg.floor,
+                    attendees: atts,
+                    seats: seats
+                })
+                    .done(function (res) {
+                        if (res.success) {
+                            toast('success', 'Assigned!', res.message);
+                            setTimeout(function () { location.reload(); }, 900);
+                        } else {
+                            toast('error', 'Failed', res.message);
+                            $btn.prop('disabled', false).html('<i class="fas fa-chair mr-1"></i> Assign');
+                        }
+                    })
+                    .fail(function () {
+                        toast('error', 'Error', 'Could not reach server');
+                        $btn.prop('disabled', false).html('<i class="fas fa-chair mr-1"></i> Assign');
+                    });
+            });
+
+            /* Release */
+            $('#seatReleaseBtn').on('click', function () {
+                var $btn = $(this);
+                var seats = selectedSeats().map(function (s) { return s.number; });
+                if (!currentReg || !seats.length) return;
+
+                $btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin mr-1"></i> Saving...');
+                $.post(seatReleaseEndpoint, {
+                    floor_id: currentReg.floor,
+                    seats: seats,
+                    registrationid: currentReg.registrationid
+                })
+                    .done(function (res) {
+                        if (res.success) {
+                            toast('success', 'Released!', res.message);
+                            setTimeout(function () { location.reload(); }, 900);
+                        } else {
+                            toast('error', 'Failed', res.message);
+                            $btn.prop('disabled', false).html('<i class="fas fa-undo mr-1"></i> Release');
+                        }
+                    })
+                    .fail(function () {
+                        toast('error', 'Error', 'Could not reach server');
+                        $btn.prop('disabled', false).html('<i class="fas fa-undo mr-1"></i> Release');
+                    });
             });
         })();
     </script>

@@ -168,10 +168,11 @@ class Registration_Model extends CI_Model
         }
 
         $row->attendees = $this->db->query(
-            'SELECT attendeeid, name, age, is_primary, status
-             FROM ' . $this->_attendee . '
-             WHERE registrationid = ?
-             ORDER BY is_primary DESC, attendeeid ASC',
+            'SELECT a.attendeeid, a.name, a.age, a.is_primary, a.status, s.seat_number
+             FROM ' . $this->_attendee . ' a
+             LEFT JOIN act_seating_seat s ON s.attendeeid = a.attendeeid
+             WHERE a.registrationid = ?
+             ORDER BY a.is_primary DESC, a.attendeeid ASC',
             [$id]
         )->result();
 
@@ -232,6 +233,15 @@ class Registration_Model extends CI_Model
             $this->db->where('registrationid', $id)
                 ->where_in('attendeeid', $selected)
                 ->update($this->_attendee, ['status' => 2]);
+
+            // Auto-release kursi yang terlanjur di-assign untuk attendee batal
+            $att_in = implode(',', array_fill(0, count($selected), '?'));
+            $this->db->query(
+                'UPDATE act_seating_seat
+                 SET attendeeid = NULL, registrationid = NULL, assigned_by = NULL, assigned_date = NULL
+                 WHERE attendeeid IN (' . $att_in . ')',
+                $selected
+            );
         }
 
         if ($this->db->trans_status() === FALSE) {
@@ -259,6 +269,15 @@ class Registration_Model extends CI_Model
             return ['success' => false, 'message' => 'Registration not found'];
         }
 
+        // Release kursi milik registrasi ini sebelum cascade hapus attendee
+        $this->db->where('registrationid', $id);
+        $this->db->update('act_seating_seat', [
+            'attendeeid' => null,
+            'registrationid' => null,
+            'assigned_by' => null,
+            'assigned_date' => null,
+        ]);
+
         // attendee ikut terhapus via ON DELETE CASCADE
         $this->db->where('registrationid', $id);
         $this->db->delete($this->_table);
@@ -278,6 +297,15 @@ class Registration_Model extends CI_Model
         if (!$exists) {
             return ['success' => false, 'message' => 'Attendee not found'];
         }
+
+        // Release kursi milik attendee ini (FK SET NULL juga menangani, tapi kolom registrationid dibersihkan eksplisit)
+        $this->db->where('attendeeid', $id);
+        $this->db->update('act_seating_seat', [
+            'attendeeid' => null,
+            'registrationid' => null,
+            'assigned_by' => null,
+            'assigned_date' => null,
+        ]);
 
         $this->db->where('attendeeid', $id);
         $this->db->delete($this->_attendee);
