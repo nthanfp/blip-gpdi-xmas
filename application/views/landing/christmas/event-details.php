@@ -9,7 +9,7 @@
 
     <!-- Top fade from countdown (red-900) -->
     <div class="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-red-900 via-red-900/80 to-transparent pointer-events-none z-10"></div>
-    <!-- Bottom fade to registration (red-950) -->
+    <!-- Bottom fade to speaker (red-950) -->
     <div class="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-red-950 via-red-950/80 to-transparent pointer-events-none z-10"></div>
 
     <div class="relative z-10 max-w-md lg:max-w-lg mx-auto space-y-8">

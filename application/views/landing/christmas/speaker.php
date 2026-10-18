@@ -7,8 +7,8 @@
     <!-- Radial gold glow -->
     <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(212,175,55,0.08)_0%,_transparent_60%)]"></div>
 
-    <!-- Top fade from registration (red-900) -->
-    <div class="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-red-900 via-red-900/80 to-transparent pointer-events-none z-10"></div>
+    <!-- Top fade from event-details (red-950) -->
+    <div class="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-red-950 via-red-950/80 to-transparent pointer-events-none z-10"></div>
     <!-- Bottom fade to performers -->
     <div class="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-red-950 via-red-950/80 to-transparent pointer-events-none z-10"></div>
 
@@ -38,16 +38,12 @@
         <div class="card-hover bg-white/10 backdrop-blur-sm rounded-2xl border border-white/10 shadow-sm p-8 text-center space-y-5" data-aos="zoom-in-up" data-aos-delay="120">
 
             <!-- Photo -->
-            <div class="relative w-28 h-28 mx-auto">
+            <div class="relative w-40 h-40 sm:w-44 sm:h-44 mx-auto">
                 <div class="w-full h-full rounded-full bg-gradient-to-br from-gold-400 to-gold-500 p-[2px]">
                     <div class="w-full h-full rounded-full bg-red-950 flex items-center justify-center overflow-hidden">
                         <img src="<?php echo site_url('assets/images/christmas/pdt-harapan.webp'); ?>" alt="Pdt. Harapan Nainggolan, M.Th"
                              class="w-full h-full object-cover rounded-full">
                     </div>
-                </div>
-                <!-- Decorative star -->
-                <div class="absolute -top-1 -right-1 w-6 h-6 rounded-full bg-red-900 flex items-center justify-center border border-gold-400/30">
-                    <i class="fas fa-star text-gold-400 text-[8px]"></i>
                 </div>
             </div>
 

@@ -7,7 +7,7 @@
     <!-- Radial gold glow -->
     <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(212,175,55,0.06)_0%,_transparent_60%)]"></div>
 
-    <!-- Top fade from FAQ -->
+    <!-- Top fade from registration -->
     <div class="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-red-950 via-red-950/80 to-transparent pointer-events-none z-10"></div>
     <!-- Bottom fade to footer -->
     <div class="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-red-950 via-red-950/80 to-transparent pointer-events-none z-10"></div>

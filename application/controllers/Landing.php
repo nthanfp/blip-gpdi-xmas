@@ -11,6 +11,7 @@ class Landing extends CI_Controller
         }
         $this->load->model('Setpref_Model');
         $this->load->model('Registration_Model');
+        $this->load->model('Faq_Model');
         $this->load->library('user_agent');
     }
 
@@ -75,7 +76,13 @@ class Landing extends CI_Controller
             return;
         }
 
-        $this->load->view('landing/invite', ['slug' => $slug]);
+        /* FAQ dari database (fallback kosong bila model/db belum siap) */
+        $faqs = [];
+        if (isset($this->Faq_Model) && $this->db->table_exists('set_faq')) {
+            $faqs = $this->Faq_Model->get_active();
+        }
+
+        $this->load->view('landing/invite', ['slug' => $slug, 'faqs' => $faqs]);
     }
 
     /* Sisa kursi real-time (publik, untuk form pendaftaran di invite.php) */

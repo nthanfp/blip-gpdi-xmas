@@ -38,9 +38,6 @@
                 <!-- Event Details -->
                 <?php $this->load->view('landing/christmas/event-details') ?>
 
-                <!-- Registration Form -->
-                <?php $this->load->view('landing/christmas/registration-form') ?>
-
                 <!-- Speaker -->
                 <?php $this->load->view('landing/christmas/speaker') ?>
 
@@ -52,6 +49,9 @@
 
                 <!-- FAQ -->
                 <?php $this->load->view('landing/christmas/faq') ?>
+
+                <!-- Registration Form -->
+                <?php $this->load->view('landing/christmas/registration-form') ?>
 
                 <!-- Contact -->
                 <?php $this->load->view('landing/christmas/contact') ?>

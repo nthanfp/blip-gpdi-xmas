@@ -39,37 +39,37 @@
 
             <?php
             $performers = [
-                ['img' => 'gallery-1.webp', 'no' => '01', 'tag' => 'Worship', 'title' => 'Worship Leader'],
-                ['img' => 'gallery-2.webp', 'no' => '02', 'tag' => 'Choir',    'title' => 'Christmas Choir'],
-                ['img' => 'gallery-3.webp', 'no' => '03', 'tag' => 'Music',    'title' => 'Music Team'],
-                ['img' => 'gallery-4.webp', 'no' => '04', 'tag' => 'Spesial',  'title' => 'Special'],
+                ['img' => 'gallery-1.webp', 'no' => '01', 'title' => 'Paduan Suara Narwastu'],
+                ['img' => 'gallery-2.webp', 'no' => '02', 'title' => 'Teens Choir'],
+                ['img' => 'gallery-3.webp', 'no' => '03', 'title' => 'Drama'],
+                ['img' => 'gallery-4.webp', 'no' => '04', 'title' => 'Tamborin'],
             ];
             foreach ($performers as $i => $p):
                 $isRev   = ($i % 2 === 1);
                 $reverse = $isRev ? 'flex-row-reverse' : '';
-                $textCls = $isRev ? 'flex-row-reverse text-right' : 'text-left';
+                $textCls = $isRev ? 'text-right pl-12' : 'text-left pr-12';
+                $numPos  = $isRev ? 'left-3' : 'right-3';
                 $aos     = $isRev ? 'fade-left' : 'fade-right';
                 ?>
 
             <!-- <?php echo $p['title']; ?> -->
-            <div class="group flex items-center gap-4 <?php echo $reverse; ?> rounded-2xl bg-white/10 hover:bg-white/[0.14] border border-white/10 hover:border-gold-400/40 backdrop-blur-sm p-3.5 transition-all duration-300"
+            <div class="group relative flex items-center gap-4 <?php echo $reverse; ?> rounded-2xl bg-white/10 hover:bg-white/[0.14] border border-white/10 hover:border-gold-400/40 backdrop-blur-sm p-3.5 transition-all duration-300"
                  data-aos="<?php echo $aos; ?>" data-aos-delay="<?php echo $i * 80; ?>">
 
                 <!-- Foto -->
-                <div class="w-[88px] h-[88px] rounded-xl overflow-hidden ring-1 ring-white/20 shrink-0">
+                <div class="w-28 h-28 rounded-xl overflow-hidden ring-1 ring-white/20 shrink-0">
                     <img src="<?php echo site_url('assets/images/christmas/' . $p['img']); ?>" alt="<?php echo $p['title']; ?>"
                          loading="lazy"
                          class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                 </div>
 
-                <!-- Teks -->
-                <div class="flex-1 min-w-0 flex items-center justify-between gap-3 <?php echo $textCls; ?>">
-                    <div class="min-w-0 space-y-1.5">
-                        <p class="text-[10px] font-bold uppercase tracking-widest text-gold-400 leading-none"><?php echo $p['tag']; ?></p>
-                        <p class="text-[15px] font-bold text-white leading-tight"><?php echo $p['title']; ?></p>
-                    </div>
-                    <span class="shrink-0 text-3xl font-black text-white/10 leading-none"><?php echo $p['no']; ?></span>
+                <!-- Nama performer -->
+                <div class="flex-1 min-w-0 flex items-center <?php echo $textCls; ?>">
+                    <p class="text-xl font-extrabold tracking-tight leading-tight min-w-0 bg-gradient-to-r from-gold-300 to-gold-500 bg-clip-text text-transparent"><?php echo $p['title']; ?></p>
                 </div>
+
+                <!-- Nomor urut -->
+                <span class="absolute top-1/2 -translate-y-1/2 <?php echo $numPos; ?> text-3xl font-black text-white/[0.18] leading-none pointer-events-none"><?php echo $p['no']; ?></span>
 
             </div>
 
