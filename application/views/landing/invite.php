@@ -7,13 +7,13 @@
 
 <body class="bg-red-950 text-stone-200 antialiased">
 
-    <!-- ═══ Decorative floating frames (top & bottom) — mobile: full width, desktop: hanya kolom kanan (60%–100%) ═══ -->
+    <!-- ═══ Decorative floating frames (top & bottom) — hanya mobile, layar besar tidak dipasang ═══ -->
     <img src="<?php echo site_url('assets/images/christmas/frame-top.png'); ?>" alt=""
          aria-hidden="true"
-         class="fixed top-0 left-0 w-full lg:left-[60%] lg:w-[40%] pointer-events-none select-none z-40">
+         class="fixed top-0 left-0 w-full lg:hidden pointer-events-none select-none z-40">
     <img src="<?php echo site_url('assets/images/christmas/frame_bottom.png'); ?>" alt=""
          aria-hidden="true"
-         class="fixed bottom-0 left-0 w-full lg:left-[60%] lg:w-[40%] pointer-events-none select-none z-40">
+         class="fixed bottom-0 left-0 w-full lg:hidden pointer-events-none select-none z-40">
 
     <!-- ═══ DESKTOP: Split-screen — left fixed, right scrolls ═══ -->
     <div class="lg:flex lg:h-screen">

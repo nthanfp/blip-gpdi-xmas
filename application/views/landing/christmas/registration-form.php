@@ -40,12 +40,6 @@
             <!-- Form card -->
             <div id="reg-form-card" class="bg-white rounded-2xl border border-stone-100 shadow-sm p-6 sm:p-8 space-y-5 relative" data-aos="fade-up" data-aos-delay="120">
 
-                <!-- Loading overlay (hidden) -->
-                <div id="reg-loading-overlay" class="hidden absolute inset-0 bg-white/70 backdrop-blur-sm rounded-2xl z-10 flex flex-col items-center justify-center gap-3">
-                    <i class="fas fa-spinner fa-spin text-gold-500 text-2xl"></i>
-                    <p class="text-sm font-semibold text-stone-600">Mendaftarkan...</p>
-                </div>
-
                 <!-- No. Handphone -->
                 <div class="space-y-1.5">
                     <label for="reg-phone" class="block text-xs font-semibold text-stone-700 tracking-wide">
@@ -247,12 +241,26 @@
     var sucBox = document.getElementById('reg-success');
     var formWrap = document.getElementById('reg-form-wrap');
     var formCard = document.getElementById('reg-form-card');
-    var overlay = document.getElementById('reg-loading-overlay');
     var backBtn = document.getElementById('reg-back-btn');
     var attendeesWrap = document.getElementById('reg-attendees');
     var addAttBtn = document.getElementById('reg-add-att');
     var endpointSeats = '<?php echo site_url('landing/registration_seats'); ?>';
     var endpointSubmit = '<?php echo site_url('landing/registration_submit'); ?>';
+
+    /* Loading overlay global (jquery-loading-overlay) — background gelap senada tema merah */
+    function showLoading() {
+        if (window.jQuery && jQuery.LoadingOverlay) {
+            jQuery('body').LoadingOverlay('show', {
+                background: 'rgba(69, 10, 10, 0.85)',
+                color: '#d4af37'
+            });
+        }
+    }
+    function hideLoading() {
+        if (window.jQuery && jQuery.LoadingOverlay) {
+            jQuery('body').LoadingOverlay('hide');
+        }
+    }
 
     /* Muat sisa kursi real-time */
     function loadSeats() {
@@ -319,6 +327,15 @@
         });
     });
 
+    /* Nama jemaat: otomatis UPPERCASE saat mengetik (delegated — berlaku untuk baris baru & reset) */
+    document.addEventListener('input', function (e) {
+        var t = e.target;
+        if (!t || !t.classList || !t.classList.contains('reg-att-name')) return;
+        var pos = t.selectionStart;
+        t.value = t.value.toUpperCase();
+        try { t.setSelectionRange(pos, pos); } catch (err) { /* abaikan */ }
+    });
+
     /* Sembunyikan error lantai saat memilih */
     document.querySelectorAll('input[name="reg-floor"]').forEach(function (r) {
         r.addEventListener('change', function () {
@@ -381,7 +398,7 @@
         btnText.classList.add('hidden');
         btnLoad.classList.remove('hidden');
         btn.disabled = true;
-        overlay.classList.remove('hidden');
+        showLoading();
         setInputsDisabled(true);
 
         /* Kumpulkan payload */
@@ -406,7 +423,7 @@
             btnText.classList.remove('hidden');
             btnLoad.classList.add('hidden');
             btn.disabled = false;
-            overlay.classList.add('hidden');
+            hideLoading();
             setInputsDisabled(false);
         }
 
@@ -465,7 +482,7 @@
         btnText.classList.remove('hidden');
         btnLoad.classList.add('hidden');
         btn.disabled = false;
-        overlay.classList.add('hidden');
+        hideLoading();
         setInputsDisabled(false);
         clearErrors();
 

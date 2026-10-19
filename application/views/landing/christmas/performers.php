@@ -56,8 +56,8 @@
             <div class="group relative flex items-center gap-4 <?php echo $reverse; ?> rounded-2xl bg-white/10 hover:bg-white/[0.14] border border-white/10 hover:border-gold-400/40 backdrop-blur-sm p-3.5 transition-all duration-300"
                  data-aos="<?php echo $aos; ?>" data-aos-delay="<?php echo $i * 80; ?>">
 
-                <!-- Foto -->
-                <div class="w-28 h-28 rounded-xl overflow-hidden ring-1 ring-white/20 shrink-0">
+                <!-- Foto (landscape 4:3) -->
+                <div class="w-36 h-28 rounded-xl overflow-hidden ring-1 ring-white/20 shrink-0">
                     <img src="<?php echo site_url('assets/images/christmas/' . $p['img']); ?>" alt="<?php echo $p['title']; ?>"
                          loading="lazy"
                          class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
