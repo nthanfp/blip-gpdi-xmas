@@ -135,6 +135,32 @@ class Landing extends CI_Controller
             ];
         }
 
+        /* Cek nomor sudah pernah daftar — minta konfirmasi daftar ulang */
+        if ($this->input->post('confirm') !== '1') {
+            $dup = $this->db->query(
+                'SELECT COUNT(x.attendeeid) AS people, MAX(r.created_date) AS last_at
+                 FROM act_xmas_registration r
+                 JOIN act_xmas_attendee x ON x.registrationid = r.registrationid AND x.status <> 2
+                 WHERE r.phone = ? AND r.status <> 2',
+                [$phone]
+            )->row();
+
+            if ($dup && (int) $dup->people > 0) {
+                $bulan = [1 => 'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+                $ts = strtotime($dup->last_at);
+                $this->respond([
+                    'success' => false,
+                    'requires_confirm' => true,
+                    'message' => 'Nomor ini sudah pernah mendaftar.',
+                    'data' => [
+                        'count' => (int) $dup->people,
+                        'registered_at' => date('d', $ts) . ' ' . $bulan[(int) date('n', $ts)] . ' ' . date('Y, H:i', $ts)
+                    ]
+                ]);
+                return;
+            }
+        }
+
         $seat_count = count($clean);
 
         /* Transaksi: cek sisa kursi (FOR UPDATE per lantai) lalu insert */

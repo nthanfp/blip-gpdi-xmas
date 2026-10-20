@@ -162,6 +162,33 @@
         </div>
 
     </div>
+
+    <!-- Konfirmasi daftar ulang (nomor sama) -->
+    <div id="reg-reconfirm" class="fixed inset-0 z-[9998] hidden items-center justify-center p-5 bg-red-950/85 backdrop-blur-sm">
+        <div class="w-full max-w-sm bg-white rounded-2xl border border-gold-400/40 shadow-xl p-6 space-y-5 text-center reg-success-anim">
+            <div class="w-14 h-14 mx-auto rounded-full bg-gold-400/10 border-2 border-gold-400/40 flex items-center justify-center">
+                <i class="fas fa-user-clock text-gold-500 text-xl leading-none"></i>
+            </div>
+            <div class="space-y-2">
+                <h3 class="text-base font-bold text-stone-800">Daftar Ulang?</h3>
+                <p class="text-sm text-stone-500 leading-relaxed">
+                    Apakah Anda yakin mendaftar ulang?<br>
+                    Anda telah terdaftar <span class="font-bold text-gold-600" id="reg-reconfirm-count">0</span> orang
+                    pada waktu <span class="font-semibold text-stone-700" id="reg-reconfirm-time"></span>.
+                </p>
+            </div>
+            <div class="flex gap-3">
+                <button type="button" id="reg-reconfirm-cancel"
+                        class="flex-1 py-2.5 rounded-xl border border-stone-200 text-sm font-semibold text-stone-500 hover:bg-stone-50 hover:border-stone-300 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-stone-300">
+                    Batal
+                </button>
+                <button type="button" id="reg-reconfirm-yes"
+                        class="flex-1 py-2.5 rounded-xl bg-gold-500 hover:bg-gold-600 text-red-950 text-sm font-semibold transition-all duration-200 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2">
+                    Ya, Daftar Ulang
+                </button>
+            </div>
+        </div>
+    </div>
 </section>
 
 <style>
@@ -343,6 +370,46 @@
         });
     });
 
+    var reconfirmBox = document.getElementById('reg-reconfirm');
+    var reconfirmCount = document.getElementById('reg-reconfirm-count');
+    var reconfirmTime = document.getElementById('reg-reconfirm-time');
+
+    function showReconfirm(data) {
+        reconfirmCount.textContent = data.count || 0;
+        reconfirmTime.textContent = data.registered_at || '-';
+        reconfirmBox.classList.remove('hidden');
+        reconfirmBox.classList.add('flex');
+    }
+    function hideReconfirm() {
+        reconfirmBox.classList.add('hidden');
+        reconfirmBox.classList.remove('flex');
+    }
+
+    /* Reset form ke keadaan awal (dipakai tombol Batal & Kembali) */
+    function resetForm() {
+        document.getElementById('reg-phone').value = '';
+        attendeesWrap.innerHTML =
+            '<div class="attendee-row flex gap-2 items-end">' +
+                '<div class="flex-1 space-y-1.5">' +
+                    '<input type="text" placeholder="Nama" class="reg-att-name reg-field w-full px-3 py-2.5 rounded-xl border border-stone-200 text-sm text-stone-800 placeholder-stone-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gold-400/50 focus:border-gold-400">' +
+                '</div>' +
+                '<div class="w-20 space-y-1.5">' +
+                    '<input type="number" placeholder="Umur" min="0" max="120" class="reg-att-age reg-field w-full px-3 py-2.5 rounded-xl border border-stone-200 text-sm text-stone-800 placeholder-stone-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gold-400/50 focus:border-gold-400">' +
+                '</div>' +
+            '</div>';
+        btnText.classList.remove('hidden');
+        btnLoad.classList.add('hidden');
+        btn.disabled = false;
+        hideLoading();
+        setInputsDisabled(false);
+        clearErrors();
+
+        /* Reset pilihan lantai */
+        var checkedFloor = document.querySelector('input[name="reg-floor"]:checked');
+        if (checkedFloor) checkedFloor.checked = false;
+        document.getElementById('reg-floor-err').classList.add('hidden');
+    }
+
     /* Submit */
     btn.addEventListener('click', function () {
         var phone = document.getElementById('reg-phone').value.trim();
@@ -394,6 +461,16 @@
             return;
         }
 
+        doSubmit(false);
+    });
+
+    /* Eksekusi submit (force = sudah konfirmasi daftar ulang) */
+    function doSubmit(force) {
+        var phone = document.getElementById('reg-phone').value.trim();
+        var floor = document.querySelector('input[name="reg-floor"]:checked');
+        var attNames = document.querySelectorAll('.reg-att-name');
+        var attAges = document.querySelectorAll('.reg-att-age');
+
         /* Loading state */
         btnText.classList.add('hidden');
         btnLoad.classList.remove('hidden');
@@ -414,6 +491,7 @@
         var payload = new FormData();
         payload.append('phone', phone);
         payload.append('floor', floor.value);
+        if (force) payload.append('confirm', '1');
         attendees.forEach(function (a, idx) {
             payload.append('attendees[' + idx + '][name]', a.name);
             payload.append('attendees[' + idx + '][age]', a.age);
@@ -435,6 +513,13 @@
             .then(function (r) { return r.json(); })
             .then(function (res) {
                 restoreUI();
+
+                /* Nomor sama → tampilkan konfirmasi daftar ulang */
+                if (res.requires_confirm) {
+                    showReconfirm(res.data || {});
+                    return;
+                }
+
                 if (!res.success) {
                     errMsg.textContent = res.message || 'Pendaftaran gagal. Coba lagi.';
                     errBox.classList.remove('hidden');
@@ -461,35 +546,25 @@
                 formCard.classList.add('reg-shake');
                 setTimeout(function () { formCard.classList.remove('reg-shake'); }, 500);
             });
+    }
+
+    /* Tombol konfirmasi daftar ulang */
+    document.getElementById('reg-reconfirm-yes').addEventListener('click', function () {
+        hideReconfirm();
+        doSubmit(true);
+    });
+
+    /* Batal daftar ulang → kosongkan form */
+    document.getElementById('reg-reconfirm-cancel').addEventListener('click', function () {
+        hideReconfirm();
+        resetForm();
     });
 
     /* Back to form */
     backBtn.addEventListener('click', function () {
         sucBox.classList.add('hidden');
         formWrap.classList.remove('hidden');
-
-        /* Reset form */
-        document.getElementById('reg-phone').value = '';
-        attendeesWrap.innerHTML =
-            '<div class="attendee-row flex gap-2 items-end">' +
-                '<div class="flex-1 space-y-1.5">' +
-                    '<input type="text" placeholder="Nama" class="reg-att-name reg-field w-full px-3 py-2.5 rounded-xl border border-stone-200 text-sm text-stone-800 placeholder-stone-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gold-400/50 focus:border-gold-400">' +
-                '</div>' +
-                '<div class="w-20 space-y-1.5">' +
-                    '<input type="number" placeholder="Umur" min="0" max="120" class="reg-att-age reg-field w-full px-3 py-2.5 rounded-xl border border-stone-200 text-sm text-stone-800 placeholder-stone-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gold-400/50 focus:border-gold-400">' +
-                '</div>' +
-            '</div>';
-        btnText.classList.remove('hidden');
-        btnLoad.classList.add('hidden');
-        btn.disabled = false;
-        hideLoading();
-        setInputsDisabled(false);
-        clearErrors();
-
-        /* Reset pilihan lantai */
-        var checkedFloor = document.querySelector('input[name="reg-floor"]:checked');
-        if (checkedFloor) checkedFloor.checked = false;
-        document.getElementById('reg-floor-err').classList.add('hidden');
+        resetForm();
     });
 })();
 </script>
