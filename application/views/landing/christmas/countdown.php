@@ -41,22 +41,22 @@
         <div class="flex justify-center gap-2 sm:gap-3 md:gap-4" id="xmas-countdown" data-aos="zoom-in-up" data-aos-delay="150">
 
             <div class="countdown-box">
-                <span class="countdown-num" id="cd-days">00</span>
+                <span class="countdown-num" id="cd-days"><span class="cd-inner">00</span></span>
                 <span class="countdown-label">Hari</span>
             </div>
 
             <div class="countdown-box">
-                <span class="countdown-num" id="cd-hours">00</span>
+                <span class="countdown-num" id="cd-hours"><span class="cd-inner">00</span></span>
                 <span class="countdown-label">Jam</span>
             </div>
 
             <div class="countdown-box">
-                <span class="countdown-num" id="cd-mins">00</span>
+                <span class="countdown-num" id="cd-mins"><span class="cd-inner">00</span></span>
                 <span class="countdown-label">Menit</span>
             </div>
 
             <div class="countdown-box">
-                <span class="countdown-num" id="cd-secs">00</span>
+                <span class="countdown-num" id="cd-secs"><span class="cd-inner">00</span></span>
                 <span class="countdown-label">Detik</span>
             </div>
 
@@ -90,17 +90,43 @@
         }
     }
     .countdown-num {
+        display: inline-block;
+        position: relative;
+        overflow: hidden;
         font-size: 1.5rem;
         line-height: 2rem;
+        height: 2rem;
         font-weight: 700;
         color: #D4AF37;
         font-family: 'Playfair Display', serif;
         text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
     }
+    .cd-inner {
+        display: block;
+    }
+    /* Digit lama: naik ke atas & keluar */
+    .cd-inner.cd-out {
+        position: absolute;
+        inset: 0;
+        animation: cdOut 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+    /* Digit baru: muncul dari bawah */
+    .cd-inner.cd-in {
+        animation: cdIn 0.45s cubic-bezier(0.34, 1.3, 0.64, 1) both;
+    }
+    @keyframes cdOut {
+        0%   { transform: translateY(0); opacity: 1; }
+        100% { transform: translateY(-100%); opacity: 0; }
+    }
+    @keyframes cdIn {
+        0%   { transform: translateY(100%); opacity: 0; }
+        100% { transform: translateY(0); opacity: 1; }
+    }
     @media (min-width: 640px) {
         .countdown-num {
             font-size: 1.875rem;
             line-height: 2.25rem;
+            height: 2.25rem;
         }
     }
     .countdown-label {
@@ -139,6 +165,10 @@
         90% { opacity: 1; }
         100% { transform: translateY(100%) rotate(360deg); opacity: 0; }
     }
+
+    @media (prefers-reduced-motion: reduce) {
+        .cd-inner.cd-out, .cd-inner.cd-in { animation: none; }
+    }
 </style>
 
 <script>
@@ -151,15 +181,51 @@
 
     function pad(n) { return n < 10 ? '0' + n : n; }
 
+    var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    /* Digit lama naik ke atas, digit baru muncul dari bawah.
+       Guard via data-val: hanya box yang nilainya BERUBAH yang animasi. */
+    function setNum(el, val) {
+        if (el.getAttribute('data-val') === val) return;
+        el.setAttribute('data-val', val);
+
+        var cur = el.querySelector('.cd-inner:not(.cd-out)');
+
+        if (reduceMotion) {
+            el.innerHTML = '';
+            var plain = document.createElement('span');
+            plain.className = 'cd-inner';
+            plain.textContent = val;
+            el.appendChild(plain);
+            return;
+        }
+
+        /* Digit lama → animasi keluar ke atas, lalu dihapus */
+        if (cur) {
+            cur.classList.add('cd-out');
+            (function (node) {
+                setTimeout(function () {
+                    if (node.parentNode) node.parentNode.removeChild(node);
+                }, 420);
+            })(cur);
+        }
+
+        /* Digit baru → muncul dari bawah */
+        var next = document.createElement('span');
+        next.className = 'cd-inner cd-in';
+        next.textContent = val;
+        el.appendChild(next);
+    }
+
     function tick() {
         var now = Date.now();
         var diff = target - now;
 
         if (diff <= 0) {
-            dEl.textContent = '00';
-            hEl.textContent = '00';
-            mEl.textContent = '00';
-            sEl.textContent = '00';
+            setNum(dEl, '00');
+            setNum(hEl, '00');
+            setNum(mEl, '00');
+            setNum(sEl, '00');
             return;
         }
 
@@ -168,10 +234,10 @@
         var m = Math.floor((diff % 3600000) / 60000);
         var s = Math.floor((diff % 60000) / 1000);
 
-        dEl.textContent = pad(d);
-        hEl.textContent = pad(h);
-        mEl.textContent = pad(m);
-        sEl.textContent = pad(s);
+        setNum(dEl, pad(d));
+        setNum(hEl, pad(h));
+        setNum(mEl, pad(m));
+        setNum(sEl, pad(s));
 
         requestAnimationFrame(function () { setTimeout(tick, 1000); });
     }

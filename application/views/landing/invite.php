@@ -7,6 +7,58 @@
 
 <body class="bg-red-950 text-stone-200 antialiased">
 
+    <!-- ═══ Snowfall (pure CSS, halus & subtle) ═══ -->
+    <div class="xmas-snow" aria-hidden="true">
+        <span style="left:4%;  width:4px; height:4px; background:rgba(245,237,214,.8);  animation-duration:12s; animation-delay:-2s;  --drift:25px;"></span>
+        <span style="left:11%; width:3px; height:3px; background:rgba(212,175,55,.75); animation-duration:16s; animation-delay:-8s;  --drift:-30px;"></span>
+        <span style="left:18%; width:5px; height:5px; background:rgba(245,237,214,.6);  animation-duration:14s; animation-delay:-14s; --drift:20px;"></span>
+        <span style="left:26%; width:3px; height:3px; background:rgba(245,237,214,.75); animation-duration:18s; animation-delay:-5s;  --drift:-18px;"></span>
+        <span style="left:33%; width:4px; height:4px; background:rgba(212,175,55,.7);  animation-duration:11s; animation-delay:-11s; --drift:28px;"></span>
+        <span style="left:41%; width:3px; height:3px; background:rgba(245,237,214,.7);  animation-duration:15s; animation-delay:-1s;  --drift:-24px;"></span>
+        <span style="left:48%; width:5px; height:5px; background:rgba(245,237,214,.55); animation-duration:13s; animation-delay:-16s; --drift:15px;"></span>
+        <span style="left:55%; width:3px; height:3px; background:rgba(212,175,55,.8);  animation-duration:17s; animation-delay:-7s;  --drift:-22px;"></span>
+        <span style="left:62%; width:4px; height:4px; background:rgba(245,237,214,.75); animation-duration:12s; animation-delay:-13s; --drift:30px;"></span>
+        <span style="left:69%; width:3px; height:3px; background:rgba(245,237,214,.65); animation-duration:19s; animation-delay:-3s;  --drift:-16px;"></span>
+        <span style="left:76%; width:5px; height:5px; background:rgba(212,175,55,.6);  animation-duration:14s; animation-delay:-18s; --drift:22px;"></span>
+        <span style="left:83%; width:3px; height:3px; background:rgba(245,237,214,.85); animation-duration:10s; animation-delay:-9s;  --drift:-27px;"></span>
+        <span style="left:90%; width:4px; height:4px; background:rgba(245,237,214,.7);  animation-duration:20s; animation-delay:-4s;  --drift:18px;"></span>
+        <span style="left:96%; width:3px; height:3px; background:rgba(212,175,55,.75); animation-duration:13s; animation-delay:-12s; --drift:-20px;"></span>
+        <span style="left:8%;  width:3px; height:3px; background:rgba(245,237,214,.6);  animation-duration:21s; animation-delay:-20s; --drift:12px;"></span>
+        <span style="left:52%; width:4px; height:4px; background:rgba(245,237,214,.7);  animation-duration:12s; animation-delay:-6s;  --drift:-25px;"></span>
+        <span style="left:72%; width:3px; height:3px; background:rgba(245,237,214,.75); animation-duration:16s; animation-delay:-15s; --drift:26px;"></span>
+        <span style="left:37%; width:3px; height:3px; background:rgba(212,175,55,.65); animation-duration:15s; animation-delay:-10s; --drift:-14px;"></span>
+        <span style="left:15%; width:4px; height:4px; background:rgba(245,237,214,.7);  animation-duration:14s; animation-delay:-17s; --drift:23px;"></span>
+        <span style="left:59%; width:3px; height:3px; background:rgba(212,175,55,.7);  animation-duration:18s; animation-delay:-9s;  --drift:-19px;"></span>
+        <span style="left:87%; width:4px; height:4px; background:rgba(245,237,214,.65); animation-duration:12s; animation-delay:-3s;  --drift:21px;"></span>
+        <span style="left:44%; width:3px; height:3px; background:rgba(245,237,214,.8);  animation-duration:17s; animation-delay:-19s; --drift:-26px;"></span>
+    </div>
+    <style>
+        .xmas-snow {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 30;
+            overflow: hidden;
+        }
+        .xmas-snow span {
+            position: absolute;
+            top: -8px;
+            border-radius: 50%;
+            animation-name: xmasSnowfall;
+            animation-timing-function: linear;
+            animation-iteration-count: infinite;
+        }
+        @keyframes xmasSnowfall {
+            0%   { transform: translateY(-2vh) translateX(0); opacity: 0; }
+            8%   { opacity: 1; }
+            92%  { opacity: 1; }
+            100% { transform: translateY(105vh) translateX(var(--drift, 20px)); opacity: 0; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .xmas-snow { display: none; }
+        }
+    </style>
+
     <!-- ═══ Decorative floating frames (top & bottom) — hanya mobile, layar besar tidak dipasang ═══ -->
     <img src="<?php echo site_url('assets/images/christmas/frame-top.png'); ?>" alt=""
          aria-hidden="true"

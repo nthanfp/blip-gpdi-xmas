@@ -32,33 +32,39 @@
 
         <!-- Logo -->
         <img src="<?php echo site_url('assets/images/christmas/gpdi.png'); ?>" alt="GPdI Kopo Permai"
-            class="w-12 h-auto mx-auto drop-shadow-[0_4px_12px_rgba(0,0,0,0.5)]">
+            class="w-12 h-auto mx-auto drop-shadow-[0_4px_12px_rgba(0,0,0,0.5)]"
+            data-aos="fade-up" data-aos-delay="0">
 
         <!-- Eyebrow label -->
-        <p class="text-[10px] sm:text-[11px] font-semibold tracking-[0.25em] uppercase text-gold-400">
+        <p class="text-[10px] sm:text-[11px] font-semibold tracking-[0.25em] uppercase text-gold-400"
+            data-aos="fade-up" data-aos-delay="100">
             GPdI Kopo Permai<br>Christmas Celebration 2026
         </p>
 
         <!-- Decorative gold line -->
-        <div class="flex items-center justify-center gap-3">
+        <div class="flex items-center justify-center gap-3" data-aos="fade-up" data-aos-delay="180">
             <span class="block w-8 h-px bg-gold-400/50"></span>
             <span class="block w-1.5 h-1.5 rounded-full bg-gold-400/60"></span>
             <span class="block w-8 h-px bg-gold-400/50"></span>
         </div>
 
-        <!-- Main title -->
-        <img src="<?php echo site_url('assets/images/christmas/from-glory.png'); ?>" alt="From Glory to Glory"
-            class="w-full max-w-sm mx-auto drop-shadow-[0_4px_16px_rgba(0,0,0,0.6)]">
+        <!-- Main title (dengan sparkle sweep) -->
+        <div class="glory-wrap relative overflow-hidden" data-aos="fade-up" data-aos-delay="260">
+            <img src="<?php echo site_url('assets/images/christmas/from-glory.png'); ?>" alt="From Glory to Glory"
+                class="w-full max-w-sm mx-auto drop-shadow-[0_4px_16px_rgba(0,0,0,0.6)]">
+            <span class="glory-shine" aria-hidden="true"
+                style="-webkit-mask-image:url('<?php echo site_url('assets/images/christmas/from-glory.png'); ?>');mask-image:url('<?php echo site_url('assets/images/christmas/from-glory.png'); ?>');-webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;"></span>
+        </div>
 
         <!-- Decorative gold line -->
-        <div class="flex items-center justify-center gap-3">
+        <div class="flex items-center justify-center gap-3" data-aos="fade-up" data-aos-delay="340">
             <span class="block w-12 h-px bg-gold-400/30"></span>
             <span class="block w-1 h-1 rounded-full bg-gold-400/40"></span>
             <span class="block w-12 h-px bg-gold-400/30"></span>
         </div>
 
         <!-- Bible verse -->
-        <blockquote class="space-y-2">
+        <blockquote class="space-y-2" data-aos="fade-up" data-aos-delay="420">
             <p class="text-xs sm:text-sm italic text-stone-300/80 leading-relaxed">
                 "Dan kita semua mencerminkan kemuliaan Tuhan dengan muka yang tidak berselubung. Dan karena kemuliaan
                 itu datangnya dari Tuhan yang adalah Roh, maka kita diubah menjadi serupa dengan gambar-Nya, dalam
@@ -84,3 +90,27 @@
     </div>
 
 </section>
+
+<style>
+    /* Sparkle sweep "From Glory to Glory" (mobile) */
+    .glory-shine {
+        position: absolute;
+        inset: -10% -30%;
+        background: linear-gradient(115deg,
+            transparent 42%,
+            rgba(255, 255, 255, 0.55) 50%,
+            rgba(255, 244, 214, 0.85) 52%,
+            transparent 60%);
+        transform: translateX(-120%);
+        animation: gloryShine 6s ease-in-out infinite;
+        pointer-events: none;
+    }
+    @keyframes gloryShine {
+        0%   { transform: translateX(-120%); }
+        55%  { transform: translateX(120%); }
+        100% { transform: translateX(120%); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+        .glory-shine { animation: none; display: none; }
+    }
+</style>
