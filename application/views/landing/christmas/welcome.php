@@ -42,9 +42,8 @@
 
         <!-- Description -->
         <p class="text-sm sm:text-base text-stone-300 leading-relaxed">
-            Kami mengundang Anda dan keluarga untuk merayakan makna Natal bersama dalam kehangatan
-            persekutuan. Mari kita sambut hari yang penuh sukacita ini dengan hati yang bersyukur
-            dan penuh kasih.
+            Celebrate Christmas with us, in warmth, fellowship, and love.
+            You and your family are welcome here.
         </p>
 
     </div>

@@ -48,7 +48,7 @@
 
         <!-- Main title -->
         <img src="<?php echo site_url('assets/images/christmas/from-glory.png'); ?>" alt="From Glory to Glory"
-            class="w-full max-w-sm mx-auto drop-shadow-[0_4px_16px_rgba(0,0,0,0.6)]">
+            class="w-full mx-auto -mx-6 md:-mx-10 drop-shadow-[0_4px_16px_rgba(0,0,0,0.6)]">
 
         <!-- Decorative gold line -->
         <div class="flex items-center justify-center gap-3">
@@ -58,7 +58,7 @@
         </div>
 
         <!-- Bible verse -->
-        <blockquote class="space-y-2">
+        <blockquote class="space-y-2 -mx-6 md:-mx-10">
             <p class="text-sm italic text-stone-300/80 leading-relaxed">
                 "Dan kita semua mencerminkan kemuliaan Tuhan dengan muka yang tidak berselubung. Dan karena kemuliaan
                 itu datangnya dari Tuhan yang adalah Roh, maka kita diubah menjadi serupa dengan gambar-Nya, dalam

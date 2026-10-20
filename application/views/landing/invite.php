@@ -64,6 +64,80 @@
     </div>
 
     <?php $this->load->view('partial/landing/foot.php') ?>
+
+    <!-- ═══ Music player (autoplay on first interaction + toggle) ═══ -->
+    <audio id="xmas-audio" loop preload="auto">
+        <source src="<?php echo site_url('assets/audio/christmas.mp3'); ?>" type="audio/mpeg">
+    </audio>
+    <button type="button" id="xmas-music-btn" aria-label="Putar atau jeda musik"
+            class="fixed bottom-20 right-5 z-50 w-12 h-12 rounded-full bg-gold-500/90 hover:bg-gold-400 text-red-950 shadow-lg shadow-gold-500/30 flex items-center justify-center transition-all duration-300 active:scale-95 focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2 focus:ring-offset-red-950">
+        <i class="fas fa-music text-sm" id="xmas-music-icon"></i>
+    </button>
+    <script>
+        (function () {
+            var audio = document.getElementById('xmas-audio');
+            var icon = document.getElementById('xmas-music-icon');
+            var started = false;
+            var FADE_MS = 1500;
+            var fadeTimer = null;
+
+            function renderIcon(playing) {
+                if (playing) {
+                    icon.classList.remove('fa-play');
+                    icon.classList.add('fa-music', 'animate-pulse');
+                } else {
+                    icon.classList.remove('fa-music', 'animate-pulse');
+                    icon.classList.add('fa-play');
+                }
+            }
+
+            function fadeIn() {
+                clearInterval(fadeTimer);
+                var target = 0.7;
+                audio.volume = 0;
+                fadeTimer = setInterval(function () {
+                    audio.volume = Math.min(target, audio.volume + target / (FADE_MS / 50));
+                    if (audio.volume >= target) clearInterval(fadeTimer);
+                }, 50);
+            }
+
+            function play() {
+                fadeIn();
+                audio.play().then(function () {
+                    started = true;
+                    renderIcon(true);
+                }).catch(function () {
+                    clearInterval(fadeTimer);
+                    started = false;
+                    renderIcon(false);
+                });
+            }
+
+            function pause() {
+                clearInterval(fadeTimer);
+                audio.pause();
+                renderIcon(false);
+            }
+
+            /* Interaksi pertama (klik/scroll/tap/key) → musik mulai */
+            var events = ['pointerdown', 'touchstart', 'wheel', 'keydown', 'scroll'];
+            function firstInteraction() {
+                events.forEach(function (ev) { document.removeEventListener(ev, firstInteraction); });
+                if (!started && audio.paused) play();
+            }
+            events.forEach(function (ev) {
+                document.addEventListener(ev, firstInteraction, { passive: true });
+            });
+
+            /* Toggle manual */
+            document.getElementById('xmas-music-btn').addEventListener('click', function (e) {
+                e.stopPropagation();
+                if (audio.paused) play(); else pause();
+            });
+
+            renderIcon(false);
+        })();
+    </script>
 </body>
 
 </html>
