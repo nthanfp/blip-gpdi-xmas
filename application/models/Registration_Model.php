@@ -330,15 +330,21 @@ class Registration_Model extends CI_Model
             $map[(int) $p->floor] = (int) $p->people;
         }
 
+        /* Kursi yang ditahan booking aktif (act_xmas_booking, status = 0) */
+        $this->load->model('Booking_Model');
+        $bookedMap = $this->Booking_Model->booked_by_floor();
+
         $floor_stats = [];
         foreach ($floors as $f) {
             $registered = isset($map[(int) $f->floor]) ? $map[(int) $f->floor] : 0;
+            $booked = isset($bookedMap[(int) $f->floor]) ? $bookedMap[(int) $f->floor] : 0;
             $floor_stats[] = [
                 'floor' => (int) $f->floor,
                 'name' => $f->name,
                 'capacity' => (int) $f->capacity,
                 'registered' => $registered,
-                'remaining' => max(0, (int) $f->capacity - $registered)
+                'booked' => $booked,
+                'remaining' => max(0, (int) $f->capacity - $registered - $booked)
             ];
         }
 
@@ -397,6 +403,10 @@ class Registration_Model extends CI_Model
             $map[(int) $p->floor] = (int) $p->people;
         }
 
+        // Kursi yang ditahan booking aktif per lantai
+        $this->load->model('Booking_Model');
+        $bookedMap = $this->Booking_Model->booked_by_floor();
+
         foreach ($caps as $floor => $cap) {
             $exists = $this->db->where('floor', $floor)->count_all_results('set_xmas_floor');
             if (!$exists) {
@@ -404,10 +414,11 @@ class Registration_Model extends CI_Model
             }
 
             $registered = isset($map[$floor]) ? $map[$floor] : 0;
-            if ((int) $cap < $registered) {
+            $booked = isset($bookedMap[$floor]) ? $bookedMap[$floor] : 0;
+            if ((int) $cap < ($registered + $booked)) {
                 return [
                     'success' => false,
-                    'message' => 'Floor ' . $floor . ' quota (' . (int) $cap . ') cannot be less than the number of registered attendees (' . $registered . ').'
+                    'message' => 'Floor ' . $floor . ' quota (' . (int) $cap . ') cannot be less than registered attendees + booked seats (' . $registered . ' + ' . $booked . ').'
                 ];
             }
         }

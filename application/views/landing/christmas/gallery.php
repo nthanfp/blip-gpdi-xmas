@@ -143,7 +143,7 @@
     if (!lb || !lbImg) return;
 
     var current = 0;
-    var base = <?php echo json_encode(site_url('assets/images/christmas/gallery-')); ?>;
+    var base = '<?php echo addslashes(site_url('assets/images/christmas/gallery-')); ?>';
 
     function srcFor(i) { return base + (i + 1) + '.webp'; }
 

@@ -363,7 +363,10 @@
 
                         floors.forEach((f) => {
                             const el = f.floor === 1 ? $('#statFloor1') : $('#statFloor2')
-                            el.html(`${f.remaining} <span class="text-muted font-weight-normal">/ ${f.capacity} Seats</span>`)
+                            const bookedInfo = Number(f.booked || 0) > 0
+                                ? ` <span class="text-warning font-weight-normal">(booked ${f.booked})</span>`
+                                : ''
+                            el.html(`${f.remaining} <span class="text-muted font-weight-normal">/ ${f.capacity} Seats</span>${bookedInfo}`)
 
                             const capInput = f.floor === 1 ? $('#capFloor1') : $('#capFloor2')
                             capInput.val(f.capacity)

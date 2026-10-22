@@ -185,7 +185,18 @@ class Landing extends CI_Controller
             [$floor]
         )->row()->people;
 
-        $remaining = max(0, (int) $floor_row->capacity - (int) $registered);
+        /* Kursi yang ditahan booking aktif mengurangi sisa kuota */
+        $booked = 0;
+        if ($this->db->table_exists('act_xmas_booking')) {
+            $booked = (int) $this->db->query(
+                'SELECT COALESCE(SUM(seats), 0) AS seats
+                 FROM act_xmas_booking
+                 WHERE floor = ? AND status = 0',
+                [$floor]
+            )->row()->seats;
+        }
+
+        $remaining = max(0, (int) $floor_row->capacity - (int) $registered - $booked);
         if ($seat_count > $remaining) {
             $this->db->trans_rollback();
             $this->respond([
