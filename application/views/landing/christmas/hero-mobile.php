@@ -31,7 +31,7 @@
     <div class="relative z-10 space-y-6 max-w-md">
 
         <!-- Logo -->
-        <img src="<?php echo site_url('assets/images/christmas/gpdi.png'); ?>" alt="GPdI Kopo Permai"
+        <img src="<?php echo site_url('assets/images/christmas/gpdi.webp'); ?>" alt="GPdI Kopo Permai"
             class="w-12 h-auto mx-auto drop-shadow-[0_4px_12px_rgba(0,0,0,0.5)]"
             data-aos="fade-up" data-aos-delay="0">
 

@@ -39,10 +39,10 @@
 
             <?php
             $performers = [
-                ['img' => 'gallery-1.webp', 'no' => '01', 'title' => 'Paduan Suara Narwastu'],
-                ['img' => 'gallery-2.webp', 'no' => '02', 'title' => 'Teens Choir'],
-                ['img' => 'gallery-3.webp', 'no' => '03', 'title' => 'Drama'],
-                ['img' => 'gallery-4.webp', 'no' => '04', 'title' => 'Tamborin'],
+                ['img' => 'gallery-1.webp', 'no' => '01', 'title' => 'Paduan Suara Narwastu'], // TODO: ganti foto asli paduan suara saat sudah ready
+                ['img' => 'teens-choir.webp', 'no' => '02', 'title' => 'Teens Choir'],
+                ['img' => 'drama.webp', 'no' => '03', 'title' => 'Drama'],
+                ['img' => 'tamborin.webp', 'no' => '04', 'title' => 'Tamborin'],
             ];
             foreach ($performers as $i => $p):
                 $isRev   = ($i % 2 === 1);

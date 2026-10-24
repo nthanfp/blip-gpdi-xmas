@@ -60,10 +60,10 @@
     </style>
 
     <!-- ═══ Decorative floating frames (top & bottom) — hanya mobile, layar besar tidak dipasang ═══ -->
-    <img src="<?php echo site_url('assets/images/christmas/frame-top.png'); ?>" alt=""
+    <img src="<?php echo site_url('assets/images/christmas/frame-top.webp'); ?>" alt=""
          aria-hidden="true"
          class="fixed top-0 left-0 w-full lg:hidden pointer-events-none select-none z-40">
-    <img src="<?php echo site_url('assets/images/christmas/frame_bottom.png'); ?>" alt=""
+    <img src="<?php echo site_url('assets/images/christmas/frame_bottom.webp'); ?>" alt=""
          aria-hidden="true"
          class="fixed bottom-0 left-0 w-full lg:hidden pointer-events-none select-none z-40">
 

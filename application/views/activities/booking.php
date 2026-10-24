@@ -13,7 +13,7 @@
             <div class="row mb-2">
                 <div class="col-12 d-flex justify-content-between align-items-center">
                     <div>
-                        <span class="text-muted font-italic">Tahan kuota kursi per lantai — penentuan seat dilakukan belakangan di Seating Layout</span>
+                        <span class="text-muted font-italic">Booking &amp; Invitation — hold seat quota per floor; actual seats are assigned later in Seating Layout</span>
                     </div>
                     <div>
                         <button type="button" class="btn btn-sm btn-secondary" id="btnAdd">
@@ -29,7 +29,7 @@
                     <div class="info-box shadow-sm">
                         <span class="info-box-icon bg-secondary"><i class="fas fa-layer-group"></i></span>
                         <div class="info-box-content">
-                            <span class="info-box-text">Lantai 1 — Sisa Kuota</span>
+                            <span class="info-box-text">Floor 1 — Remaining Quota</span>
                             <span class="info-box-number" id="statFloor1">-</span>
                             <span class="info-box-description" id="subFloor1"></span>
                         </div>
@@ -39,7 +39,7 @@
                     <div class="info-box shadow-sm">
                         <span class="info-box-icon bg-secondary"><i class="fas fa-layer-group"></i></span>
                         <div class="info-box-content">
-                            <span class="info-box-text">Lantai 2 — Sisa Kuota</span>
+                            <span class="info-box-text">Floor 2 — Remaining Quota</span>
                             <span class="info-box-number" id="statFloor2">-</span>
                             <span class="info-box-description" id="subFloor2"></span>
                         </div>
@@ -49,9 +49,9 @@
                     <div class="info-box shadow-sm">
                         <span class="info-box-icon bg-warning"><i class="fas fa-bookmark"></i></span>
                         <div class="info-box-content">
-                            <span class="info-box-text">Total Dibooking (Aktif)</span>
+                            <span class="info-box-text">Total Booked (Active)</span>
                             <span class="info-box-number" id="statBooked">-</span>
-                            <span class="info-box-description">kursi ditahan semua lantai</span>
+                            <span class="info-box-description">seats held across all floors</span>
                         </div>
                     </div>
                 </div>
@@ -63,14 +63,14 @@
                         <div class="col-6 col-md-5 mb-1">
                             <label class="mb-0">Search</label>
                             <input type="text" class="form-control form-control-sm" id="search"
-                                placeholder="keterangan / lantai..." autocomplete="off">
+                                placeholder="name / phone / notes..." autocomplete="off">
                         </div>
                         <div class="col-6 col-md-2 mb-1">
                             <label class="mb-0">Floor</label>
                             <select class="form-control form-control-sm" id="filterFloor">
                                 <option value="">All</option>
-                                <option value="1">Lantai 1</option>
-                                <option value="2">Lantai 2</option>
+                                <option value="1">Floor 1</option>
+                                <option value="2">Floor 2</option>
                             </select>
                         </div>
                         <div class="col-6 col-md-2 mb-1">
@@ -101,8 +101,10 @@
                             <tr>
                                 <th class="d-none">ID</th>
                                 <th style="width: 90px;">Floor</th>
-                                <th style="width: 70px;">Kursi</th>
-                                <th>Keterangan</th>
+                                <th style="width: 60px;">Seats</th>
+                                <th>Name</th>
+                                <th style="width: 120px;">Phone</th>
+                                <th>Notes</th>
                                 <th style="width: 80px;">Status</th>
                                 <th>Modified</th>
                                 <th class="text-right">Action</th>
@@ -110,7 +112,7 @@
                         </thead>
                         <tbody id="tableBodyBooking">
                             <tr>
-                                <td colspan="7" class="text-center text-muted py-4">Loading...</td>
+                                <td colspan="9" class="text-center text-muted py-4">Loading...</td>
                             </tr>
                         </tbody>
                     </table>
@@ -135,7 +137,7 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="modalTitle">New Booking</h5>
+                        <h5 class="modal-title" id="modalTitle">New Booking &amp; Invitation</h5>
                         <button type="button" class="close" data-dismiss="modal">
                             <span>&times;</span>
                         </button>
@@ -145,36 +147,53 @@
                             <input type="hidden" name="booking_id" id="bookingid" value="">
 
                             <div class="row">
+                                <div class="col-7">
+                                    <div class="form-group">
+                                        <label>Name <span class="text-danger">*</span></label>
+                                        <input type="text" name="name" id="name" class="form-control" autocomplete="off"
+                                            maxlength="100" placeholder="e.g. Vocalia Committee / John Doe">
+                                    </div>
+                                </div>
+                                <div class="col-5">
+                                    <div class="form-group">
+                                        <label>Phone <span class="text-muted font-italic">(optional)</span></label>
+                                        <input type="text" name="phone" id="phone" class="form-control" autocomplete="off"
+                                            maxlength="20" placeholder="08xxxxxxxxxx">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
                                 <div class="col-6">
                                     <div class="form-group">
                                         <label>Floor <span class="text-danger">*</span></label>
                                         <select name="floor" id="floor" class="form-control">
-                                            <option value="">-- Pilih --</option>
-                                            <option value="1">Lantai 1</option>
-                                            <option value="2">Lantai 2</option>
+                                            <option value="">-- Select --</option>
+                                            <option value="1">Floor 1</option>
+                                            <option value="2">Floor 2</option>
                                         </select>
                                     </div>
                                 </div>
                                 <div class="col-6">
                                     <div class="form-group">
-                                        <label>Jumlah Kursi <span class="text-danger">*</span></label>
+                                        <label>Number of Seats <span class="text-danger">*</span></label>
                                         <input type="number" name="seats" id="seats" class="form-control" min="1" step="1" value="1">
                                     </div>
                                 </div>
                             </div>
 
                             <div class="form-group">
-                                <label>Keterangan <span class="text-danger">*</span></label>
+                                <label>Notes <span class="text-danger">*</span></label>
                                 <textarea name="keterangan" id="keterangan" class="form-control" autocomplete="off"
-                                    placeholder="e.g. Reserved untuk panitia vocalia (6 orang)" rows="3"></textarea>
-                                <small class="text-muted font-italic">Alasan penahanan kuota — kursi ini akan dipakai saat pendaftar nyata masuk.</small>
+                                    placeholder="e.g. Reserved for Vocalia committee (6 people)" rows="3"></textarea>
+                                <small class="text-muted font-italic">Reason for holding the quota — these seats will be used when the invitees arrive.</small>
                             </div>
 
                             <div class="form-group">
                                 <label>Status</label>
                                 <select name="status" id="status" class="form-control">
-                                    <option value="0">Aktif — menahan kuota</option>
-                                    <option value="1">Batal — tidak menahan kuota</option>
+                                    <option value="0">Active — holds quota</option>
+                                    <option value="1">Cancelled — does not hold quota</option>
                                 </select>
                             </div>
                         </form>
@@ -200,6 +219,7 @@
                 list: '<?= site_url("activities/booking/data_list") ?>',
                 stats: '<?= site_url("activities/booking/data_stats") ?>',
                 create: '<?= site_url("activities/booking/data_new") ?>',
+                invitation: '<?= site_url("invitation/") ?>',
                 edit: '<?= site_url("activities/booking/data_edit") ?>',
                 update: '<?= site_url("activities/booking/data_update") ?>',
                 delete: '<?= site_url("activities/booking/data_delete") ?>'
@@ -220,6 +240,8 @@
 
             const fields = {
                 id: $('#bookingid'),
+                name: $('#name'),
+                phone: $('#phone'),
                 floor: $('#floor'),
                 seats: $('#seats'),
                 keterangan: $('#keterangan'),
@@ -236,18 +258,20 @@
                 return `${pad(d.getDate())} ${d.toLocaleString('en-US', { month: 'short' })} ${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`
             }
 
-            const floorName = (floor) => Number(floor) === 2 ? 'Lantai 2' : 'Lantai 1'
+            const floorName = (floor) => Number(floor) === 2 ? 'Floor 2' : 'Floor 1'
 
             const statusBadge = (s) => Number(s) === 1
-                ? '<span class="badge badge-secondary">Batal</span>'
-                : '<span class="badge badge-success">Aktif</span>'
+                ? '<span class="badge badge-secondary">Cancelled</span>'
+                : '<span class="badge badge-success">Active</span>'
 
             const resetForm = () => {
                 form[0].reset()
                 fields.id.val('')
+                fields.name.val('')
+                fields.phone.val('')
                 fields.seats.val('1')
                 fields.status.val('0')
-                $('#modalTitle').text('New Booking')
+                $('#modalTitle').text('New Booking & Invitation')
             }
 
             const loadStats = () => {
@@ -264,7 +288,7 @@
                             const el = f.floor === 1 ? $('#statFloor1') : $('#statFloor2')
                             const sub = f.floor === 1 ? $('#subFloor1') : $('#subFloor2')
                             el.html(`${f.remaining} <span class="text-muted font-weight-normal">/ ${f.capacity} Seats</span>`)
-                            sub.text(`${f.registered} terdaftar · ${f.booked || 0} dibooking`)
+                            sub.text(`${f.registered} registered · ${f.booked || 0} booked`)
                             totalBooked += Number(f.booked || 0)
                         })
 
@@ -275,7 +299,7 @@
 
             const renderRows = (rows) => {
                 if (!rows || !rows.length) {
-                    tableBody.html('<tr><td colspan="7" class="text-center text-muted py-4">No data found</td></tr>')
+                    tableBody.html('<tr><td colspan="9" class="text-center text-muted py-4">No data found</td></tr>')
                     return
                 }
 
@@ -283,15 +307,21 @@
                     <tr>
                         <td class="d-none">${escapeHtml(row.bookingid)}</td>
                         <td>${escapeHtml(floorName(row.floor))}</td>
-                        <td><span class="badge badge-info">${escapeHtml(row.seats)}</span></td>
-                        <td style="max-width: 340px; word-break: break-word;">${escapeHtml(row.keterangan)}</td>
+                        <td>${escapeHtml(row.seats)}</td>
+                        <td style="max-width: 180px; word-break: break-word;">${escapeHtml(row.name)}${(row.confirmed_count !== null && row.confirmed_count !== undefined && row.confirmed_count !== '') ? ` <span class="badge badge-success" title="Confirmed attendance">&#10003; ${escapeHtml(row.confirmed_count)}</span>` : ''}</td>
+                        <td>${row.phone ? escapeHtml(row.phone) : '<span class="text-muted">&mdash;</span>'}</td>
+                        <td style="max-width: 260px; word-break: break-word;">${escapeHtml(row.keterangan)}</td>
                         <td>${statusBadge(row.status)}</td>
                         <td>${escapeHtml(formatDate(row.modified_date || row.created_date))}</td>
-                        <td class="text-right">
-                            <button type="button" class="btn btn-xs btn-outline-primary btn-edit" data-id="${escapeHtml(row.bookingid)}">
+                        <td class="text-right text-nowrap">
+                            <a href="${endpoints.invitation}${escapeHtml(row.bookingid)}" target="_blank" rel="noopener noreferrer"
+                               class="btn btn-xs btn-outline-secondary" title="View invitation page">
+                                <i class="fas fa-external-link-alt"></i>
+                            </a>
+                            <button type="button" class="btn btn-xs btn-outline-primary btn-edit" data-id="${escapeHtml(row.bookingid)}" title="Edit">
                                 <i class="fas fa-edit"></i>
                             </button>
-                            <button type="button" class="btn btn-xs btn-outline-danger btn-delete" data-id="${escapeHtml(row.bookingid)}" data-name="${escapeHtml(row.keterangan)}">
+                            <button type="button" class="btn btn-xs btn-outline-danger btn-delete" data-id="${escapeHtml(row.bookingid)}" data-name="${escapeHtml(row.name)}" title="Delete">
                                 <i class="fas fa-trash"></i>
                             </button>
                         </td>
@@ -428,11 +458,13 @@
 
                         const item = res.data || {}
                         fields.id.val(item.bookingid || '')
+                        fields.name.val(item.name || '')
+                        fields.phone.val(item.phone || '')
                         fields.floor.val(String(item.floor || ''))
                         fields.seats.val(item.seats || 1)
                         fields.keterangan.val(item.keterangan || '')
                         fields.status.val(String(item.status || 0))
-                        $('#modalTitle').text('Edit Booking')
+                        $('#modalTitle').text('Edit Booking & Invitation')
                         modal.modal('show')
                     },
                     complete: function() {
@@ -535,22 +567,28 @@
             $('#btnSave').on('click', function() {
                 const payload = {
                     id: fields.id.val(),
+                    name: fields.name.val(),
+                    phone: fields.phone.val(),
                     floor: fields.floor.val(),
                     seats: fields.seats.val(),
                     keterangan: fields.keterangan.val(),
                     status: fields.status.val()
                 }
 
+                if (!payload.name.trim()) {
+                    Swal.fire('Validation', 'Name is required', 'warning')
+                    return
+                }
                 if (!payload.floor) {
-                    Swal.fire('Validation', 'Floor wajib dipilih', 'warning')
+                    Swal.fire('Validation', 'Please select a floor', 'warning')
                     return
                 }
                 if (!payload.seats || parseInt(payload.seats, 10) < 1) {
-                    Swal.fire('Validation', 'Jumlah kursi minimal 1', 'warning')
+                    Swal.fire('Validation', 'Number of seats must be at least 1', 'warning')
                     return
                 }
                 if (!payload.keterangan.trim()) {
-                    Swal.fire('Validation', 'Keterangan wajib diisi', 'warning')
+                    Swal.fire('Validation', 'Notes are required', 'warning')
                     return
                 }
 

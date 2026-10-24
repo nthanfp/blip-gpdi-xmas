@@ -56,3 +56,12 @@ application/third_party/phpqrcode/cache
 
 # LLM Context
 /context
+
+# Local webserver config (variasi per environment)
+.htaccess*
+
+# Dev scripts (Python)
+*.py
+
+# Output bundel perubahan (commit.py)
+/.changes

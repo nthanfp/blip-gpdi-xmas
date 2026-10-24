@@ -39,6 +39,28 @@ class Userguide extends CI_Controller
             'desc'     => 'Lihat dan cetak log aktivitas admin.',
             'color'    => 'red',
         ),
+        'push' => array(
+            'menuid'   => 118,
+            'title'    => 'Push Notification',
+            'icon'     => 'fas fa-bell',
+            'desc'     => 'Kirim notifikasi ke perangkat pengguna.',
+            'color'    => 'purple',
+        ),
+        'fcm_token' => array(
+            'menuid'   => 119,
+            'title'    => 'FCM Token',
+            'icon'     => 'fas fa-mobile-alt',
+            'desc'     => 'Kelola token perangkat untuk push notification.',
+            'color'    => 'indigo',
+        ),
+
+        'registration' => array(
+            'menuid'   => 120,
+            'title'    => 'Pendaftaran Natal',
+            'icon'     => 'fas fa-clipboard-check',
+            'desc'     => 'Kelola pendaftar, kuota lantai, dan konfirmasi jemaat.',
+            'color'    => 'maroon',
+        ),
 
         'region_province' => array(
             'menuid'   => 125,
@@ -67,6 +89,28 @@ class Userguide extends CI_Controller
             'icon'     => 'fas fa-home',
             'desc'     => 'Kelola data kelurahan.',
             'color'    => 'green',
+        ),
+
+        'layout' => array(
+            'menuid'   => 133,
+            'title'    => 'Seating Layout',
+            'icon'     => 'fas fa-chair',
+            'desc'     => 'Denah kursi: assign & release kursi per registrasi/booking.',
+            'color'    => 'cyan',
+        ),
+        'faq' => array(
+            'menuid'   => 134,
+            'title'    => 'FAQ',
+            'icon'     => 'fas fa-question-circle',
+            'desc'     => 'Kelola Pertanyaan Umum di landing page.',
+            'color'    => 'lime',
+        ),
+        'booking' => array(
+            'menuid'   => 135,
+            'title'    => 'Booking & Invitation',
+            'icon'     => 'fas fa-bookmark',
+            'desc'     => 'Tahan kuota kursi, undangan, dan konfirmasi kehadiran.',
+            'color'    => 'pink',
         ),
     );
 

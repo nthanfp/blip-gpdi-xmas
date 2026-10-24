@@ -17,7 +17,7 @@
             position: absolute;
             inset: 0;
 
-            background: url('<?= base_url("assets/images/christmas/gpdi.png") ?>') no-repeat center;
+            background: url('<?= base_url("assets/images/christmas/gpdi.webp") ?>') no-repeat center;
             background-size: 150px;
 
             opacity: 0.10;

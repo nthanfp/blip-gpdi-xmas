@@ -1,5 +1,36 @@
 <meta charset="utf-8">
-<title>Activities - GPDI KOPO PERMAI</title>
+<?php
+/* Title = nama menu sesuai path URL (set_menu), fallback "Activities".
+   Coba path terdalam dulu, mis. activities/authentication/login -> "Login"
+   baru yang lebih dangkal seperti activities/authentication. */
+$__menu_title = 'Activities';
+try {
+    $__ci =& get_instance();
+    $__segs = array_slice($__ci->uri->segment_array(), 1); /* lewati "activities" */
+    for ($__n = count($__segs); $__n >= 1; $__n--) {
+        $__path = 'activities/' . implode('/', array_slice($__segs, 0, $__n));
+        $__row = $__ci->db->where('path', $__path)
+            ->order_by('set_menuid', 'ASC')
+            ->limit(1)
+            ->get('set_menu')
+            ->row();
+        if ($__row) {
+            $__menu_title = $__row->name;
+            break;
+        }
+    }
+    /* Tidak ada di set_menu (mis. halaman login) -> prettify segmen terakhir */
+    if ($__menu_title === 'Activities' && $__segs) {
+        $__last = end($__segs);
+        if ($__last && $__last !== 'activities') {
+            $__menu_title = ucwords(str_replace(['-', '_'], ' ', $__last));
+        }
+    }
+} catch (Exception $__e) {
+    /* db/menu tidak tersedia -> fallback Activities */
+}
+?>
+<title><?php echo html_escape($__menu_title); ?> - GPDI KOPO PERMAI</title>
 
 <link rel="manifest" href="<?php echo base_url('manifest.json'); ?>">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">

@@ -109,7 +109,7 @@ $isLocalEnv = (isset($_SERVER['HTTP_HOST']) &&
 
                 <!-- Header -->
                 <div class="text-center space-y-3">
-                    <img src="<?php echo site_url('assets/images/christmas/gpdi.png'); ?>" alt="GPdI Kopo Permai"
+                    <img src="<?php echo site_url('assets/images/christmas/gpdi.webp'); ?>" alt="GPdI Kopo Permai"
                         class="w-12 h-auto mx-auto drop-shadow-[0_4px_12px_rgba(0,0,0,0.3)]">
 
                     <p class="text-[11px] font-semibold tracking-[0.25em] uppercase text-gold-600">

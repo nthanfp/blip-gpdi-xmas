@@ -201,15 +201,19 @@ class Landing extends CI_Controller
             $this->db->trans_rollback();
             $this->respond([
                 'success' => false,
-                'message' => 'Kursi ' . $floor_row->name . ' tinggal ' . $remaining . ' lagi. Kurangi jumlah jemaat.'
+                'message' => 'Kursi Lantai ' . (int) $floor_row->floor . ' tinggal ' . $remaining . ' lagi. Kurangi jumlah jemaat.'
             ]);
             return;
         }
 
-        /* Ref code unik */
+        /* Ref code unik: 5 karakter acak (huruf+angka tanpa karakter ambigu) */
         $ref_code = null;
+        $alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
         for ($i = 0; $i < 5; $i++) {
-            $candidate = 'GP' . strtoupper(bin2hex(random_bytes(3)));
+            $candidate = '';
+            for ($j = 0; $j < 5; $j++) {
+                $candidate .= $alphabet[random_int(0, strlen($alphabet) - 1)];
+            }
             $exists = $this->db->where('ref_code', $candidate)->count_all_results('act_xmas_registration');
             if (!$exists) {
                 $ref_code = $candidate;
@@ -266,6 +270,159 @@ class Landing extends CI_Controller
                 'ref_code' => $ref_code,
                 'floor' => $floor,
                 'attendees' => $seat_count
+            ]
+        ]);
+    }
+
+    /* Halaman sukses pendaftaran: /p/{ref_code} (+ QR) */
+    public function registration_success($code = null)
+    {
+        if ($this->_is_maintenance()) {
+            $this->load->view('landing/maintenance');
+            return;
+        }
+
+        $ref = strtoupper(trim((string) $code));
+        if ($ref === '' || !$this->db->table_exists('act_xmas_registration')) {
+            show_404();
+            return;
+        }
+
+        $reg = $this->db->query(
+            'SELECT r.*, f.name AS floor_name
+             FROM act_xmas_registration r
+             LEFT JOIN set_xmas_floor f ON f.floor = r.floor
+             WHERE r.ref_code = ?',
+            [$ref]
+        )->row();
+
+        if (!$reg) {
+            show_404();
+            return;
+        }
+
+        $attendees = $this->db->query(
+            'SELECT name, age, status
+             FROM act_xmas_attendee
+             WHERE registrationid = ?
+             ORDER BY is_primary DESC, attendeeid ASC',
+            [(int) $reg->registrationid]
+        )->result();
+
+        $this->load->view('landing/registration-success', [
+            'reg' => $reg,
+            'attendees' => $attendees
+        ]);
+    }
+
+    /* ═══ Invitation landing (public): /invitation/{bookingid} ═══ */
+
+    private function _get_invitation($bookingid)
+    {
+        if (!$this->db->table_exists('act_xmas_booking')) {
+            return null;
+        }
+        return $this->db->query(
+            'SELECT b.*, f.name AS floor_name
+             FROM act_xmas_booking b
+             LEFT JOIN set_xmas_floor f ON f.floor = b.floor
+             WHERE b.bookingid = ?',
+            [(int) $bookingid]
+        )->row();
+    }
+
+    public function invitation($code = null)
+    {
+        if ($this->_is_maintenance()) {
+            $this->load->view('landing/maintenance');
+            return;
+        }
+
+        $bookingid = (int) $code; /* '004' -> 4 */
+        if ($bookingid <= 0) {
+            show_404();
+            return;
+        }
+
+        $booking = $this->_get_invitation($bookingid);
+        if (!$booking) {
+            show_404();
+            return;
+        }
+
+        $faqs = [];
+        if (isset($this->Faq_Model) && $this->db->table_exists('set_faq')) {
+            $faqs = $this->Faq_Model->get_active();
+        }
+
+        $this->load->view('landing/invitation', [
+            'booking' => $booking,
+            'faqs' => $faqs
+        ]);
+    }
+    /* Submit konfirmasi kehadiran undangan (publik) */
+    public function invitation_confirm()
+    {
+        $bookingid = (int) $this->input->post('bookingid', true);
+        $count = (int) $this->input->post('count', true);
+        $phone = trim((string) $this->input->post('phone', true));
+
+        if ($bookingid <= 0) {
+            $this->respond(['success' => false, 'message' => 'Undangan tidak valid.']);
+            return;
+        }
+
+        /* No. HP wajib + valid */
+        if ($phone === '') {
+            $this->respond(['success' => false, 'message' => 'No. Handphone wajib diisi.']);
+            return;
+        }
+        if (!preg_match('/^0[0-9]{9,13}$/', $phone)) {
+            $this->respond(['success' => false, 'message' => 'Format No. Handphone tidak valid.']);
+            return;
+        }
+
+        $booking = $this->_get_invitation($bookingid);
+        if (!$booking) {
+            $this->respond(['success' => false, 'message' => 'Undangan tidak ditemukan.']);
+            return;
+        }
+        if ((int) $booking->status !== 0) {
+            $this->respond(['success' => false, 'message' => 'Undangan ini sudah tidak aktif.']);
+            return;
+        }
+
+        $seats = (int) $booking->seats;
+        if ($count < 1 || $count > $seats) {
+            $this->respond([
+                'success' => false,
+                'message' => 'Jumlah orang yang hadir harus antara 1 sampai ' . $seats . '.'
+            ]);
+            return;
+        }
+
+        $update = [
+            'confirmed_count' => $count,
+            'confirmed_date' => date('Y-m-d H:i:s')
+        ];
+        /* Phone hanya ditimpa bila diisi (mengosongkan field tidak menghapus nomor lama) */
+        if ($phone !== '') {
+            $update['phone'] = $phone;
+        }
+
+        $this->db->where('bookingid', $bookingid)->update('act_xmas_booking', $update);
+
+        if ($this->db->trans_status() === FALSE) {
+            $this->respond(['success' => false, 'message' => 'Gagal menyimpan konfirmasi. Coba lagi.']);
+            return;
+        }
+
+        $this->respond([
+            'success' => true,
+            'message' => 'Terima kasih, konfirmasi kehadiran Anda sudah kami catat.',
+            'data' => [
+                'confirmed_count' => $count,
+                'seats' => $seats
             ]
         ]);
     }

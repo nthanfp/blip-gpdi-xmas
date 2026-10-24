@@ -6,6 +6,205 @@ class Seating_Model extends CI_Model
     private $_seat = 'act_seating_seat';
     private $_attendee = 'act_xmas_attendee';
     private $_registration = 'act_xmas_registration';
+    private $_booking = 'act_xmas_booking';
+
+    public function search_bookings($q)
+    {
+        $q = trim((string) $q);
+        $like = '%' . $q . '%';
+
+        /* Kosong -> tampilkan booking aktif terbaru (memudahkan discovery) */
+        if ($q === '') {
+            $rows = $this->db->query(
+                "SELECT b.bookingid, b.floor, b.seats, b.name, b.phone, b.keterangan, b.status,
+                        f.name AS floor_name,
+                        (SELECT COUNT(*) FROM {$this->_seat} s WHERE s.bookingid = b.bookingid) AS assigned_count
+                 FROM {$this->_booking} b
+                 LEFT JOIN set_xmas_floor f ON f.floor = b.floor
+                 WHERE b.status = 0
+                 ORDER BY b.bookingid DESC
+                 LIMIT 12"
+            )->result_array();
+            return ['success' => true, 'message' => 'OK', 'data' => $rows];
+        }
+
+        $rows = $this->db->query(
+            "SELECT b.bookingid, b.floor, b.seats, b.name, b.phone, b.keterangan, b.status,
+                    f.name AS floor_name,
+                    (SELECT COUNT(*) FROM {$this->_seat} s WHERE s.bookingid = b.bookingid) AS assigned_count
+             FROM {$this->_booking} b
+             LEFT JOIN set_xmas_floor f ON f.floor = b.floor
+             WHERE b.status = 0
+               AND (b.name LIKE ? OR b.phone LIKE ? OR b.keterangan LIKE ? OR CAST(b.bookingid AS CHAR) = ? OR f.name LIKE ?)
+             ORDER BY b.bookingid DESC
+             LIMIT 12",
+            [$like, $like, $like, trim($q), $like]
+        )->result_array();
+
+        return ['success' => true, 'message' => 'OK', 'data' => $rows];
+    }
+
+    public function assign_booking_seats($bookingid, $seat_numbers, $floor_id, $admin_id = null)
+    {
+        $bookingid = (int) $bookingid;
+        $floor_id = (int) $floor_id;
+        $seats = array_values(array_unique(array_filter(array_map('intval', (array) $seat_numbers))));
+
+        if (!$bookingid) {
+            return ['success' => false, 'message' => 'Booking ID is required'];
+        }
+        if (!$floor_id || !$seats) {
+            return ['success' => false, 'message' => 'Select seats to reserve'];
+        }
+
+        sort($seats);
+
+        $this->db->trans_begin();
+
+        $booking = $this->db->query(
+            'SELECT bookingid, floor, seats, keterangan, status FROM ' . $this->_booking . ' WHERE bookingid = ? FOR UPDATE',
+            [$bookingid]
+        )->row_array();
+
+        if (!$booking) {
+            $this->db->trans_rollback();
+            return ['success' => false, 'message' => 'Booking not found'];
+        }
+        if ((int) $booking['status'] !== 0) {
+            $this->db->trans_rollback();
+            return ['success' => false, 'message' => 'Only active bookings can reserve seats'];
+        }
+        if ((int) $booking['floor'] !== $floor_id) {
+            $this->db->trans_rollback();
+            return ['success' => false, 'message' => 'Floor mismatch with booking'];
+        }
+
+        $seat_in = implode(',', array_fill(0, count($seats), '?'));
+        $seat_rows = $this->db->query(
+            "SELECT seat_number, attendeeid, registrationid, bookingid FROM {$this->_seat}
+             WHERE floor_id = ? AND seat_number IN ({$seat_in})
+             ORDER BY seat_number FOR UPDATE",
+            array_merge([$floor_id], $seats)
+        )->result_array();
+
+        if (count($seat_rows) !== count($seats)) {
+            $this->db->trans_rollback();
+            return ['success' => false, 'message' => 'Some seats do not exist on this floor'];
+        }
+
+        $already_owned = 0;
+        foreach ($seat_rows as $sr) {
+            if ($sr['attendeeid'] !== null || $sr['registrationid'] !== null) {
+                $this->db->trans_rollback();
+                return ['success' => false, 'message' => 'Seat ' . $sr['seat_number'] . ' is already assigned to a registration'];
+            }
+            if ($sr['bookingid'] !== null && (int) $sr['bookingid'] !== $bookingid) {
+                $this->db->trans_rollback();
+                return ['success' => false, 'message' => 'Seat ' . $sr['seat_number'] . ' is reserved for another booking'];
+            }
+            if ($sr['bookingid'] !== null) {
+                $already_owned++;
+            }
+        }
+
+        /* Kuota booking: assigned sekarang (tanpa target) + target <= booking.seats */
+        $assigned_now = (int) $this->db->query(
+            'SELECT COUNT(*) AS c FROM ' . $this->_seat . ' WHERE bookingid = ?',
+            [$bookingid]
+        )->row()->c;
+        $already_in_target = $already_owned; /* sudah dihitung di assigned_now */
+        $final_count = $assigned_now + (count($seats) - $already_in_target);
+
+        if ($final_count > (int) $booking['seats']) {
+            $this->db->trans_rollback();
+            return [
+                'success' => false,
+                'message' => 'Booking holds ' . $booking['seats'] . ' seat(s) but would end up with ' . $final_count . '. Reduce the number of seats or edit the booking first.'
+            ];
+        }
+
+        $now = date('Y-m-d H:i:s');
+        foreach ($seats as $sn) {
+            $upd = $this->db->where('floor_id', $floor_id)
+                ->where('seat_number', $sn)
+                ->update($this->_seat, [
+                    'bookingid' => $bookingid,
+                    'assigned_by' => $admin_id !== null ? (int) $admin_id : null,
+                    'assigned_date' => $now,
+                ]);
+            if (!$upd) {
+                $this->db->trans_rollback();
+                return ['success' => false, 'message' => 'Failed to reserve seat ' . $sn];
+            }
+        }
+
+        if ($this->db->trans_status() === FALSE) {
+            $this->db->trans_rollback();
+            return ['success' => false, 'message' => 'Failed to reserve seats. Please try again.'];
+        }
+
+        $this->db->trans_commit();
+        return [
+            'success' => true,
+            'message' => count($seats) . ' seat(s) reserved for booking #' . $bookingid,
+            'data' => ['seats' => $seats],
+        ];
+    }
+
+    public function release_booking_seats($floor_id, $seat_numbers, $bookingid)
+    {
+        $floor_id = (int) $floor_id;
+        $bookingid = (int) $bookingid;
+        $seats = array_values(array_unique(array_filter(array_map('intval', (array) $seat_numbers))));
+
+        if (!$bookingid) {
+            return ['success' => false, 'message' => 'Booking ID is required'];
+        }
+        if (!$floor_id || !$seats) {
+            return ['success' => false, 'message' => 'Select seats to release'];
+        }
+
+        $this->db->where('floor_id', $floor_id);
+        $this->db->where_in('seat_number', $seats);
+        $this->db->where('bookingid', $bookingid);
+        $this->db->update($this->_seat, [
+            'bookingid' => null,
+            'assigned_by' => null,
+            'assigned_date' => null,
+        ]);
+        $affected = $this->db->affected_rows();
+
+        return [
+            'success' => true,
+            'message' => $affected . ' seat(s) released',
+            'data' => ['released' => (int) $affected],
+        ];
+    }
+
+    public function release_all_booking_seats($bookingid)
+    {
+        $bookingid = (int) $bookingid;
+        if (!$bookingid) {
+            return ['success' => true, 'message' => 'OK', 'data' => ['released' => 0]];
+        }
+
+        $this->db->where('bookingid', $bookingid);
+        $this->db->update($this->_seat, [
+            'bookingid' => null,
+            'assigned_by' => null,
+            'assigned_date' => null,
+        ]);
+
+        return ['success' => true, 'message' => 'OK', 'data' => ['released' => (int) $this->db->affected_rows()]];
+    }
+
+    public function booking_seat_count($bookingid)
+    {
+        return (int) $this->db->query(
+            'SELECT COUNT(*) AS c FROM ' . $this->_seat . ' WHERE bookingid = ?',
+            [(int) $bookingid]
+        )->row()->c;
+    }
 
     public function search_registrations($q)
     {
@@ -112,7 +311,7 @@ class Seating_Model extends CI_Model
 
         $seat_in = implode(',', array_fill(0, count($seats), '?'));
         $seat_rows = $this->db->query(
-            "SELECT seat_number, attendeeid FROM {$this->_seat}
+            "SELECT seat_number, attendeeid, bookingid FROM {$this->_seat}
              WHERE floor_id = ? AND seat_number IN ({$seat_in})
              ORDER BY seat_number FOR UPDATE",
             array_merge([$floor_id], $seats)
@@ -124,6 +323,10 @@ class Seating_Model extends CI_Model
         }
 
         foreach ($seat_rows as $sr) {
+            if ($sr['bookingid'] !== null) {
+                $this->db->trans_rollback();
+                return ['success' => false, 'message' => 'Seat ' . $sr['seat_number'] . ' is reserved for a booking'];
+            }
             if ($sr['attendeeid'] !== null) {
                 $this->db->trans_rollback();
                 return ['success' => false, 'message' => 'Seat ' . $sr['seat_number'] . ' is already assigned'];

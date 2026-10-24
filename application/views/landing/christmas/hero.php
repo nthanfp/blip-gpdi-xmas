@@ -31,7 +31,7 @@
     <div class="relative z-10 space-y-6 max-w-md">
 
         <!-- Logo -->
-        <img src="<?php echo site_url('assets/images/christmas/gpdi.png'); ?>" alt="GPdI Kopo Permai"
+        <img src="<?php echo site_url('assets/images/christmas/gpdi.webp'); ?>" alt="GPdI Kopo Permai"
             class="w-12 h-auto mx-auto drop-shadow-[0_4px_12px_rgba(0,0,0,0.5)]"
             data-aos="fade-up" data-aos-delay="0">
 
@@ -91,7 +91,7 @@
 
     <!-- Bottom decoration -->
     <div class="absolute bottom-0 left-0 right-0 pointer-events-none select-none" aria-hidden="true">
-        <img src="<?php echo site_url('assets/images/christmas/desktop_bottom.png'); ?>" alt=""
+        <img src="<?php echo site_url('assets/images/christmas/desktop_bottom.webp'); ?>" alt=""
             class="block w-full h-auto">
     </div>
 

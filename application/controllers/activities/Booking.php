@@ -96,6 +96,8 @@ class Booking extends CI_Controller
         }
 
         $input = [
+            'name' => $this->input->post('name', true),
+            'phone' => $this->input->post('phone', true),
             'floor' => $this->input->post('floor', true),
             'seats' => $this->input->post('seats', true),
             'keterangan' => $this->input->post('keterangan', true),
@@ -148,6 +150,8 @@ class Booking extends CI_Controller
         }
 
         $input = [
+            'name' => $this->input->post('name', true),
+            'phone' => $this->input->post('phone', true),
             'floor' => $this->input->post('floor', true),
             'seats' => $this->input->post('seats', true),
             'keterangan' => $this->input->post('keterangan', true),

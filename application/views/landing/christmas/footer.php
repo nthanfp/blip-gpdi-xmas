@@ -7,7 +7,7 @@
     <div class="relative z-10 max-w-md lg:max-w-lg mx-auto text-center space-y-6">
 
         <!-- Logo -->
-        <img src="<?php echo site_url('assets/images/christmas/gpdi.png'); ?>" alt="GPdI Kopo Permai"
+        <img src="<?php echo site_url('assets/images/christmas/gpdi.webp'); ?>" alt="GPdI Kopo Permai"
             class="w-12 h-auto mx-auto drop-shadow-[0_4px_12px_rgba(0,0,0,0.5)]">
 
         <!-- Call to action -->
@@ -35,10 +35,13 @@
             <span class="block w-8 h-px bg-gold-400/30"></span>
         </div>
 
-        <!-- Copyright -->
-        <p class="text-[11px] text-stone-500">
-            &copy; 2026 GPdI Kopo Permai. All rights reserved.
-        </p>
+        <!-- Copyright + Credit (rapat) -->
+        <div class="space-y-1">
+            <p class="text-[11px] text-stone-500">
+                &copy; 2026 <span class="text-gold-400 font-semibold">GPdI Kopo Permai</span>. All rights reserved.
+            </p>
+            <p class="text-[11px] text-stone-500">Made with <i class="fas fa-heart text-red-500 animate-pulse"></i> by <a href="https://blipdigital.my.id" target="_blank" rel="noopener noreferrer" class="font-semibold text-gold-400 hover:text-gold-300 transition-colors hover:underline underline-offset-2">BLIP Digital</a></p>
+        </div>
 
     </div>
 </footer>

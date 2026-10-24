@@ -61,7 +61,7 @@
                         <!-- Row 1 (default - pendaftar) -->
                         <div class="attendee-row flex gap-2 items-end">
                             <div class="flex-1 space-y-1.5">
-                                <input type="text" placeholder="Nama"
+                                <input type="text" placeholder="Nama Lengkap"
                                        class="reg-att-name reg-field w-full px-3 py-2.5 rounded-xl border border-stone-200 text-sm text-stone-800 placeholder-stone-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gold-400/50 focus:border-gold-400">
                             </div>
                             <div class="w-20 space-y-1.5">
@@ -273,6 +273,7 @@
     var addAttBtn = document.getElementById('reg-add-att');
     var endpointSeats = '<?php echo site_url('landing/registration_seats'); ?>';
     var endpointSubmit = '<?php echo site_url('landing/registration_submit'); ?>';
+    var endpointSuccess = '<?php echo site_url('p/'); ?>';
 
     /* Loading overlay global (jquery-loading-overlay) — background gelap senada tema merah */
     function showLoading() {
@@ -338,7 +339,7 @@
         row.className = 'attendee-row flex gap-2 items-end';
         row.innerHTML =
             '<div class="flex-1 space-y-1.5">' +
-                '<input type="text" placeholder="Nama" class="reg-att-name reg-field w-full px-3 py-2.5 rounded-xl border border-stone-200 text-sm text-stone-800 placeholder-stone-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gold-400/50 focus:border-gold-400">' +
+                '<input type="text" placeholder="Nama Lengkap" class="reg-att-name reg-field w-full px-3 py-2.5 rounded-xl border border-stone-200 text-sm text-stone-800 placeholder-stone-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gold-400/50 focus:border-gold-400">' +
             '</div>' +
             '<div class="w-20 space-y-1.5">' +
                 '<input type="number" placeholder="Umur" min="0" max="120" class="reg-att-age reg-field w-full px-3 py-2.5 rounded-xl border border-stone-200 text-sm text-stone-800 placeholder-stone-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gold-400/50 focus:border-gold-400">' +
@@ -391,7 +392,7 @@
         attendeesWrap.innerHTML =
             '<div class="attendee-row flex gap-2 items-end">' +
                 '<div class="flex-1 space-y-1.5">' +
-                    '<input type="text" placeholder="Nama" class="reg-att-name reg-field w-full px-3 py-2.5 rounded-xl border border-stone-200 text-sm text-stone-800 placeholder-stone-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gold-400/50 focus:border-gold-400">' +
+                    '<input type="text" placeholder="Nama Lengkap" class="reg-att-name reg-field w-full px-3 py-2.5 rounded-xl border border-stone-200 text-sm text-stone-800 placeholder-stone-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gold-400/50 focus:border-gold-400">' +
                 '</div>' +
                 '<div class="w-20 space-y-1.5">' +
                     '<input type="number" placeholder="Umur" min="0" max="120" class="reg-att-age reg-field w-full px-3 py-2.5 rounded-xl border border-stone-200 text-sm text-stone-800 placeholder-stone-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gold-400/50 focus:border-gold-400">' +
@@ -528,6 +529,14 @@
                     loadSeats();
                     return;
                 }
+
+                /* Sukses -> redirect ke halaman sukses /p/{ref_code} (dengan QR) */
+                if (res.data && res.data.ref_code) {
+                    window.location.href = endpointSuccess + encodeURIComponent(res.data.ref_code);
+                    return;
+                }
+
+                /* Fallback bila ref_code tidak dikembalikan: tampilkan inline seperti dulu */
                 var refEl = document.getElementById('reg-ref-code');
                 if (res.data && res.data.ref_code) {
                     document.getElementById('reg-ref-value').textContent = res.data.ref_code;

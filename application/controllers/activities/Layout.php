@@ -145,4 +145,56 @@ class Layout extends CI_Controller
         );
         $this->json_response($res['success'], $res['message'], $res['data'] ?? null);
     }
+
+    public function seat_booking_search()
+    {
+        if (!$this->Auth_Model->current_user()) {
+            $this->json_response(false, 'Unauthorized');
+            return;
+        }
+        if (!$this->guard_menu_access(133, 'view')) {
+            return;
+        }
+
+        $q = $this->input->get('q');
+        $res = $this->Seating_Model->search_bookings($q);
+        $this->json_response($res['success'], $res['message'], $res['data'] ?? null);
+    }
+
+    public function seat_booking_assign()
+    {
+        if (!$this->Auth_Model->current_user()) {
+            $this->json_response(false, 'Unauthorized');
+            return;
+        }
+        if (!$this->guard_menu_access(133, 'update')) {
+            return;
+        }
+
+        $res = $this->Seating_Model->assign_booking_seats(
+            $this->input->post('bookingid'),
+            $this->post_array('seats'),
+            $this->input->post('floor_id'),
+            $this->current_admin_id()
+        );
+        $this->json_response($res['success'], $res['message'], $res['data'] ?? null);
+    }
+
+    public function seat_booking_release()
+    {
+        if (!$this->Auth_Model->current_user()) {
+            $this->json_response(false, 'Unauthorized');
+            return;
+        }
+        if (!$this->guard_menu_access(133, 'update')) {
+            return;
+        }
+
+        $res = $this->Seating_Model->release_booking_seats(
+            $this->input->post('floor_id'),
+            $this->post_array('seats'),
+            $this->input->post('bookingid')
+        );
+        $this->json_response($res['success'], $res['message'], $res['data'] ?? null);
+    }
 }

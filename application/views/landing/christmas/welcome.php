@@ -1,7 +1,7 @@
 <!-- Welcome Section -->
 <section class="relative py-14 sm:py-20 px-5 sm:px-8 overflow-hidden">
     <!-- Background image -->
-    <div class="absolute inset-0 bg-cover bg-center bg-no-repeat" style="background-image: url('<?php echo site_url('assets/images/xmas/hero-1.jpg'); ?>');"></div>
+    <div class="absolute inset-0 bg-cover bg-center bg-no-repeat" style="background-image: url('<?php echo site_url('assets/images/xmas/hero-1.webp'); ?>');"></div>
     <!-- Dark overlay -->
     <div class="absolute inset-0 bg-red-950/80"></div>
     <!-- Maroon depth gradient -->

@@ -11,7 +11,7 @@
 
         <div class="content-wrapper py-4 px-4 text-sm">
 
-            <!-- Atur Kuota (trigger modal) -->
+            <!-- Set Quota (modal trigger) -->
             <div class="d-flex justify-content-end mb-2">
                 <button type="button" class="btn btn-sm btn-secondary" data-toggle="modal" data-target="#modalKuota">
                     <i class="fas fa-sliders-h mr-1"></i> Set Quota
@@ -70,10 +70,10 @@
                 <div class="card-header py-1 px-2 view-header">
                     <h3 class="card-title text-sm py-1 mb-0"><i class="fas fa-list mr-1"></i> <span id="viewTitle">Registration List</span></h3>
                     <div class="view-toggle" role="group" aria-label="View switcher">
-                        <button type="button" class="view-btn active" id="btnViewGroup" title="Group view">
+                        <button type="button" class="view-btn" id="btnViewGroup" title="Group view">
                             <i class="fas fa-layer-group"></i><span class="d-none d-md-inline">Group</span>
                         </button>
-                        <button type="button" class="view-btn" id="btnViewPeople" title="Individual view">
+                        <button type="button" class="view-btn active" id="btnViewPeople" title="Individual view">
                             <i class="fas fa-user"></i><span class="d-none d-md-inline">Individual</span>
                         </button>
                     </div>
@@ -161,7 +161,7 @@
             </div>
         </div>
 
-        <!-- Modal Kuota -->
+        <!-- Quota Modal -->
         <div class="modal fade" id="modalKuota" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -193,7 +193,7 @@
             </div>
         </div>
 
-        <!-- Modal Confirm/Cancel (pilih attendee) -->
+        <!-- Modal Confirm/Cancel (pick attendees) -->
         <div class="modal fade" id="modalStatus" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -312,7 +312,7 @@
                 search: '',
                 floor: '',
                 status: '',
-                view: 'group',
+                view: 'people',
                 sortBy: 'date',
                 sortOrder: 'desc'
             }
@@ -920,7 +920,7 @@
                 })
             })
 
-            /* Simpan kuota */
+            /* Save quota */
             $('#btnSaveCap').on('click', function () {
                 const cap1 = $('#capFloor1').val()
                 const cap2 = $('#capFloor2').val()

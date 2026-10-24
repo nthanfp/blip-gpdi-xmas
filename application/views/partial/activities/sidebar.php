@@ -335,7 +335,7 @@ if (!function_exists('render_topnav_menu_items')) {
 
     <aside class="main-sidebar sidebar-dark-secondary elevation-4">
         <a href="<?= site_url('activities/dashboard') ?>" class="brand-link">
-            <img src="<?php echo base_url('assets/images/christmas/gpdi.png'); ?>" alt="Logo" class="brand-image"
+            <img src="<?php echo base_url('assets/images/christmas/gpdi.webp'); ?>" alt="Logo" class="brand-image"
                 style="opacity: .8;">
             <span class="brand-text font-weight-bold mx-2">GPDI KOPO PERMAI</span>
         </a>
