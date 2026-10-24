@@ -250,6 +250,12 @@
 
             const escapeHtml = (value) => $('<div>').text(value == null ? '' : String(value)).html()
 
+            /* Slug undangan — HARUS sama dengan Landing::_invitation_slug (lowercase, non-alnum → '-') */
+            const slugify = (value) => String(value == null ? '' : value)
+                .toLowerCase()
+                .replace(/[^a-z0-9]+/g, '-')
+                .replace(/^-+|-+$/g, '')
+
             const formatDate = (value) => {
                 if (!value) return '-'
                 const d = new Date(value)
@@ -314,7 +320,7 @@
                         <td>${statusBadge(row.status)}</td>
                         <td>${escapeHtml(formatDate(row.modified_date || row.created_date))}</td>
                         <td class="text-right text-nowrap">
-                            <a href="${endpoints.invitation}${escapeHtml(row.bookingid)}" target="_blank" rel="noopener noreferrer"
+                            <a href="${endpoints.invitation}${escapeHtml(row.bookingid)}${slugify(row.name) ? '/' + slugify(row.name) : ''}" target="_blank" rel="noopener noreferrer"
                                class="btn btn-xs btn-outline-secondary" title="View invitation page">
                                 <i class="fas fa-external-link-alt"></i>
                             </a>

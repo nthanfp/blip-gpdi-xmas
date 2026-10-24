@@ -10,7 +10,8 @@
         <img src="<?php echo site_url('assets/images/christmas/gpdi.webp'); ?>" alt="GPdI Kopo Permai"
             class="w-12 h-auto mx-auto drop-shadow-[0_4px_12px_rgba(0,0,0,0.5)]">
 
-        <!-- Call to action -->
+        <!-- Call to action (teks berbeda: landing registrasi vs halaman undangan) -->
+        <?php if (empty($booking)) : ?>
         <div class="space-y-2">
             <p class="text-sm sm:text-base font-bold text-gold-400">
                 Ayo Daftar Sekarang!
@@ -20,13 +21,23 @@
             </p>
         </div>
 
-        <!-- CTA Button -->
+        <!-- CTA Button (hanya di landing registrasi) -->
         <div>
             <a href="#sec-register"
                 class="inline-block px-8 py-3 rounded-full bg-gold-500 hover:bg-gold-600 text-red-950 font-semibold text-sm tracking-wide transition-all duration-300 hover:shadow-lg hover:shadow-gold-500/25">
                 <i class="fas fa-pen-to-square mr-2"></i> Daftar Sekarang
             </a>
         </div>
+        <?php else : ?>
+        <div class="space-y-2">
+            <p class="text-sm sm:text-base font-bold text-gold-400">
+                Sampai Jumpa di Perayaan Natal!
+            </p>
+            <p class="text-xs text-stone-400 leading-relaxed">
+                Kami menantikan kehadiran Anda dan keluarga<br>20 Desember 2026 di GPdI Kopo Permai.
+            </p>
+        </div>
+        <?php endif; ?>
 
         <!-- Decorative line -->
         <div class="flex items-center justify-center gap-3">

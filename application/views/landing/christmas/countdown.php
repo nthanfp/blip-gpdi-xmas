@@ -179,9 +179,15 @@
     var mEl = document.getElementById('cd-mins');
     var sEl = document.getElementById('cd-secs');
 
-    function pad(n) { return n < 10 ? '0' + n : n; }
+    /* String SELALU — agar guard === di setNum akurat (angka >= 10 harus tetap string) */
+    function pad(n) { return n < 10 ? '0' + n : String(n); }
 
     var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    /* Render pertama: senyap (tanpa animasi) — semua unit langsung terisi.
+       Setelah itu animasi HANYA untuk unit yang nilainya BERUBAH:
+       detik ganti -> detik saja; detik+menit ganti -> keduanya; dst. */
+    var firstRun = true;
 
     /* Digit lama naik ke atas, digit baru muncul dari bawah.
        Guard via data-val: hanya box yang nilainya BERUBAH yang animasi. */
@@ -191,7 +197,7 @@
 
         var cur = el.querySelector('.cd-inner:not(.cd-out)');
 
-        if (reduceMotion) {
+        if (firstRun || reduceMotion) {
             el.innerHTML = '';
             var plain = document.createElement('span');
             plain.className = 'cd-inner';
@@ -226,6 +232,7 @@
             setNum(hEl, '00');
             setNum(mEl, '00');
             setNum(sEl, '00');
+            firstRun = false;
             return;
         }
 
@@ -238,6 +245,7 @@
         setNum(hEl, pad(h));
         setNum(mEl, pad(m));
         setNum(sEl, pad(s));
+        firstRun = false;
 
         requestAnimationFrame(function () { setTimeout(tick, 1000); });
     }

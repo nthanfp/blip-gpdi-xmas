@@ -75,13 +75,15 @@
             </cite>
         </blockquote>
 
-        <!-- CTA Button -->
+        <!-- CTA Button (hanya di landing utama, TIDAK di halaman undangan) -->
+        <?php if (empty($booking)) : ?>
         <div class="pt-4">
             <a href="#sec-register"
                 class="inline-block px-8 py-3 rounded-full bg-gold-500 hover:bg-gold-600 text-red-950 font-semibold text-sm tracking-wide transition-all duration-300 hover:shadow-lg hover:shadow-gold-500/25 active:scale-95">
                 Daftar Sekarang
             </a>
         </div>
+        <?php endif; ?>
 
     </div>
 

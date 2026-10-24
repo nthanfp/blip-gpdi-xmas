@@ -331,7 +331,15 @@ class Landing extends CI_Controller
         )->row();
     }
 
-    public function invitation($code = null)
+    /* Slug URL undangan: lowercase, spasi/karakter non-ascii-alnum jadi '-' */
+    private function _invitation_slug($name)
+    {
+        $slug = strtolower(trim((string) $name));
+        $slug = preg_replace('/[^a-z0-9]+/', '-', $slug);
+        return trim($slug, '-');
+    }
+
+    public function invitation($code = null, $slug = null)
     {
         if ($this->_is_maintenance()) {
             $this->load->view('landing/maintenance');
@@ -348,6 +356,18 @@ class Landing extends CI_Controller
         if (!$booking) {
             show_404();
             return;
+        }
+
+        /* URL kanonik: /invitation/{id}/{slug-nama} — selalu redirect menuju itu
+           (slug salah/kosong → perbaiki otomatis; nama kosong → tanpa slug) */
+        $canonical = $this->_invitation_slug($booking->name);
+        if ($canonical !== '') {
+            $wanted = 'invitation/' . $bookingid . '/' . $canonical;
+            $current = 'invitation/' . $bookingid . ($slug !== null && $slug !== '' ? '/' . $slug : '');
+            if ($current !== $wanted) {
+                redirect(site_url($wanted));
+                return;
+            }
         }
 
         $faqs = [];

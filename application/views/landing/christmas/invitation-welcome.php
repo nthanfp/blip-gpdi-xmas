@@ -4,9 +4,9 @@
     <div class="relative z-10 max-w-md lg:max-w-lg mx-auto">
         <div class="text-center space-y-3" data-aos="fade-up">
             <p class="text-sm text-gold-400/90 font-medium tracking-wide">
-                Selamat datang, 👋
+                Kepada Yth.
             </p>
-            <h1 class="text-lg sm:text-xl font-bold tracking-tight leading-snug bg-gradient-to-r from-gold-300 via-gold-400 to-gold-500 bg-clip-text text-transparent uppercase">
+            <h1 class="text-lg sm:text-xl font-bold tracking-tight leading-snug bg-gradient-to-r from-gold-300 via-gold-400 to-gold-500 bg-clip-text text-transparent">
                 <?php echo html_escape($booking->name); ?>
             </h1>
             <div class="flex items-center justify-center gap-3 pt-1">
