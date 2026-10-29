@@ -65,3 +65,7 @@ application/third_party/phpqrcode/cache
 
 # Output bundel perubahan (commit.py)
 /.changes
+
+# Kredensial & state deploy FTP
+/.deploy.json
+/.deploy.manifest.json

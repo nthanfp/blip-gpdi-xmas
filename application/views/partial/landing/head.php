@@ -1,23 +1,24 @@
 <meta charset="UTF-8" />
 <title>From Glory to Glory - Christmas GPdI Kopo Permai 2026</title>
+<meta name="description" content="Perayaan Natal GPdI Kopo Permai, Minggu 20 Desember 2026 pukul 17.00 WIB. Amankan kursi Anda dan keluarga.">
 
 <!-- Open Graph / WhatsApp / Facebook / Telegram -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="GPdI Kopo Permai">
-<meta property="og:title" content="From Glory to Glory — Christmas Celebration 2026 | GPdI Kopo Permai">
-<meta property="og:description" content="Perayaan Natal GPdI Kopo Permai — Minggu, 20 Desember 2026 pukul 17.00 WIB di GPdI Kopo Permai, Bandung. Amankan kursi Anda dan keluarga untuk merayakan Natal bersama kami.">
+<meta property="og:title" content="From Glory to Glory — Christmas 2026 | GPdI Kopo Permai">
+<meta property="og:description" content="Perayaan Natal GPdI Kopo Permai — Minggu, 20 Desember 2026 pukul 17.00 WIB. Amankan kursi Anda dan keluarga.">
 <meta property="og:url" content="<?php echo site_url(); ?>">
-<meta property="og:image" content="<?php echo site_url('assets/images/christmas/og-hero-16x9.jpg'); ?>">
+<meta property="og:image" content="<?php echo site_url('assets/images/christmas/og-1200x630.jpg'); ?>">
 <meta property="og:image:type" content="image/jpeg">
-<meta property="og:image:width" content="1920">
-<meta property="og:image:height" content="1080">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Christmas Celebration 2026 — From Glory to Glory, GPdI Kopo Permai">
 
 <!-- Twitter / X -->
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="From Glory to Glory — Christmas Celebration 2026 | GPdI Kopo Permai">
+<meta name="twitter:title" content="From Glory to Glory — Christmas 2026 | GPdI Kopo Permai">
 <meta name="twitter:description" content="Perayaan Natal GPdI Kopo Permai — Minggu, 20 Desember 2026 pukul 17.00 WIB. Amankan kursi Anda dan keluarga.">
-<meta name="twitter:image" content="<?php echo site_url('assets/images/christmas/og-hero-16x9.jpg'); ?>">
+<meta name="twitter:image" content="<?php echo site_url('assets/images/christmas/og-1200x630.jpg'); ?>">
 
 <meta name="theme-color" content="#ffffff">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">

@@ -39,7 +39,7 @@
 
             <?php
             $performers = [
-                ['img' => 'gallery-1.webp', 'no' => '01', 'title' => 'Paduan Suara Narwastu'], // TODO: ganti foto asli paduan suara saat sudah ready
+                ['img' => 'narwastu-choir.webp', 'no' => '01', 'title' => 'Paduan Suara Narwastu'],
                 ['img' => 'teens-choir.webp', 'no' => '02', 'title' => 'Teens Choir'],
                 ['img' => 'drama.webp', 'no' => '03', 'title' => 'Drama'],
                 ['img' => 'tamborin.webp', 'no' => '04', 'title' => 'Tamborin'],
