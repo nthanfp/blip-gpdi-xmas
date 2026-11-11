@@ -97,6 +97,24 @@ class Registration extends CI_Controller
         $this->respond($result);
     }
 
+    public function data_list_duplicates()
+    {
+        if (!$this->guard_menu_access($this->_menuid, 'view')) {
+            return;
+        }
+
+        $page = $this->input->post('page', true) ?: $this->input->get('page', true) ?: 1;
+        $per_page = $this->input->post('per_page', true) ?: $this->input->get('per_page', true) ?: 10;
+        $search = $this->input->post('search', true) ?: $this->input->get('search', true) ?: '';
+        $floor = $this->input->post('floor', true) ?: $this->input->get('floor', true) ?: '';
+        $status = $this->input->post('status', true) ?: $this->input->get('status', true) ?: '';
+        $sort_by = $this->input->post('sort_by', true) ?: $this->input->get('sort_by', true) ?: 'phone';
+        $sort_order = $this->input->post('sort_order', true) ?: $this->input->get('sort_order', true) ?: 'asc';
+
+        $result = $this->Registration_Model->data_list_duplicates($page, $per_page, $search, $floor, $status, $sort_by, $sort_order);
+        $this->respond($result);
+    }
+
     public function data_detail()
     {
         if (!$this->guard_menu_access($this->_menuid, 'view')) {

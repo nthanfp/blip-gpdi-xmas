@@ -76,6 +76,9 @@
                         <button type="button" class="view-btn active" id="btnViewPeople" title="Individual view">
                             <i class="fas fa-user"></i><span class="d-none d-md-inline">Individual</span>
                         </button>
+                        <button type="button" class="view-btn" id="btnViewDupes" title="Duplicate registrations (same phone + name)">
+                            <i class="fas fa-clone"></i><span class="d-none d-md-inline">Dupes</span>
+                        </button>
                     </div>
                 </div>
                 <div class="card-body py-2 px-2 border-bottom">
@@ -301,6 +304,7 @@
             const endpoints = {
                 list: '<?= site_url("activities/registration/data_list") ?>',
                 people: '<?= site_url("activities/registration/data_list_people") ?>',
+                dupes: '<?= site_url("activities/registration/data_list_duplicates") ?>',
                 stats: '<?= site_url("activities/registration/data_stats") ?>',
                 detail: '<?= site_url("activities/registration/data_detail") ?>',
                 status: '<?= site_url("activities/registration/data_status") ?>',
@@ -389,16 +393,25 @@
                 })
             }
 
-            const thSort = (key, label, align) => {
+            const thSort = (key, label, align, style) => {
                 const active = state.sortBy === key
                 const icon = active ? (state.sortOrder === 'asc' ? 'fa-sort-up' : 'fa-sort-down') : 'fa-sort'
                 const iconCls = active ? 'text-secondary' : 'text-muted'
-                return `<th class="th-sort${align ? ' ' + align : ''}" data-sort="${key}" style="cursor:pointer; user-select:none;" title="Sort by ${label}">
+                return `<th class="th-sort${align ? ' ' + align : ''}" data-sort="${key}" style="cursor:pointer; user-select:none;${style ? ';' + style : ''}" title="Sort by ${label}">
                     ${label} <i class="fas ${icon} ml-1 ${iconCls}"></i>
                 </th>`
             }
 
             const renderHead = () => {
+                if (state.view === 'dupes') {
+                    $('#tableHead').html(`
+                        ${thSort('phone', 'Phone')}
+                        <th>Name</th>
+                        <th>Registrations</th>
+                        ${thSort('total', 'Total', 'text-center', 'width:70px')}`)
+                    return
+                }
+
                 const people = state.view === 'people'
                 $('#tableHead').html(`
                     <th class="d-none">ID</th>
@@ -415,11 +428,12 @@
                 if (state.view === view) return
                 state.view = view
                 state.page = 1
-                state.sortBy = 'date'
-                state.sortOrder = 'desc'
-                const toPeople = view === 'people'
-                $('#btnViewGroup').toggleClass('active', !toPeople)
-                $('#btnViewPeople').toggleClass('active', toPeople)
+                state.sortBy = view === 'dupes' ? 'phone' : 'date'
+                state.sortOrder = view === 'dupes' ? 'asc' : 'desc'
+                $('#btnViewGroup').toggleClass('active', view === 'group')
+                $('#btnViewPeople').toggleClass('active', view === 'people')
+                $('#btnViewDupes').toggleClass('active', view === 'dupes')
+                $('#viewTitle').text(view === 'dupes' ? 'Duplicate Registrations' : 'Registration List')
                 renderHead()
                 loadData()
             }
@@ -432,6 +446,10 @@
                 setView('people')
             })
 
+            $('#btnViewDupes').on('click', function () {
+                setView('dupes')
+            })
+
             $(document).on('click', '.th-sort', function () {
                 const key = String($(this).data('sort') || '')
                 if (!key) return
@@ -439,7 +457,7 @@
                     state.sortOrder = state.sortOrder === 'asc' ? 'desc' : 'asc'
                 } else {
                     state.sortBy = key
-                    state.sortOrder = key === 'date' ? 'desc' : 'asc'
+                    state.sortOrder = (key === 'date' || key === 'total') ? 'desc' : 'asc'
                 }
                 state.page = 1
                 renderHead()
@@ -474,9 +492,32 @@
                     <i class="fas fa-trash"></i>
                 </button>`
 
+            const renderDupesRows = (groups) => groups.map((g) => {
+                const regs = g.regs || []
+                const count = Number(g.count || regs.length)
+                const countBadge = count >= 3
+                    ? `<span class="badge badge-danger">${count}x</span>`
+                    : `<span class="badge badge-warning">${count}x</span>`
+                const lines = regs.map((r) => `
+                    <div class="mb-1">
+                        <button type="button" class="btn btn-xs btn-outline-info btn-detail mr-1 px-1" data-id="${escapeHtml(r.registrationid)}" title="View registration detail"><code class="mb-0">${escapeHtml(r.ref_code)}</code></button>
+                        <span class="text-muted">Floor ${escapeHtml(r.floor)}</span>
+                        ${statusBadge(r.status)}
+                        <span class="text-muted ml-1">${escapeHtml(formatDate(r.created_date))}</span>
+                    </div>`).join('')
+
+                return `
+                <tr>
+                    <td class="text-nowrap">${escapeHtml(g.phone)}</td>
+                    <td class="text-nowrap"><strong>${escapeHtml(upperName(g.name))}</strong></td>
+                    <td>${lines}</td>
+                    <td class="text-center">${countBadge}</td>
+                </tr>`
+            }).join('')
+
             const loadData = () => {
                 $.ajax({
-                    url: state.view === 'people' ? endpoints.people : endpoints.list,
+                    url: state.view === 'dupes' ? endpoints.dupes : (state.view === 'people' ? endpoints.people : endpoints.list),
                     type: 'GET',
                     dataType: 'json',
                     data: {
@@ -503,7 +544,12 @@
                         const pag = res.pagination || {}
 
                         if (!rows.length) {
-                            tableBody.html('<tr><td colspan="8" class="text-center text-muted py-4">No data found</td></tr>')
+                            const emptyMsg = state.view === 'dupes'
+                                ? 'No duplicate registrations found (same phone + name in 2+ codes)'
+                                : 'No data found'
+                            tableBody.html(`<tr><td colspan="8" class="text-center text-muted py-4">${emptyMsg}</td></tr>`)
+                        } else if (state.view === 'dupes') {
+                            tableBody.html(renderDupesRows(rows))
                         } else {
                             const html = rows.map((row) => {
                                 if (state.view === 'people') {

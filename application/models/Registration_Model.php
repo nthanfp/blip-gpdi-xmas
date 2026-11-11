@@ -150,6 +150,139 @@ class Registration_Model extends CI_Model
         ];
     }
 
+    /* Duplikat: phone + nama attendee sama di >= 2 kode daftar berbeda.
+       Dikelompokkan di PHP (normalisasi huruf kecil + spasi) supaya bisa
+       filter search di level grup dan paginasi per grup. */
+    public function data_list_duplicates($page = 1, $per_page = 10, $search = '', $floor = '', $status = '', $sort_by = 'phone', $sort_order = 'asc')
+    {
+        $page = max(1, (int) $page);
+        $per_page = max(1, (int) $per_page);
+        $offset = ($page - 1) * $per_page;
+        $search = trim((string) $search);
+        $hasStatus = $status !== '' && $status !== null;
+
+        $where = ["r.phone <> ''"];
+        $binds = [];
+
+        if (!$hasStatus || (int) $status !== 2) {
+            $where[] = 'a.status <> 2';
+        }
+        if ($hasStatus) {
+            $where[] = 'r.status = ?';
+            $binds[] = (int) $status;
+        } else {
+            $where[] = 'r.status <> 2';
+        }
+        if ($floor !== '' && $floor !== null) {
+            $where[] = 'r.floor = ?';
+            $binds[] = (int) $floor;
+        }
+
+        $rows = $this->db->query(
+            'SELECT r.registrationid, r.phone, r.ref_code, r.floor, r.status, r.created_date, a.name
+             FROM ' . $this->_table . ' r
+             JOIN ' . $this->_attendee . ' a ON a.registrationid = r.registrationid
+             WHERE ' . implode(' AND ', $where) . '
+             ORDER BY r.created_date DESC, r.registrationid DESC',
+            $binds
+        )->result();
+
+        $groups = [];
+        foreach ($rows as $row) {
+            $norm = strtolower(trim(preg_replace('/\s+/', ' ', (string) $row->name)));
+            if ($norm === '') {
+                continue;
+            }
+
+            $key = $row->phone . '|' . $norm;
+            if (!isset($groups[$key])) {
+                $groups[$key] = [
+                    'phone' => $row->phone,
+                    'name' => trim(preg_replace('/\s+/', ' ', (string) $row->name)),
+                    'latest' => $row->created_date,
+                    'regs' => [],
+                ];
+            }
+
+            $rid = (int) $row->registrationid;
+            if (!isset($groups[$key]['regs'][$rid])) {
+                $groups[$key]['regs'][$rid] = [
+                    'registrationid' => $rid,
+                    'ref_code' => $row->ref_code,
+                    'floor' => (int) $row->floor,
+                    'status' => (int) $row->status,
+                    'created_date' => $row->created_date,
+                ];
+            }
+        }
+
+        $dupes = [];
+        foreach ($groups as $g) {
+            if (count($g['regs']) < 2) {
+                continue;
+            }
+
+            $regs = array_values($g['regs']);
+
+            if ($search !== '') {
+                $hay = $g['phone'] . ' ' . $g['name'] . ' ' . implode(' ', array_column($regs, 'ref_code'));
+                if (stripos($hay, $search) === false) {
+                    continue;
+                }
+            }
+
+            $dupes[] = [
+                'phone' => $g['phone'],
+                'name' => $g['name'],
+                'count' => count($regs),
+                'latest' => $g['latest'],
+                'regs' => $regs,
+            ];
+        }
+
+        $sort_by = in_array($sort_by, ['total', 'phone'], true) ? $sort_by : 'total';
+        $sort_order = $sort_order === 'asc' ? 'asc' : 'desc';
+
+        usort($dupes, function ($a, $b) use ($sort_by, $sort_order) {
+            $dir = $sort_order === 'asc' ? 1 : -1;
+            if ($sort_by === 'phone') {
+                $cmp = strcmp($a['phone'], $b['phone']) * $dir;
+                if ($cmp !== 0) {
+                    return $cmp;
+                }
+                $cmp = $b['count'] - $a['count'];
+                if ($cmp !== 0) {
+                    return $cmp;
+                }
+            } else {
+                if ($a['count'] !== $b['count']) {
+                    return ($a['count'] - $b['count']) * $dir;
+                }
+                $cmp = strcmp($a['phone'], $b['phone']);
+                if ($cmp !== 0) {
+                    return $cmp;
+                }
+            }
+            return strcmp($b['latest'], $a['latest']);
+        });
+
+        $total = count($dupes);
+
+        return [
+            'success' => true,
+            'message' => 'Duplicate registrations retrieved successfully',
+            'data' => array_slice($dupes, $offset, $per_page),
+            'pagination' => [
+                'page' => $page,
+                'per_page' => $per_page,
+                'total' => (int) $total,
+                'total_pages' => (int) ceil($total / $per_page),
+                'has_prev' => $page > 1,
+                'has_next' => ($page * $per_page) < $total
+            ]
+        ];
+    }
+
     public function data_detail($id)
     {
         $id = (int) $id;
