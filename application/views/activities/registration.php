@@ -232,6 +232,9 @@
                         <div class="text-center text-muted py-3">Loading...</div>
                     </div>
                     <div class="modal-footer">
+                        <a href="#" target="_blank" rel="noopener" class="btn btn-outline-primary btn-sm d-none" id="btnViewRegistration">
+                            <i class="fas fa-external-link-alt mr-1"></i> View Registration
+                        </a>
                         <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
                     </div>
                 </div>
@@ -323,6 +326,14 @@
 
             const escapeHtml = (value) => $('<div>').text(value == null ? '' : String(value)).html()
             const upperName = (value) => String(value == null ? '' : value).toUpperCase()
+
+            const waLink = (phone) => {
+                let n = String(phone == null ? '' : phone).replace(/\D/g, '')
+                if (!n) return ''
+                if (n.charAt(0) === '0') n = '62' + n.substring(1)
+                else if (n.charAt(0) === '8') n = '62' + n
+                return 'https://wa.me/' + n
+            }
 
             const formatDate = (value) => {
                 if (!value) return '-'
@@ -619,6 +630,7 @@
             $(document).on('click', '.btn-detail', function () {
                 const id = $(this).data('id')
                 $('#detailBody').html('<div class="text-center text-muted py-3">Loading...</div>')
+                $('#btnViewRegistration').addClass('d-none').attr('href', '#')
                 $('#modalDetail').modal('show')
 
                 $.ajax({
@@ -633,6 +645,13 @@
                         }
                         const d = res.data
                         const attendees = d.attendees || []
+                        const wa = waLink(d.phone)
+
+                        if (d.ref_code) {
+                            $('#btnViewRegistration')
+                                .attr('href', '<?= site_url('p/') ?>' + encodeURIComponent(d.ref_code))
+                                .removeClass('d-none')
+                        }
                         const seatBadge = (a) => {
                             if (a.seat_number) return `<span class="badge badge-success">Seat ${a.seat_number}</span>`
                             if (a.status == 1) return `<span class="badge badge-warning">No seat</span>`
@@ -650,7 +669,13 @@
                         $('#detailBody').html(`
                             <div class="row text-sm mb-2">
                                 <div class="col-6 mb-1"><span class="text-muted">Code:</span> <code class="text-dark">${escapeHtml(d.ref_code || '-')}</code></div>
-                                <div class="col-6 mb-1"><span class="text-muted">Phone:</span> <a href="tel:${escapeHtml(d.phone || '')}">${escapeHtml(d.phone || '-')}</a></div>
+                                <div class="col-6 mb-1"><span class="text-muted">Phone:</span>
+                                    ${d.phone ? `
+                                        <span class="text-dark">${escapeHtml(d.phone)}</span>
+                                        <button type="button" class="btn btn-xs btn-outline-secondary ml-1 p-0 px-1" id="btnCopyPhone" data-phone="${escapeHtml(d.phone)}" title="Copy number"><i class="far fa-copy"></i></button>
+                                        ${wa ? `<a href="${wa}" target="_blank" rel="noopener" class="btn btn-xs btn-outline-success ml-1 p-0 px-1" title="Open WhatsApp"><i class="fab fa-whatsapp text-success"></i></a>` : ''}
+                                    ` : '<span class="text-muted">-</span>'}
+                                </div>
                                 <div class="col-6 mb-1"><span class="text-muted">Floor:</span> ${escapeHtml('Floor ' + d.floor)}</div>
                                 <div class="col-6 mb-1"><span class="text-muted">Registered:</span> ${escapeHtml(formatDate(d.created_date))}</div>
                             </div>
@@ -666,6 +691,28 @@
                             </div>`)
                     }
                 })
+            })
+
+            /* Copy phone (delegated — detail body re-rendered per open) */
+            const fallbackCopy = (text, done) => {
+                const $t = $('<textarea>').val(text).css({ position: 'fixed', top: 0, opacity: 0 }).appendTo('body')
+                $t[0].select()
+                try { document.execCommand('copy') } catch (e) { /* noop */ }
+                $t.remove()
+                done()
+            }
+
+            $(document).on('click', '#btnCopyPhone', function () {
+                const num = String($(this).data('phone') || '').trim()
+                if (!num) return
+                const done = () => {
+                    Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'Number copied', showConfirmButton: false, timer: 1200 })
+                }
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(num).then(done).catch(() => fallbackCopy(num, done))
+                } else {
+                    fallbackCopy(num, done)
+                }
             })
 
             /* Confirm/Cancel via modal: default hanya centang yang sudah berstatus sama */
