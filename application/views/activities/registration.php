@@ -76,7 +76,7 @@
                         <button type="button" class="view-btn active" id="btnViewPeople" title="Individual view">
                             <i class="fas fa-user"></i><span class="d-none d-md-inline">Individual</span>
                         </button>
-                        <button type="button" class="view-btn" id="btnViewDupes" title="Duplicate registrations (same phone + name)">
+                        <button type="button" class="view-btn" id="btnViewDupes" title="Duplicate registrations (same phone in 2+ codes)">
                             <i class="fas fa-clone"></i><span class="d-none d-md-inline">Dupes</span>
                         </button>
                     </div>
@@ -223,7 +223,7 @@
 
         <!-- Modal Confirm to WhatsApp (dupes) -->
         <div class="modal fade" id="modalDupeWa" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog">
+            <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title"><i class="fab fa-whatsapp mr-1 text-success"></i> Confirm to WhatsApp</h5>
@@ -237,7 +237,7 @@
                             <div class="col-6"><span class="text-muted">Name:</span> <span id="dupeWaName" class="text-dark">-</span></div>
                         </div>
                         <label class="mb-1">Message <span class="text-muted">(editable)</span></label>
-                        <textarea class="form-control form-control-sm" id="dupeWaMessage" rows="9"></textarea>
+                        <textarea class="form-control form-control-sm" id="dupeWaMessage" rows="12"></textarea>
                     </div>
                     <div class="modal-footer py-2">
                         <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
@@ -539,7 +539,7 @@
                             <span class="text-muted ml-1">${escapeHtml(formatDate(r.created_date))}</span>
                         </div>`).join('')
 
-                    const key = String(g.phone || '') + '|' + String(g.name || '')
+                    const key = String(g.phone || '')
                     dupeGroups[key] = g
 
                     return `
@@ -587,7 +587,7 @@
 
                         if (!rows.length) {
                             const emptyMsg = state.view === 'dupes'
-                                ? 'No duplicate registrations found (same phone + name in 2+ codes)'
+                                ? 'No duplicate registrations found (same phone in 2+ codes)'
                                 : 'No data found'
                             tableBody.html(`<tr><td colspan="8" class="text-center text-muted py-4">${emptyMsg}</td></tr>`)
                         } else if (state.view === 'dupes') {

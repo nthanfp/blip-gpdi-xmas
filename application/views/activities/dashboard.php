@@ -413,7 +413,7 @@
                         const dupes = Number(d.dupes || 0)
                         if (dupes > 0) {
                             $('#dupesLink').html(
-                                `<i class="fas fa-clone mr-1"></i>${dupes} duplicate group(s) found (same phone + name) &rarr;`
+                                `<i class="fas fa-clone mr-1"></i>${dupes} duplicate group(s) found (same phone) &rarr;`
                             )
                             $('#dupesFooter').removeClass('d-none')
                         } else {

@@ -150,9 +150,10 @@ class Registration_Model extends CI_Model
         ];
     }
 
-    /* Duplikat: phone + nama attendee sama di >= 2 kode daftar berbeda.
-       Dikelompokkan di PHP (normalisasi huruf kecil + spasi) supaya bisa
-       filter search di level grup dan paginasi per grup. */
+    /* Duplikat: 1 grup = 1 no HP yang punya >= 2 kode daftar berbeda
+       (nama attendee digabung, supaya cukup 1x kirim WA per no HP).
+       Dikelompokkan di PHP supaya bisa filter search di level grup
+       dan paginasi per grup. */
     public function data_list_duplicates($page = 1, $per_page = 10, $search = '', $floor = '', $status = '', $sort_by = 'phone', $sort_order = 'asc')
     {
         $page = max(1, (int) $page);
@@ -189,24 +190,27 @@ class Registration_Model extends CI_Model
 
         $groups = [];
         foreach ($rows as $row) {
+            $phone = trim((string) $row->phone);
             $norm = strtolower(trim(preg_replace('/\s+/', ' ', (string) $row->name)));
-            if ($norm === '') {
+            if ($phone === '' || $norm === '') {
                 continue;
             }
 
-            $key = $row->phone . '|' . $norm;
-            if (!isset($groups[$key])) {
-                $groups[$key] = [
-                    'phone' => $row->phone,
-                    'name' => trim(preg_replace('/\s+/', ' ', (string) $row->name)),
+            if (!isset($groups[$phone])) {
+                $groups[$phone] = [
+                    'phone' => $phone,
+                    'names' => [],
                     'latest' => $row->created_date,
                     'regs' => [],
                 ];
             }
+            if (!isset($groups[$phone]['names'][$norm])) {
+                $groups[$phone]['names'][$norm] = trim(preg_replace('/\s+/', ' ', (string) $row->name));
+            }
 
             $rid = (int) $row->registrationid;
-            if (!isset($groups[$key]['regs'][$rid])) {
-                $groups[$key]['regs'][$rid] = [
+            if (!isset($groups[$phone]['regs'][$rid])) {
+                $groups[$phone]['regs'][$rid] = [
                     'registrationid' => $rid,
                     'ref_code' => $row->ref_code,
                     'floor' => (int) $row->floor,
@@ -223,9 +227,10 @@ class Registration_Model extends CI_Model
             }
 
             $regs = array_values($g['regs']);
+            $name = implode(', ', array_values($g['names']));
 
             if ($search !== '') {
-                $hay = $g['phone'] . ' ' . $g['name'] . ' ' . implode(' ', array_column($regs, 'ref_code'));
+                $hay = $g['phone'] . ' ' . $name . ' ' . implode(' ', array_column($regs, 'ref_code'));
                 if (stripos($hay, $search) === false) {
                     continue;
                 }
@@ -233,7 +238,7 @@ class Registration_Model extends CI_Model
 
             $dupes[] = [
                 'phone' => $g['phone'],
-                'name' => $g['name'],
+                'name' => $name,
                 'count' => count($regs),
                 'latest' => $g['latest'],
                 'regs' => $regs,

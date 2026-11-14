@@ -100,21 +100,17 @@ class Dashboard_Model extends CI_Model
             ];
         }
 
-        /* Jumlah grup duplikat (phone + nama sama, >=2 kode) */
+        /* Jumlah grup duplikat (1 no HP dengan >= 2 kode daftar) */
         $dupes = 0;
         $rows = $this->db->query(
-            'SELECT r.registrationid, r.phone, a.name
+            'SELECT r.registrationid, r.phone
              FROM ' . $this->_registration . ' r
              JOIN ' . $this->_attendee . ' a ON a.registrationid = r.registrationid
              WHERE r.phone <> \'\' AND r.status <> 2 AND a.status <> 2'
         )->result();
         $groups = [];
         foreach ($rows as $r) {
-            $norm = strtolower(trim(preg_replace('/\s+/', ' ', (string) $r->name)));
-            if ($norm === '') {
-                continue;
-            }
-            $key = $r->phone . '|' . $norm;
+            $key = $r->phone;
             $groups[$key][(int) $r->registrationid] = true;
         }
         foreach ($groups as $rids) {
