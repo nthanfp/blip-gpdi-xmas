@@ -150,6 +150,57 @@ class Registration_Model extends CI_Model
         ];
     }
 
+    /* Full people list (no pagination) for print/export. Same filters/sort as data_list_people. */
+    public function data_list_print_people($search = '', $floor = '', $status = '', $sort_by = 'date', $sort_order = 'desc')
+    {
+        $search = trim((string) $search);
+
+        $sortable = [
+            'code'   => 'r.ref_code',
+            'phone'  => 'r.phone',
+            'floor'  => 'r.floor',
+            'name'   => 'a.name',
+            'status' => 'a.status',
+            'date'   => 'r.created_date',
+        ];
+        $orderField = $sortable[$sort_by] ?? 'r.created_date';
+        $orderDir = strtolower((string) $sort_order) === 'asc' ? 'ASC' : 'DESC';
+
+        $where = ['1 = 1'];
+        $binds = [];
+
+        if ($search !== '') {
+            $like = '%' . $search . '%';
+            $where[] = '(r.phone LIKE ? OR r.ref_code LIKE ? OR a.name LIKE ?)';
+            $binds[] = $like;
+            $binds[] = $like;
+            $binds[] = $like;
+        }
+        if ($floor !== '' && $floor !== null) {
+            $where[] = 'r.floor = ?';
+            $binds[] = (int) $floor;
+        }
+        if ($status !== '' && $status !== null) {
+            $where[] = 'a.status = ?';
+            $binds[] = (int) $status;
+        }
+
+        $sql = 'SELECT a.attendeeid, a.name, a.age, a.status, a.is_primary,
+                       r.registrationid, r.phone, r.floor, r.ref_code, r.created_date
+                FROM ' . $this->_attendee . ' a
+                JOIN ' . $this->_table . ' r ON r.registrationid = a.registrationid
+                WHERE ' . implode(' AND ', $where) . '
+                ORDER BY ' . $orderField . ' ' . $orderDir . ', r.registrationid DESC, a.is_primary DESC, a.attendeeid ASC';
+
+        $rows = $this->db->query($sql, $binds)->result();
+
+        return [
+            'success' => true,
+            'message' => 'Attendee data retrieved successfully',
+            'data' => $rows,
+        ];
+    }
+
     /* Duplikat: 1 grup = 1 no HP yang punya >= 2 kode daftar berbeda
        (nama attendee digabung, supaya cukup 1x kirim WA per no HP).
        Dikelompokkan di PHP supaya bisa filter search di level grup

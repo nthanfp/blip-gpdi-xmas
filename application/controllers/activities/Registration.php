@@ -195,4 +195,178 @@ class Registration extends CI_Controller
 
         $this->respond($this->Registration_Model->data_update_capacity($cap1, $cap2));
     }
+
+    private function print_params()
+    {
+        $search = $this->input->get('search', true);
+        if ($search === null) {
+            $search = '';
+        }
+
+        $floor = $this->input->get('floor', true);
+        if ($floor === null) {
+            $floor = '';
+        }
+
+        $status = $this->input->get('status', true);
+        if ($status === null) {
+            $status = '';
+        }
+
+        $sort_by = $this->input->get('sort_by', true);
+        if ($sort_by === null || $sort_by === '') {
+            $sort_by = 'date';
+        }
+
+        $sort_order = $this->input->get('sort_order', true);
+        if ($sort_order === null || $sort_order === '') {
+            $sort_order = 'desc';
+        }
+
+        return compact('search', 'floor', 'status', 'sort_by', 'sort_order');
+    }
+
+    private function print_query_string(array $params)
+    {
+        $parts = [];
+        if ($params['search'] !== '') {
+            $parts[] = 'search=' . urlencode($params['search']);
+        }
+        if ($params['floor'] !== '') {
+            $parts[] = 'floor=' . urlencode($params['floor']);
+        }
+        if ($params['status'] !== '') {
+            $parts[] = 'status=' . urlencode($params['status']);
+        }
+        $parts[] = 'sort_by=' . urlencode($params['sort_by']);
+        $parts[] = 'sort_order=' . urlencode($params['sort_order']);
+
+        return implode('&', $parts);
+    }
+
+    public function data_print()
+    {
+        if (!$this->guard_menu_access($this->_menuid, 'print')) {
+            return;
+        }
+
+        $params = $this->print_params();
+
+        /* Filter lantai wajib untuk print */
+        if ($params['floor'] !== '1' && $params['floor'] !== '2') {
+            show_error('Filter lantai wajib dipilih untuk print (Floor 1 atau Floor 2).', 400);
+            return;
+        }
+
+        $query_string = $this->print_query_string($params);
+
+        $pages = site_url('activities/registration/data_printhtml' . (!empty($query_string) ? '?' . $query_string : ''));
+        $head = site_url('activities/registration/data_printhead');
+        $current_user = $this->Auth_Model->current_user();
+        $username = $current_user ? $current_user->username : 'Unknown';
+        topdf($pages, $head, 20, 0, 0, 0, $username);
+    }
+
+    public function data_printhead()
+    {
+        if (!$this->guard_menu_access($this->_menuid, 'print')) {
+            return;
+        }
+
+        $table = '<table border="0" width="970" class="tablerep">
+        <tr>
+			<td class="headertd" width="150">No. HP</td>
+			<td class="headertd" width="90">Lantai</td>
+			<td class="headertd" width="430">Nama</td>
+			<td class="headertd" width="300">Terdaftar Pada</td>
+        </tr>
+		</table>';
+
+        $data['title'] = 'Daftar Pendaftaran (Individual)';
+        $data['table'] = $table;
+
+        $this->load->view('act/act_common_head', $data);
+    }
+
+    private function mask_phone($phone)
+    {
+        $digits = preg_replace('/\D/', '', (string) $phone);
+        if ($digits === '') {
+            return '-';
+        }
+        $len = strlen($digits);
+        if ($len <= 4) {
+            return str_repeat('x', $len);
+        }
+        return str_repeat('x', $len - 4) . substr($digits, -4);
+    }
+
+    private function format_registered_date($value)
+    {
+        if (empty($value)) {
+            return '-';
+        }
+        $ts = strtotime($value);
+        if ($ts === false) {
+            return '-';
+        }
+        return date('d M Y H:i', $ts);
+    }
+
+    public function data_printhtml($filename = '', $ex = 0)
+    {
+        $subperm = ((int) $ex === 1) ? 'export' : 'print';
+        if (!$this->guard_menu_access($this->_menuid, $subperm)) {
+            return;
+        }
+
+        $result = $this->Registration_Model->data_list_print_people(
+            $this->input->get('search', true) ?: '',
+            $this->input->get('floor', true) ?: '',
+            $this->input->get('status', true) ?: '',
+            $this->input->get('sort_by', true) ?: 'date',
+            $this->input->get('sort_order', true) ?: 'desc'
+        );
+
+        if (!$result['success']) {
+            show_error($result['message']);
+            return;
+        }
+
+        $rows = isset($result['data']) ? $result['data'] : [];
+        $table = '<table border="0" width="970" class="tablerep">';
+
+        if ($ex == 1) {
+            $table .= '
+			<tr>
+                <td class="headertd" width="150">No. HP</td>
+                <td class="headertd" width="90">Lantai</td>
+                <td class="headertd" width="430">Nama</td>
+                <td class="headertd" width="300">Terdaftar Pada</td>
+            </tr>';
+        }
+
+        foreach ($rows as $row) {
+            $name = htmlspecialchars(strtoupper($row->name), ENT_QUOTES, 'UTF-8');
+            $phone = htmlspecialchars($this->mask_phone($row->phone), ENT_QUOTES, 'UTF-8');
+            $created_date = htmlspecialchars($this->format_registered_date($row->created_date), ENT_QUOTES, 'UTF-8');
+
+            $table .= "
+            <tr valign='top'>
+                <td class='text' width='150'>{$phone}</td>
+                <td class='text' width='90'>{$row->floor}</td>
+                <td class='text' width='430'>{$name}</td>
+                <td class='text' width='300'>{$created_date}</td>
+            </tr>";
+        }
+
+        $table .= '</table>';
+
+        $output['title'] = 'Daftar Pendaftaran (Individual)';
+        $output['table'] = $table;
+        $output['ex'] = $ex;
+        $output['filename'] = $filename;
+
+        $this->load->view('act/common_print', $output);
+    }
 }

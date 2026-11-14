@@ -11,11 +11,29 @@
 
         <div class="content-wrapper py-4 px-4 text-sm">
 
-            <!-- Set Quota (modal trigger) -->
-            <div class="d-flex justify-content-end mb-2">
-                <button type="button" class="btn btn-sm btn-secondary" data-toggle="modal" data-target="#modalKuota">
-                    <i class="fas fa-sliders-h mr-1"></i> Set Quota
-                </button>
+            <!-- Print (dropdown: pilih lantai) / Export + Set Quota -->
+            <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap">
+                <div class="d-flex align-items-center flex-wrap">
+                    <div class="dropdown mr-2 mb-1" id="printFloorToggle" title="Print per lantai">
+                        <button type="button" class="btn btn-sm btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-print"></i> Print
+                        </button>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="#" data-floor="1">Floor 1</a>
+                            <a class="dropdown-item" href="#" data-floor="2">Floor 2</a>
+                        </div>
+                    </div>
+                    <div class="mb-1">
+                        <button type="button" class="btn btn-sm btn-success" id="btnExport">
+                            <i class="fas fa-file-export"></i> Export
+                        </button>
+                    </div>
+                </div>
+                <div class="mb-1">
+                    <button type="button" class="btn btn-sm btn-secondary" data-toggle="modal" data-target="#modalKuota">
+                        <i class="fas fa-sliders-h mr-1"></i> Set Quota
+                    </button>
+                </div>
             </div>
 
             <!-- Stats -->
@@ -359,6 +377,62 @@
             const escapeHtml = (value) => $('<div>').text(value == null ? '' : String(value)).html()
             const upperName = (value) => String(value == null ? '' : value).toUpperCase()
 
+            /* Print = dropdown: pilih Floor 1 / Floor 2 lalu langsung print.
+               Filter lain (search/status/sort) mengikuti form filter yang sudah di-Apply. */
+            let printFloor = '1'
+
+            const openPrintUrl = () => {
+                if (state.view !== 'people') return
+                const params = []
+                if (state.search !== '') params.push(`search=${encodeURIComponent(state.search)}`)
+                params.push(`floor=${encodeURIComponent(printFloor)}`)
+                if (state.status !== '') params.push(`status=${encodeURIComponent(state.status)}`)
+                if (state.sortBy !== '') params.push(`sort_by=${encodeURIComponent(state.sortBy)}`)
+                if (state.sortOrder !== '') params.push(`sort_order=${encodeURIComponent(state.sortOrder)}`)
+                const query = params.join('&')
+                openReportUrl('<?= site_url("activities/registration/data_print") ?>' + (query ? `?${query}` : ''))
+            }
+
+            $('#printFloorToggle .dropdown-item').on('click', function (e) {
+                e.preventDefault()
+                printFloor = String($(this).data('floor') || '1')
+                $('#printFloorToggle .dropdown-item').removeClass('active')
+                $(this).addClass('active')
+                openPrintUrl()
+            })
+
+            const openReportUrl = (url) => {
+                window.open(url, '_blank', 'noopener,noreferrer')
+            }
+
+            const getTimestamp = () => {
+                const d = new Date()
+                const pad = (n) => String(n).padStart(2, '0')
+                return `${pad(d.getDate())}-${pad(d.getMonth() + 1)}-${d.getFullYear()}_${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`
+            }
+
+            /* Print/Export hanya aktif di tab Individual */
+            const updatePrintExport = () => {
+                const enabled = state.view === 'people'
+                $('#btnExport, #printFloorToggle .dropdown-toggle').prop('disabled', !enabled)
+            }
+
+            $('#btnExport').on('click', function () {
+                if (state.view !== 'people') return
+                const params = []
+                if (state.search !== '') params.push(`search=${encodeURIComponent(state.search)}`)
+                const floor = state.floor || printFloor
+                params.push(`floor=${encodeURIComponent(floor)}`)
+                if (state.status !== '') params.push(`status=${encodeURIComponent(state.status)}`)
+                if (state.sortBy !== '') params.push(`sort_by=${encodeURIComponent(state.sortBy)}`)
+                if (state.sortOrder !== '') params.push(`sort_order=${encodeURIComponent(state.sortOrder)}`)
+                const query = params.join('&')
+                const timestamp = getTimestamp()
+                const filename = `registration_people_${timestamp}`
+                const url = '<?= site_url("activities/registration/data_printhtml") ?>/' + filename + '/1' + (query ? `?${query}` : '')
+                openReportUrl(url)
+            })
+
             const waLink = (phone) => {
                 let n = String(phone == null ? '' : phone).replace(/\D/g, '')
                 if (!n) return ''
@@ -463,6 +537,7 @@
                 $('#btnViewPeople').toggleClass('active', view === 'people')
                 $('#btnViewDupes').toggleClass('active', view === 'dupes')
                 $('#viewTitle').text(view === 'dupes' ? 'Duplicate Registrations' : 'Registration List')
+                updatePrintExport()
                 renderHead()
                 loadData()
             }

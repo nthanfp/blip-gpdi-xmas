@@ -24,6 +24,7 @@ A clean, robust CodeIgniter 3 boilerplate for kickstarting admin panels and back
 - **Admin Management:** CRUD for admin accounts.
 - **System Preferences:** Key-value store for global settings (e.g., Maintenance Mode).
 - **Activity Logs:** Automatic logging of admin actions (`Log Admin`) and API requests (`Log API`).
+- **Print & Export:** PDF print (wkhtmltopdf) and Excel export for report lists — enabled per menu permission (`print`/`export` columns). Registration page: Individual tab only.
 - **API Key Management:** Generate and manage API keys for external integrations.
 
 ---
