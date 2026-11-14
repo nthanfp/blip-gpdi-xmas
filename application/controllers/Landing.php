@@ -22,6 +22,33 @@ class Landing extends CI_Controller
             ->set_output(json_encode($response));
     }
 
+    private function _tg_escape($s)
+    {
+        return htmlspecialchars((string) $s, ENT_QUOTES, 'UTF-8');
+    }
+
+    private function _telegram_registration_text($ref_code, $floor, $phone, array $clean, $seat_count)
+    {
+        $lines = [];
+        $lines[] = '🎄 <b>Pendaftaran Baru</b>';
+        $lines[] = '';
+        $lines[] = '<b>Nama:</b>';
+        if (count($clean) > 4) {
+            $lines[] = '- ' . $this->_tg_escape($clean[0]['name']) . ' +' . (count($clean) - 1) . ' orang lainnya';
+        } else {
+            foreach ($clean as $c) {
+                $lines[] = '- ' . $this->_tg_escape($c['name']);
+            }
+        }
+        $lines[] = '';
+        $lines[] = '<b>HP:</b> ' . $this->_tg_escape($phone);
+        $lines[] = '<b>Lantai:</b> ' . (int) $floor . ' (' . (int) $seat_count . ' orang)';
+        $lines[] = '<b>Kode:</b> <code>' . $this->_tg_escape($ref_code) . '</code>';
+        $lines[] = '<a href="' . $this->_tg_escape(site_url('p/' . $ref_code)) . '">Lihat detail</a>';
+
+        return implode("\n", $lines);
+    }
+
     private function _is_maintenance()
     {
         if (!isset($this->Setpref_Model)) return false;
@@ -262,6 +289,18 @@ class Landing extends CI_Controller
         }
 
         $this->db->trans_commit();
+
+        /* Notifikasi Telegram — best effort, tidak boleh mengganggu respons */
+        try {
+            $this->load->model('Telegram_Model');
+            if ($this->Telegram_Model->is_configured()) {
+                $this->Telegram_Model->send_message(
+                    $this->_telegram_registration_text($ref_code, $floor, $phone, $clean, $seat_count)
+                );
+            }
+        } catch (\Throwable $e) {
+            log_message('error', 'Telegram registration notify failed: ' . $e->getMessage());
+        }
 
         $this->respond([
             'success' => true,
