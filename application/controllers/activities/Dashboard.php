@@ -56,9 +56,10 @@ class Dashboard extends CI_Controller
             return;
         }
 
-        echo json_encode([
-            'success' => true,
-            'data' => []
-        ]);
+        $this->load->model('Dashboard_Model');
+        $result = $this->Dashboard_Model->data_summary();
+
+        $this->output->set_content_type('application/json')
+            ->set_output(json_encode($result));
     }
 }
