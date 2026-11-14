@@ -267,11 +267,39 @@ class Registration_Model extends CI_Model
         });
 
         $total = count($dupes);
+        $page_dupes = array_slice($dupes, $offset, $per_page);
+
+        $rids = [];
+        foreach ($page_dupes as $g) {
+            foreach ($g['regs'] as $r) {
+                $rids[(int) $r['registrationid']] = true;
+            }
+        }
+        if ($rids) {
+            $sql = 'SELECT registrationid, name FROM ' . $this->_attendee . '
+                    WHERE registrationid IN (' . implode(',', array_keys($rids)) . ')';
+            if (!$hasStatus || (int) $status !== 2) {
+                $sql .= ' AND status <> 2';
+            }
+            $sql .= ' ORDER BY is_primary DESC, attendeeid ASC';
+
+            $names = [];
+            foreach ($this->db->query($sql)->result() as $a) {
+                $names[(int) $a->registrationid][] = trim(preg_replace('/\s+/', ' ', (string) $a->name));
+            }
+            foreach ($page_dupes as &$g) {
+                foreach ($g['regs'] as &$r) {
+                    $r['attendees'] = isset($names[(int) $r['registrationid']]) ? $names[(int) $r['registrationid']] : [];
+                }
+                unset($r);
+            }
+            unset($g);
+        }
 
         return [
             'success' => true,
             'message' => 'Duplicate registrations retrieved successfully',
-            'data' => array_slice($dupes, $offset, $per_page),
+            'data' => $page_dupes,
             'pagination' => [
                 'page' => $page,
                 'per_page' => $per_page,

@@ -221,6 +221,34 @@
             </div>
         </div>
 
+        <!-- Modal Confirm to WhatsApp (dupes) -->
+        <div class="modal fade" id="modalDupeWa" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"><i class="fab fa-whatsapp mr-1 text-success"></i> Confirm to WhatsApp</h5>
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span>&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row text-sm mb-2 pb-2 border-bottom">
+                            <div class="col-6"><span class="text-muted">Phone:</span> <span id="dupeWaPhone" class="text-dark">-</span></div>
+                            <div class="col-6"><span class="text-muted">Name:</span> <span id="dupeWaName" class="text-dark">-</span></div>
+                        </div>
+                        <label class="mb-1">Message <span class="text-muted">(editable)</span></label>
+                        <textarea class="form-control form-control-sm" id="dupeWaMessage" rows="9"></textarea>
+                    </div>
+                    <div class="modal-footer py-2">
+                        <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-success btn-sm" id="btnDupeWaSend">
+                            <i class="fab fa-whatsapp mr-1"></i> Confirm to WhatsApp
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Modal Detail -->
         <div class="modal fade" id="modalDetail" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog modal-lg">
@@ -408,7 +436,8 @@
                         ${thSort('phone', 'Phone')}
                         <th>Name</th>
                         <th>Registrations</th>
-                        ${thSort('total', 'Total', 'text-center', 'width:70px')}`)
+                        ${thSort('total', 'Total', 'text-center', 'width:70px')}
+                        <th class="text-right">Action</th>`)
                     return
                 }
 
@@ -492,28 +521,41 @@
                     <i class="fas fa-trash"></i>
                 </button>`
 
-            const renderDupesRows = (groups) => groups.map((g) => {
-                const regs = g.regs || []
-                const count = Number(g.count || regs.length)
-                const countBadge = count >= 3
-                    ? `<span class="badge badge-danger">${count}x</span>`
-                    : `<span class="badge badge-warning">${count}x</span>`
-                const lines = regs.map((r) => `
-                    <div class="mb-1">
-                        <button type="button" class="btn btn-xs btn-outline-info btn-detail mr-1 px-1" data-id="${escapeHtml(r.registrationid)}" title="View registration detail"><code class="mb-0">${escapeHtml(r.ref_code)}</code></button>
-                        <span class="text-muted">Floor ${escapeHtml(r.floor)}</span>
-                        ${statusBadge(r.status)}
-                        <span class="text-muted ml-1">${escapeHtml(formatDate(r.created_date))}</span>
-                    </div>`).join('')
+            const dupeGroups = {}
 
-                return `
-                <tr>
-                    <td class="text-nowrap">${escapeHtml(g.phone)}</td>
-                    <td class="text-nowrap"><strong>${escapeHtml(upperName(g.name))}</strong></td>
-                    <td>${lines}</td>
-                    <td class="text-center">${countBadge}</td>
-                </tr>`
-            }).join('')
+            const renderDupesRows = (groups) => {
+                Object.keys(dupeGroups).forEach((k) => delete dupeGroups[k])
+                return groups.map((g) => {
+                    const regs = g.regs || []
+                    const count = Number(g.count || regs.length)
+                    const countBadge = count >= 3
+                        ? `<span class="badge badge-danger">${count}x</span>`
+                        : `<span class="badge badge-warning">${count}x</span>`
+                    const lines = regs.map((r) => `
+                        <div class="mb-1">
+                            <button type="button" class="btn btn-xs btn-outline-info btn-detail mr-1 px-1" data-id="${escapeHtml(r.registrationid)}" title="View registration detail"><code class="mb-0">${escapeHtml(r.ref_code)}</code></button>
+                            <span class="text-muted">Floor ${escapeHtml(r.floor)}</span>
+                            ${statusBadge(r.status)}
+                            <span class="text-muted ml-1">${escapeHtml(formatDate(r.created_date))}</span>
+                        </div>`).join('')
+
+                    const key = String(g.phone || '') + '|' + String(g.name || '')
+                    dupeGroups[key] = g
+
+                    return `
+                    <tr>
+                        <td class="text-nowrap">${escapeHtml(g.phone)}</td>
+                        <td class="text-nowrap"><strong>${escapeHtml(upperName(g.name))}</strong></td>
+                        <td>${lines}</td>
+                        <td class="text-center">${countBadge}</td>
+                        <td class="text-right text-nowrap">
+                            <button type="button" class="btn btn-xs btn-outline-success btn-dupe-wa" data-key="${escapeHtml(key)}" title="Confirm to WhatsApp">
+                                <i class="fab fa-whatsapp"></i>
+                            </button>
+                        </td>
+                    </tr>`
+                }).join('')
+            }
 
             const loadData = () => {
                 $.ajax({
@@ -759,6 +801,55 @@
                 } else {
                     fallbackCopy(num, done)
                 }
+            })
+
+            /* Dupes: confirm to WhatsApp — preview modal with editable message */
+            let dupeWaKey = ''
+
+            const buildDupeMessage = (g) => {
+                const regs = g.regs || []
+                const lines = regs.map((r, i) => {
+                    const att = (r.attendees || []).map(upperName)
+                    const who = att.length ? att.join(', ') : upperName(g.name)
+                    return `${i + 1}. ${r.ref_code} (Lantai ${r.floor}) — ${who}`
+                }).join('\n')
+                return `Halo Bpk/Ibu,\n\n` +
+                    `Kami dari Humas Panitia Natal GPdI Kopo Permai. Mohon maaf menghubungi Bpk/Ibu, ` +
+                    `kami menemukan beberapa data pendaftaran dengan nomor Bpk/Ibu:\n` +
+                    `${lines}\n\n` +
+                    `Sehubungan dengan hal tersebut, mohon kiranya Bpk/Ibu berkenan mengonfirmasi ` +
+                    `pendaftaran mana yang benar. (Konfirmasi ini hanya menyangkut data pendaftaran, ` +
+                    `bukan konfirmasi kehadiran.)\n\n` +
+                    `Terima kasih atas perhatian dan kerjasama Bpk/Ibu. 🙏`
+            }
+
+            $(document).on('click', '.btn-dupe-wa', function () {
+                dupeWaKey = String($(this).data('key') || '')
+                const g = dupeGroups[dupeWaKey]
+                if (!g) return
+
+                $('#dupeWaPhone').text(g.phone || '-')
+                $('#dupeWaName').text(upperName(g.name))
+                $('#dupeWaMessage').val(buildDupeMessage(g))
+                $('#modalDupeWa').modal('show')
+            })
+
+            $('#btnDupeWaSend').on('click', function () {
+                const g = dupeGroups[dupeWaKey]
+                const url = g ? waLink(g.phone) : ''
+                const text = String($('#dupeWaMessage').val() || '').trim()
+
+                if (!url) {
+                    Swal.fire('Warning', 'Invalid phone number.', 'warning')
+                    return
+                }
+                if (!text) {
+                    Swal.fire('Warning', 'Message cannot be empty.', 'warning')
+                    return
+                }
+
+                window.open(url + '?text=' + encodeURIComponent(text), '_blank', 'noopener')
+                $('#modalDupeWa').modal('hide')
             })
 
             /* Confirm/Cancel via modal: default hanya centang yang sudah berstatus sama */
