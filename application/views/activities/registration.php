@@ -19,8 +19,8 @@
                             <i class="fas fa-print"></i> Print
                         </button>
                         <div class="dropdown-menu">
-                            <a class="dropdown-item" href="#" data-floor="1">Floor 1</a>
-                            <a class="dropdown-item" href="#" data-floor="2">Floor 2</a>
+                            <a class="dropdown-item" href="#" data-floor="1">Floor 1 (Individual)</a>
+                            <a class="dropdown-item" href="#" data-floor="2">Floor 2 (Individual)</a>
                         </div>
                     </div>
                     <div class="mb-1">
@@ -378,11 +378,12 @@
             const upperName = (value) => String(value == null ? '' : value).toUpperCase()
 
             /* Print = dropdown: pilih Floor 1 / Floor 2 lalu langsung print.
+               Aktif di tab Individual (data_print) dan Group (data_print_group).
                Filter lain (search/status/sort) mengikuti form filter yang sudah di-Apply. */
             let printFloor = '1'
 
             const openPrintUrl = () => {
-                if (state.view !== 'people') return
+                if (state.view !== 'people' && state.view !== 'group') return
                 const params = []
                 if (state.search !== '') params.push(`search=${encodeURIComponent(state.search)}`)
                 params.push(`floor=${encodeURIComponent(printFloor)}`)
@@ -390,7 +391,8 @@
                 if (state.sortBy !== '') params.push(`sort_by=${encodeURIComponent(state.sortBy)}`)
                 if (state.sortOrder !== '') params.push(`sort_order=${encodeURIComponent(state.sortOrder)}`)
                 const query = params.join('&')
-                openReportUrl('<?= site_url("activities/registration/data_print") ?>' + (query ? `?${query}` : ''))
+                const endpoint = state.view === 'group' ? 'data_print_group' : 'data_print'
+                openReportUrl('<?= site_url("activities/registration") ?>/' + endpoint + (query ? `?${query}` : ''))
             }
 
             $('#printFloorToggle .dropdown-item').on('click', function (e) {
@@ -411,10 +413,17 @@
                 return `${pad(d.getDate())}-${pad(d.getMonth() + 1)}-${d.getFullYear()}_${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`
             }
 
-            /* Print/Export hanya aktif di tab Individual */
+            /* Print aktif di tab Individual & Group; Export hanya di Individual.
+               Label dropdown menyesuaikan tab aktif: "Floor 1 (Individual)" / "Floor 1 (Group)". */
             const updatePrintExport = () => {
-                const enabled = state.view === 'people'
-                $('#btnExport, #printFloorToggle .dropdown-toggle').prop('disabled', !enabled)
+                const canPrint = state.view === 'people' || state.view === 'group'
+                $('#printFloorToggle .dropdown-toggle').prop('disabled', !canPrint)
+                $('#btnExport').prop('disabled', state.view !== 'people')
+
+                const suffix = state.view === 'group' ? '(Group)' : '(Individual)'
+                $('#printFloorToggle .dropdown-item').each(function () {
+                    $(this).text(`Floor ${$(this).data('floor')} ${suffix}`)
+                })
             }
 
             $('#btnExport').on('click', function () {

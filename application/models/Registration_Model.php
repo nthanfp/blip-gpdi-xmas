@@ -150,21 +150,11 @@ class Registration_Model extends CI_Model
         ];
     }
 
-    /* Full people list (no pagination) for print/export. Same filters/sort as data_list_people. */
+    /* Full people list (no pagination) for print/export. Same filters as data_list_people.
+       Print selalu urut A-Z by nama (arg sort_by/sort_order diabaikan). */
     public function data_list_print_people($search = '', $floor = '', $status = '', $sort_by = 'date', $sort_order = 'desc')
     {
         $search = trim((string) $search);
-
-        $sortable = [
-            'code'   => 'r.ref_code',
-            'phone'  => 'r.phone',
-            'floor'  => 'r.floor',
-            'name'   => 'a.name',
-            'status' => 'a.status',
-            'date'   => 'r.created_date',
-        ];
-        $orderField = $sortable[$sort_by] ?? 'r.created_date';
-        $orderDir = strtolower((string) $sort_order) === 'asc' ? 'ASC' : 'DESC';
 
         $where = ['1 = 1'];
         $binds = [];
@@ -190,13 +180,87 @@ class Registration_Model extends CI_Model
                 FROM ' . $this->_attendee . ' a
                 JOIN ' . $this->_table . ' r ON r.registrationid = a.registrationid
                 WHERE ' . implode(' AND ', $where) . '
-                ORDER BY ' . $orderField . ' ' . $orderDir . ', r.registrationid DESC, a.is_primary DESC, a.attendeeid ASC';
+                ORDER BY a.name ASC, r.registrationid DESC, a.is_primary DESC, a.attendeeid ASC';
 
         $rows = $this->db->query($sql, $binds)->result();
 
         return [
             'success' => true,
             'message' => 'Attendee data retrieved successfully',
+            'data' => $rows,
+        ];
+    }
+
+    /* Full group list (no pagination) for print/export. Same filters as data_list.
+       Tiap baris registration disertai daftar attendee (is_primary DESC, attendeeid ASC).
+       Print selalu urut A-Z by nama parent/orang pertama (arg sort_by/sort_order diabaikan). */
+    public function data_list_print_groups($search = '', $floor = '', $status = '', $sort_by = 'date', $sort_order = 'desc')
+    {
+        $search = trim((string) $search);
+
+        $where = [];
+        $binds = [];
+
+        if ($search !== '') {
+            $like = '%' . $search . '%';
+            $where[] = '(r.phone LIKE ? OR r.ref_code LIKE ? OR EXISTS (SELECT 1 FROM ' . $this->_attendee . ' ax WHERE ax.registrationid = r.registrationid AND ax.name LIKE ?))';
+            $binds[] = $like;
+            $binds[] = $like;
+            $binds[] = $like;
+        }
+        if ($floor !== '' && $floor !== null) {
+            $where[] = 'r.floor = ?';
+            $binds[] = (int) $floor;
+        }
+        if ($status !== '' && $status !== null) {
+            $where[] = 'r.status = ?';
+            $binds[] = (int) $status;
+        }
+
+        $whereSql = $where ? ' WHERE ' . implode(' AND ', $where) : '';
+
+        /* Nama parent = attendee pertama (is_primary DESC, attendeeid ASC) */
+        $sql = 'SELECT r.registrationid, r.phone, r.floor, r.status, r.ref_code, r.created_date,
+                       COUNT(a.attendeeid) AS attendee_count,
+                       SUM(CASE WHEN a.status = 1 THEN 1 ELSE 0 END) AS confirmed_count
+                FROM ' . $this->_table . ' r
+                LEFT JOIN ' . $this->_attendee . ' a ON a.registrationid = r.registrationid
+                LEFT JOIN ' . $this->_attendee . ' pa ON pa.registrationid = r.registrationid
+                    AND pa.attendeeid = (
+                        SELECT a2.attendeeid FROM ' . $this->_attendee . ' a2
+                        WHERE a2.registrationid = r.registrationid
+                        ORDER BY a2.is_primary DESC, a2.attendeeid ASC
+                        LIMIT 1
+                    )'
+            . $whereSql . '
+                GROUP BY r.registrationid
+                ORDER BY MIN(pa.name) ASC, r.registrationid DESC';
+
+        $rows = $this->db->query($sql, $binds)->result();
+
+        $byReg = [];
+        foreach ($rows as $row) {
+            $row->attendees = [];
+            $byReg[$row->registrationid] = $row;
+        }
+
+        $ids = array_keys($byReg);
+        if ($ids) {
+            $atts = $this->db
+                ->where_in('registrationid', $ids)
+                ->order_by('is_primary DESC, attendeeid ASC')
+                ->get($this->_attendee)
+                ->result();
+            foreach ($atts as $att) {
+                if (isset($byReg[$att->registrationid])) {
+                    $byReg[$att->registrationid]->attendees[] = $att->name;
+                }
+            }
+        }
+
+        return [
+            'success' => true,
+            'message' => 'Group data retrieved successfully',
             'data' => $rows,
         ];
     }

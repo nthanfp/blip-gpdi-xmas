@@ -261,10 +261,44 @@ class Registration extends CI_Controller
         $query_string = $this->print_query_string($params);
 
         $pages = site_url('activities/registration/data_printhtml' . (!empty($query_string) ? '?' . $query_string : ''));
-        $head = site_url('activities/registration/data_printhead');
+        $head = site_url('activities/registration/data_printhead?floor=' . urlencode($params['floor']));
         $current_user = $this->Auth_Model->current_user();
         $username = $current_user ? $current_user->username : 'Unknown';
         topdf($pages, $head, 20, 0, 0, 0, $username);
+    }
+
+    /* Judul print: "... - Lantai 1/2" (lantai sudah ada di judul, jadi kolom Lantai dihapus) */
+    private function print_title($label)
+    {
+        $floor = $this->input->get('floor', true);
+        if ($floor === '1' || $floor === '2') {
+            return 'Daftar Pendaftaran (' . $label . ') - Lantai ' . $floor;
+        }
+        return 'Daftar Pendaftaran (' . $label . ')';
+    }
+
+    /* Baris header kolom print (dipakai printhead & export). Total lebar 970.
+       $with_no = false untuk Group (tanpa kolom No.) */
+    private function print_header_row($with_no = true)
+    {
+        if ($with_no) {
+            return '
+			<tr>
+                <td class="headertd" width="40">No.</td>
+                <td class="headertd" width="140">No. HP</td>
+                <td class="headertd" width="380">Nama</td>
+                <td class="headertd" width="240">Terdaftar Pada</td>
+                <td class="headertd" width="170">Kode Pendaftaran</td>
+            </tr>';
+        }
+
+        return '
+			<tr>
+                <td class="headertd" width="150">No. HP</td>
+                <td class="headertd" width="440">Nama</td>
+                <td class="headertd" width="210">Terdaftar Pada</td>
+                <td class="headertd" width="170">Kode Pendaftaran</td>
+            </tr>';
     }
 
     public function data_printhead()
@@ -273,32 +307,12 @@ class Registration extends CI_Controller
             return;
         }
 
-        $table = '<table border="0" width="970" class="tablerep">
-        <tr>
-			<td class="headertd" width="150">No. HP</td>
-			<td class="headertd" width="90">Lantai</td>
-			<td class="headertd" width="430">Nama</td>
-			<td class="headertd" width="300">Terdaftar Pada</td>
-        </tr>
-		</table>';
+        $table = '<table border="0" width="970" class="tablerep">' . $this->print_header_row() . '</table>';
 
-        $data['title'] = 'Daftar Pendaftaran (Individual)';
+        $data['title'] = $this->print_title('Individual');
         $data['table'] = $table;
 
         $this->load->view('act/act_common_head', $data);
-    }
-
-    private function mask_phone($phone)
-    {
-        $digits = preg_replace('/\D/', '', (string) $phone);
-        if ($digits === '') {
-            return '-';
-        }
-        $len = strlen($digits);
-        if ($len <= 4) {
-            return str_repeat('x', $len);
-        }
-        return str_repeat('x', $len - 4) . substr($digits, -4);
     }
 
     private function format_registered_date($value)
@@ -337,32 +351,137 @@ class Registration extends CI_Controller
         $table = '<table border="0" width="970" class="tablerep">';
 
         if ($ex == 1) {
-            $table .= '
-			<tr>
-                <td class="headertd" width="150">No. HP</td>
-                <td class="headertd" width="90">Lantai</td>
-                <td class="headertd" width="430">Nama</td>
-                <td class="headertd" width="300">Terdaftar Pada</td>
-            </tr>';
+            $table .= $this->print_header_row();
         }
 
+        $no = 1;
         foreach ($rows as $row) {
             $name = htmlspecialchars(strtoupper($row->name), ENT_QUOTES, 'UTF-8');
-            $phone = htmlspecialchars($this->mask_phone($row->phone), ENT_QUOTES, 'UTF-8');
+            $phone_raw = trim((string) $row->phone);
+            $phone = htmlspecialchars($phone_raw !== '' ? $phone_raw : '-', ENT_QUOTES, 'UTF-8');
             $created_date = htmlspecialchars($this->format_registered_date($row->created_date), ENT_QUOTES, 'UTF-8');
+            $code_raw = trim((string) $row->ref_code);
+            $code = htmlspecialchars($code_raw !== '' ? $code_raw : '-', ENT_QUOTES, 'UTF-8');
 
             $table .= "
             <tr valign='top'>
-                <td class='text' width='150'>{$phone}</td>
-                <td class='text' width='90'>{$row->floor}</td>
-                <td class='text' width='430'>{$name}</td>
-                <td class='text' width='300'>{$created_date}</td>
+                <td class='text' width='40'>{$no}</td>
+                <td class='text' width='140'>{$phone}</td>
+                <td class='text' width='380'>{$name}</td>
+                <td class='text' width='240'>{$created_date}</td>
+                <td class='text' width='170'>{$code}</td>
             </tr>";
+            $no++;
         }
 
         $table .= '</table>';
 
-        $output['title'] = 'Daftar Pendaftaran (Individual)';
+        $output['title'] = $this->print_title('Individual');
+        $output['table'] = $table;
+        $output['ex'] = $ex;
+        $output['filename'] = $filename;
+
+        $this->load->view('act/common_print', $output);
+    }
+
+    public function data_print_group()
+    {
+        if (!$this->guard_menu_access($this->_menuid, 'print')) {
+            return;
+        }
+
+        $params = $this->print_params();
+
+        /* Filter lantai wajib untuk print */
+        if ($params['floor'] !== '1' && $params['floor'] !== '2') {
+            show_error('Filter lantai wajib dipilih untuk print (Floor 1 atau Floor 2).', 400);
+            return;
+        }
+
+        $query_string = $this->print_query_string($params);
+
+        $pages = site_url('activities/registration/data_printhtml_group' . (!empty($query_string) ? '?' . $query_string : ''));
+        $head = site_url('activities/registration/data_printhead_group?floor=' . urlencode($params['floor']));
+        $current_user = $this->Auth_Model->current_user();
+        $username = $current_user ? $current_user->username : 'Unknown';
+        topdf($pages, $head, 20, 0, 0, 0, $username);
+    }
+
+    public function data_printhead_group()
+    {
+        if (!$this->guard_menu_access($this->_menuid, 'print')) {
+            return;
+        }
+
+        $table = '<table border="0" width="970" class="tablerep">' . $this->print_header_row(false) . '</table>';
+
+        $data['title'] = $this->print_title('Group');
+        $data['table'] = $table;
+
+        $this->load->view('act/act_common_head', $data);
+    }
+
+    public function data_printhtml_group($filename = '', $ex = 0)
+    {
+        $subperm = ((int) $ex === 1) ? 'export' : 'print';
+        if (!$this->guard_menu_access($this->_menuid, $subperm)) {
+            return;
+        }
+
+        $result = $this->Registration_Model->data_list_print_groups(
+            $this->input->get('search', true) ?: '',
+            $this->input->get('floor', true) ?: '',
+            $this->input->get('status', true) ?: '',
+            $this->input->get('sort_by', true) ?: 'date',
+            $this->input->get('sort_order', true) ?: 'desc'
+        );
+
+        if (!$result['success']) {
+            show_error($result['message']);
+            return;
+        }
+
+        $rows = isset($result['data']) ? $result['data'] : [];
+        $table = '<table border="0" width="970" class="tablerep">';
+
+        if ($ex == 1) {
+            $table .= $this->print_header_row(false);
+        }
+
+        foreach ($rows as $row) {
+            $attendees = !empty($row->attendees) ? $row->attendees : ['-'];
+            $phone_raw = trim((string) $row->phone);
+            $phone = htmlspecialchars($phone_raw !== '' ? $phone_raw : '-', ENT_QUOTES, 'UTF-8');
+            $created_date = htmlspecialchars($this->format_registered_date($row->created_date), ENT_QUOTES, 'UTF-8');
+            $code_raw = trim((string) $row->ref_code);
+            $code = htmlspecialchars($code_raw !== '' ? $code_raw : '-', ENT_QUOTES, 'UTF-8');
+            $has_children = count($attendees) > 1;
+
+            foreach ($attendees as $idx => $attendee) {
+                $name = htmlspecialchars(strtoupper((string) $attendee), ENT_QUOTES, 'UTF-8');
+
+                /* Tanpa kolom No.; no HP hanya di parent/orang ke-1.
+                   Parent yang punya anak: nama bold. Anak: nama indent maju, tanggal & kode tetap tiap baris. */
+                $is_parent = ((int) $idx === 0);
+                $cell_phone = $is_parent ? $phone : '';
+                $indent = $is_parent ? '' : ' style=\'padding-left:24px\'';
+                if ($is_parent && $has_children) {
+                    $name = '<strong>' . $name . '</strong>';
+                }
+
+                $table .= "
+            <tr valign='top'>
+                <td class='text' width='150'>{$cell_phone}</td>
+                <td class='text' width='440'{$indent}>{$name}</td>
+                <td class='text' width='210'>{$created_date}</td>
+                <td class='text' width='170'>{$code}</td>
+            </tr>";
+            }
+        }
+
+        $table .= '</table>';
+
+        $output['title'] = $this->print_title('Group');
         $output['table'] = $table;
         $output['ex'] = $ex;
         $output['filename'] = $filename;
