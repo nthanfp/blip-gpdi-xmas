@@ -100,14 +100,14 @@
                         <thead>
                             <tr>
                                 <th class="d-none">ID</th>
-                                <th style="width: 90px;">Floor</th>
-                                <th style="width: 60px;">Seats</th>
-                                <th>Name</th>
-                                <th style="width: 120px;">Phone</th>
+                                <th class="text-nowrap" style="width: 90px;">Floor</th>
+                                <th class="text-nowrap" style="width: 60px;">Seats</th>
+                                <th class="text-nowrap">Name</th>
+                                <th class="text-nowrap" style="width: 120px;">Phone</th>
                                 <th>Notes</th>
-                                <th style="width: 80px;">Status</th>
-                                <th>Modified</th>
-                                <th class="text-right">Action</th>
+                                <th class="text-nowrap" style="width: 80px;">Status</th>
+                                <th class="text-nowrap">Modified</th>
+                                <th class="text-right text-nowrap">Action</th>
                             </tr>
                         </thead>
                         <tbody id="tableBodyBooking">
@@ -312,13 +312,13 @@
                 const html = rows.map((row) => `
                     <tr>
                         <td class="d-none">${escapeHtml(row.bookingid)}</td>
-                        <td>${escapeHtml(floorName(row.floor))}</td>
-                        <td>${escapeHtml(row.seats)}</td>
-                        <td style="max-width: 180px; word-break: break-word;">${escapeHtml(row.name)}${(row.confirmed_count !== null && row.confirmed_count !== undefined && row.confirmed_count !== '') ? ` <span class="badge badge-success" title="Confirmed attendance">&#10003; ${escapeHtml(row.confirmed_count)}</span>` : ''}</td>
-                        <td>${row.phone ? escapeHtml(row.phone) : '<span class="text-muted">&mdash;</span>'}</td>
+                        <td class="text-nowrap">${escapeHtml(floorName(row.floor))}</td>
+                        <td class="text-nowrap">${escapeHtml(row.seats)}</td>
+                        <td class="text-nowrap">${escapeHtml(row.name)}${(row.confirmed_count !== null && row.confirmed_count !== undefined && row.confirmed_count !== '') ? ` <span class="badge badge-success" title="Confirmed attendance">&#10003; ${escapeHtml(row.confirmed_count)}</span>` : ''}</td>
+                        <td class="text-nowrap">${row.phone ? escapeHtml(row.phone) : '<span class="text-muted">&mdash;</span>'}</td>
                         <td style="max-width: 260px; word-break: break-word;">${escapeHtml(row.keterangan)}</td>
-                        <td>${statusBadge(row.status)}</td>
-                        <td>${escapeHtml(formatDate(row.modified_date || row.created_date))}</td>
+                        <td class="text-nowrap">${statusBadge(row.status)}</td>
+                        <td class="text-nowrap">${escapeHtml(formatDate(row.modified_date || row.created_date))}</td>
                         <td class="text-right text-nowrap">
                             <a href="${endpoints.invitation}${escapeHtml(row.bookingid)}${slugify(row.name) ? '/' + slugify(row.name) : ''}" target="_blank" rel="noopener noreferrer"
                                class="btn btn-xs btn-outline-secondary" title="View invitation page">
