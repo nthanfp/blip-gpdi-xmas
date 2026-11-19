@@ -442,7 +442,7 @@
     })()
 </script>
 
-<script src="https://cdn.jsdelivr.net/npm/eruda"></script>
+<!-- <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
 <script type="text/javascript">
     eruda.init();
-</script>
+</script> -->
