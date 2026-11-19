@@ -210,6 +210,38 @@
                 </div>
             </div>
 
+            <!-- Tabel Rekap -->
+            <div class="row mt-3">
+                <div class="col-12">
+                    <div class="card card-outline card-secondary dashboard-card">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="fas fa-clipboard-list mr-1"></i>Rekap Data Pendaftaran Natal 2026</h3>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-sm btn-outline-secondary" id="btnPrintRekap">
+                                    <i class="fas fa-print"></i> Print
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-sm table-striped mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th class="text-center text-nowrap">Lantai 1</th>
+                                            <th class="text-center text-nowrap">Lantai 2</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="rekapBody">
+                                        <tr><td colspan="3" class="text-center text-muted py-4">Loading...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
         <!-- Footer -->
@@ -362,6 +394,51 @@
                 $('#latestBody').html(html)
             }
 
+            const renderRekap = (d) => {
+                const floors = d.floors || []
+                let f1 = null
+                let f2 = null
+                floors.forEach(f => {
+                    if (Number(f.floor) === 1) f1 = f
+                    if (Number(f.floor) === 2) f2 = f
+                })
+                const cap = (f) => f ? Number(f.capacity || 0) : 0
+                const reg = (f) => f ? Number(f.registered || 0) : 0
+                const bkd = (f) => f ? Number(f.booked || 0) : 0
+                const rem = (f) => f ? Number(f.remaining || 0) : 0
+
+                const list = d.booking_list || []
+
+                let html = '<tr class="font-weight-bold"><td>Registration</td><td></td><td></td></tr>'
+                html += '<tr><td class="text-nowrap" style="padding-left:40px;">Jumlah Pendaftar</td>' +
+                    `<td class="text-center">${reg(f1)}</td><td class="text-center">${reg(f2)}</td></tr>`
+
+                html += '<tr class="font-weight-bold"><td>Booking &amp; Invitation</td><td></td><td></td></tr>'
+                if (list.length === 0) {
+                    html += '<tr><td class="text-muted" style="padding-left:40px;">Tidak ada booking aktif</td>' +
+                        '<td class="text-center text-muted">-</td><td class="text-center text-muted">-</td></tr>'
+                } else {
+                    list.forEach(b => {
+                        const isF2 = Number(b.floor) === 2
+                        const val = Number(b.seats || 0)
+                        html += '<tr>' +
+                            `<td class="text-nowrap" style="padding-left:40px;">${escapeHtml(b.name || '-')}</td>` +
+                            `<td class="text-center">${isF2 ? '' : val}</td>` +
+                            `<td class="text-center">${isF2 ? val : ''}</td></tr>`
+                    })
+                }
+
+                html += '<tr><td colspan="3" style="border-top: 3px solid #343a40; padding: 0; height: 0;"></td></tr>'
+                html += '<tr class="font-weight-bold"><td>Total Kursi</td>' +
+                    `<td class="text-center">${cap(f1)}</td><td class="text-center">${cap(f2)}</td></tr>`
+                html += '<tr class="font-weight-bold"><td>Total Terisi</td>' +
+                    `<td class="text-center">${reg(f1) + bkd(f1)}</td><td class="text-center">${reg(f2) + bkd(f2)}</td></tr>`
+                html += '<tr class="font-weight-bold"><td>Sisa Kursi</td>' +
+                    `<td class="text-center">${rem(f1)}</td><td class="text-center">${rem(f2)}</td></tr>`
+
+                $('#rekapBody').html(html)
+            }
+
             const loadSummary = () => {
                 $.ajax({
                     url: endpoints.summary,
@@ -409,6 +486,7 @@
                         renderSeating(d.seating, floors)
                         renderChart(d.daily || {})
                         renderLatest(d.latest)
+                        renderRekap(d)
 
                         const dupes = Number(d.dupes || 0)
                         if (dupes > 0) {
@@ -425,6 +503,10 @@
                     }
                 })
             }
+
+            $('#btnPrintRekap').on('click', function () {
+                window.open('<?= site_url("activities/dashboard/data_print") ?>', '_blank', 'noopener,noreferrer')
+            })
 
             loadSummary()
         })

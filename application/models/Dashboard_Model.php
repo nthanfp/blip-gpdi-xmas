@@ -22,6 +22,7 @@ class Dashboard_Model extends CI_Model
 
         /* Booking & Invitation (status aktif saja) */
         $booking = null;
+        $booking_list = [];
         if ($this->db->table_exists($this->_booking)) {
             $has_confirmed = $this->db->field_exists('confirmed_count', $this->_booking);
             $row = $this->db->query(
@@ -36,6 +37,21 @@ class Dashboard_Model extends CI_Model
                 'seats' => (int) $row->seats,
                 'confirmed' => (int) $row->confirmed,
             ];
+
+            $rows = $this->db->query(
+                'SELECT floor, name, COALESCE(SUM(seats), 0) AS seats
+                 FROM ' . $this->_booking . '
+                 WHERE status = 0
+                 GROUP BY floor, name
+                 ORDER BY floor ASC, name ASC'
+            )->result();
+            foreach ($rows as $r) {
+                $booking_list[] = [
+                    'floor' => (int) $r->floor,
+                    'name' => $r->name !== null ? trim(preg_replace('/\s+/', ' ', $r->name)) : '',
+                    'seats' => (int) $r->seats,
+                ];
+            }
         }
 
         /* Occupancy per lantai dari peta kursi fisik */
@@ -131,6 +147,7 @@ class Dashboard_Model extends CI_Model
                     'confirmed' => (int) $totals['confirmed'],
                 ],
                 'booking' => $booking,
+                'booking_list' => $booking_list,
                 'seating' => array_values($seating),
                 'daily' => $daily,
                 'latest' => $latest_out,
