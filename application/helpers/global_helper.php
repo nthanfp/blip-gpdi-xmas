@@ -84,15 +84,40 @@ function topdf($pages, $header = '', $top = 10, $ls = 0, $printA5 = 0, $report =
     } else if ($os == 'LINUX') {
         $output = tempnam(sys_get_temp_dir(), 'pdf_');
         $cwd = getcwd();
-        $wkhtmltopdf = $cwd . '/wkhtmltopdf/wkhtmltopdf';
-        if (!file_exists($wkhtmltopdf)) {
-            $wkhtmltopdf = 'wkhtmltopdf';
+        /* Prefer the Linux binary shipped as wkhtmltopdf.linux (keeps Windows .exe path intact) */
+        $wkhtmltopdf = $cwd . '/wkhtmltopdf/wkhtmltopdf.linux';
+        $ld_prefix = '';
+        if (file_exists($wkhtmltopdf)) {
+            $lib_dir = $cwd . '/wkhtmltopdf/lib';
+            if (is_dir($lib_dir)) {
+                $ld_prefix = 'LD_LIBRARY_PATH=' . escapeshellarg($lib_dir) . ' ';
+            }
+        } else {
+            $wkhtmltopdf = $cwd . '/wkhtmltopdf/wkhtmltopdf';
+            if (!file_exists($wkhtmltopdf)) {
+                $wkhtmltopdf = 'wkhtmltopdf';
+                foreach (['/usr/local/bin/wkhtmltopdf', '/usr/bin/wkhtmltopdf'] as $candidate) {
+                    if (file_exists($candidate)) {
+                        $wkhtmltopdf = $candidate;
+                        break;
+                    }
+                }
+            } else {
+                $lib_dir = $cwd . '/wkhtmltopdf/lib';
+                if (is_dir($lib_dir)) {
+                    $ld_prefix = 'LD_LIBRARY_PATH=' . escapeshellarg($lib_dir) . ' ';
+                }
+            }
         }
+
+        /* Writable fontconfig cache (host HOME is not writable for the web user) */
+        @mkdir('/tmp/fontconfig-cache', 0777, true);
+        $env_prefix = 'HOME=/tmp FONTCONFIG_CACHE=/tmp/fontconfig-cache ';
 
         $session_cookie_name = getenv('SESSION_COOKIE_NAME') ?: 'ci3_boiler_admin';
         $session_id = session_id();
 
-        $command = '"' . $wkhtmltopdf . '"';
+        $command = $env_prefix . $ld_prefix . '"' . $wkhtmltopdf . '"';
         if (!empty($session_id)) {
             $command .= ' --cookie ' . $session_cookie_name . ' ' . $session_id;
         }
