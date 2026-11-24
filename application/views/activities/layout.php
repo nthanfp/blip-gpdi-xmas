@@ -331,7 +331,7 @@
             }
 
             /* Per-seat state (derived from act_seating_seat + attendee.status):
-               hanya attendee confirmed (status=1) yang dianggap terisi */
+               attendee non-cancelled (status 0/1) yang dianggap terisi */
             $seat_state = [];
             $seat_q = $this->db->query(
                 'SELECT s.floor_id, s.seat_number, s.registrationid AS seat_regid, s.bookingid AS seat_bookingid, a.status AS attendee_status, a.name AS attendee_name, r.ref_code
@@ -342,7 +342,8 @@
             );
             foreach ($seat_q->result_array() as $sr) {
                 $seat_state[(int) $sr['floor_id']][(int) $sr['seat_number']] = [
-                    'confirmed' => ((int) ($sr['attendee_status'] ?? 0) === 1),
+                    'confirmed' => ($sr['attendee_status'] !== null && (int) $sr['attendee_status'] !== 2),
+                    'attendee_status' => $sr['attendee_status'] === null ? null : (int) $sr['attendee_status'],
                     'name' => (string) ($sr['attendee_name'] ?? ''),
                     'ref' => (string) ($sr['ref_code'] ?? ''),
                     'regid' => (int) ($sr['seat_regid'] ?? 0),
@@ -446,9 +447,10 @@
                                     $cls .= ' seat-confirmed';
                                     $regid = (int) ($st['regid'] ?? 0);
                                     if ($st['name'] !== '') {
+                                        $st_label = ((int) ($st['attendee_status'] ?? 1) === 1) ? 'Confirmed' : 'Pending';
                                         $title .= ' — ' . $st['name']
                                             . ($st['ref'] !== '' ? ' (' . $st['ref'] . ')' : '')
-                                            . ' — Confirmed';
+                                            . ' — ' . $st_label;
                                     }
                                 } elseif ($bid > 0) {
                                     $cls .= ' seat-reserved';
@@ -818,37 +820,29 @@
 
             function renderAttendees(attendees) {
                 var html = '';
-                var hasPending = false;
                 (attendees || []).forEach(function (a) {
                     var seated = a.seat_number ? 'Seat ' + a.seat_number : 'No seat';
                     var badgeCls = a.seat_number ? 'badge-success' : 'badge-secondary';
                     var checked = '';
-                    var disabled = '';
                     var statusTag = '';
-                    if (a.status == 1) {
-                        checked = a.seat_number ? '' : 'checked';
+                    if (a.status == 2) {
+                        checked = '';
+                        statusTag = '<span class="badge badge-danger mr-1">Cancelled</span>';
                     } else {
-                        hasPending = true;
-                        disabled = 'disabled';
-                        statusTag = '<span class="badge badge-warning mr-1">Pending</span>';
+                        checked = a.seat_number ? '' : 'checked';
+                        if (a.status != 1) {
+                            statusTag = '<span class="badge badge-warning mr-1">Pending</span>';
+                        }
                     }
                     html +=
-                        '<label class="seat-attendee-item mb-1" title="' + (disabled ? 'Attendee not confirmed yet — confirm first in the Registration menu' : '') + '">' +
-                        '<input type="checkbox" value="' + a.attendeeid + '" ' + checked + ' ' + disabled + '>' +
+                        '<label class="seat-attendee-item mb-1">' +
+                        '<input type="checkbox" value="' + a.attendeeid + '" ' + checked + '>' +
                         statusTag +
                         '<span class="flex-grow-1">' + escapeHtml(a.name) + '</span>' +
                         '<span class="badge ' + badgeCls + '">' + escapeHtml(seated) + '</span>' +
                         '</label>';
                 });
                 $('#seatRegAttendees').html(html || '<div class="text-muted">No attendees</div>');
-                if (hasPending) {
-                    $('#seatRegAttendees').prepend(
-                        '<div class="alert alert-warning py-1 px-2 mb-1 text-xs" style="font-size:.75rem">' +
-                        '<i class="fas fa-exclamation-triangle mr-1"></i> Attendees with <b>pending</b> status cannot select seats. ' +
-                        'Confirm them first in the <a href="<?= site_url("activities/registration") ?>" target="_blank">Registration</a> menu.' +
-                        '</div>'
-                    );
-                }
             }
 
             function selectReg(reg) {
@@ -866,8 +860,8 @@
                     escapeHtml(reg.phone || '') + ' · <b>' + confN + ' confirmed</b> (' + (parseInt(reg.seated_count, 10) || 0) + ' seated)' +
                     (pendingN ? ' · <span class="text-warning">' + pendingN + ' pending</span>' : '')
                 );
-                if (confN === 0) {
-                    toast('info', 'No confirmed attendees yet', 'Confirm attendees in the Registration menu before assigning seats');
+                if (confN === 0 && pendingN === 0) {
+                    toast('info', 'No attendees yet', 'This registration has no attendees to assign');
                 }
                 $('#seatSearchResults').empty().removeClass('show');
 

@@ -223,7 +223,7 @@ class Seating_Model extends CI_Model
                       WHERE a.registrationid = r.registrationid AND a.status = 0) AS pending_count,
                     (SELECT COUNT(*) FROM {$this->_attendee} a
                       JOIN {$this->_seat} s ON s.attendeeid = a.attendeeid
-                      WHERE a.registrationid = r.registrationid AND a.status = 1) AS seated_count
+                      WHERE a.registrationid = r.registrationid AND a.status IN (0, 1)) AS seated_count
              FROM {$this->_registration} r
              LEFT JOIN set_xmas_floor f ON f.floor = r.floor
              WHERE r.status <> 2
@@ -336,14 +336,14 @@ class Seating_Model extends CI_Model
         $att_in = implode(',', array_fill(0, count($attendees), '?'));
         $att_rows = $this->db->query(
             "SELECT attendeeid FROM {$this->_attendee}
-             WHERE attendeeid IN ({$att_in}) AND registrationid = ? AND status = 1
+             WHERE attendeeid IN ({$att_in}) AND registrationid = ? AND status IN (0, 1)
              FOR UPDATE",
             array_merge($attendees, [$registrationid])
         )->result_array();
 
         if (count($att_rows) !== count($attendees)) {
             $this->db->trans_rollback();
-            return ['success' => false, 'message' => 'Invalid attendees (must belong to this registration and be confirmed)'];
+            return ['success' => false, 'message' => 'Invalid attendees (must belong to this registration and not be cancelled)'];
         }
 
         /* Pindah kursi: lepas dulu kursi lama attendee ini */
