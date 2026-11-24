@@ -239,12 +239,7 @@
             color: #fff;
         }
 
-        /* Tanpa !important — supaya jQuery .hide() (inline display:none) tetap menang */
-        #seatRegEmpty {
-            display: flex;
-            align-items: center;
-            min-height: 38px;
-        }
+        /* #seatRegEmpty & #seatBookEmpty — style sama (block text-muted biasa) */
 
         #seatSearchResults {
             display: none;
@@ -304,6 +299,153 @@
         .seating-map .seat[data-reg]:not([data-reg="0"]) {
             cursor: pointer;
         }
+
+        /* Occupied by pending attendee (status=0) — beda dari confirmed */
+        .seating-map .seat.seat-confirmed.seat-pending {
+            background: #ffd43b;
+            border-color: #f59f00;
+            color: #212529;
+        }
+
+        .seating-map .seat.seat-confirmed.seat-pending:hover {
+            background: #fcc419;
+            border-color: #f08c00;
+        }
+
+        /* Selected untuk RELEASE (occupied + selected) — merah solid, bukan oranye */
+        .seating-map .seat.seat-confirmed.seat-selected,
+        .seating-map .seat.seat-reserved.seat-selected {
+            background: #dc3545 !important;
+            border-color: #a92c37 !important;
+            color: #fff !important;
+            box-shadow: 0 0 0 3px rgba(220, 53, 69, .55) !important;
+            position: relative;
+            font-weight: 700;
+        }
+
+        .seating-map .seat.seat-confirmed.seat-selected::after,
+        .seating-map .seat.seat-reserved.seat-selected::after {
+            content: '\2713';
+            position: absolute;
+            top: -1px;
+            right: 1px;
+            font-size: .55rem;
+            line-height: 1;
+            font-weight: 700;
+            color: #fff;
+            text-shadow: 0 0 2px rgba(0, 0, 0, .45);
+        }
+
+        .seating-map .seat.seat-confirmed.seat-selected:hover,
+        .seating-map .seat.seat-reserved.seat-selected:hover {
+            background: #b02a37 !important;
+            border-color: #842029 !important;
+            color: #fff !important;
+        }
+
+        /* ===== Sticky action bar (assign/release tanpa reload) ===== */
+        .seat-action-bar {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 1050;
+            background: #fff;
+            border-top: 2px solid #6c757d;
+            box-shadow: 0 -4px 14px rgba(0, 0, 0, .12);
+            padding: .55rem 1rem;
+            font-size: .85rem;
+        }
+
+        body.seat-bar-open .content-wrapper {
+            padding-bottom: 76px;
+        }
+
+        /* ===== Custom seat tooltip (ganti title browser) ===== */
+        #seatTooltip {
+            position: fixed;
+            z-index: 2000;
+            pointer-events: none;
+            max-width: 260px;
+            padding: .5rem .65rem;
+            background: rgba(33, 37, 41, .96);
+            color: #f1f3f5;
+            border: 1px solid rgba(255, 255, 255, .12);
+            border-radius: .4rem;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, .28);
+            font-size: .72rem;
+            line-height: 1.35;
+            opacity: 0;
+            transform: translateY(4px);
+            transition: opacity .12s ease, transform .12s ease;
+        }
+
+        #seatTooltip.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        #seatTooltip .tt-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: .6rem;
+            margin-bottom: .25rem;
+            font-weight: 700;
+            font-size: .78rem;
+        }
+
+        #seatTooltip .tt-seat {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 1.6rem;
+            height: 1.25rem;
+            padding: 0 .35rem;
+            background: #fff;
+            color: #212529;
+            border-radius: .25rem;
+            font-size: .7rem;
+            font-weight: 700;
+        }
+
+        #seatTooltip .tt-badge {
+            font-size: .62rem;
+            font-weight: 700;
+            padding: .1rem .4rem;
+            border-radius: .2rem;
+            text-transform: uppercase;
+            letter-spacing: .03em;
+        }
+
+        #seatTooltip .tt-badge.available { background: #e9ecef; color: #495057; }
+        #seatTooltip .tt-badge.confirmed { background: #198754; color: #fff; }
+        #seatTooltip .tt-badge.pending { background: #ffc107; color: #212529; }
+        #seatTooltip .tt-badge.reserved { background: #0d6efd; color: #fff; }
+        #seatTooltip .tt-badge.selected { background: #f59f00; color: #212529; }
+
+        #seatTooltip .tt-name {
+            font-weight: 600;
+            font-size: .75rem;
+            word-break: break-word;
+        }
+
+        #seatTooltip .tt-meta {
+            color: #adb5bd;
+            font-size: .66rem;
+            margin-top: .1rem;
+        }
+
+        #seatTooltip .tt-meta b { color: #ced4da; font-weight: 600; }
+
+        #seatTooltip .tt-hint {
+            margin-top: .3rem;
+            padding-top: .3rem;
+            border-top: 1px dashed rgba(255, 255, 255, .18);
+            color: #868e96;
+            font-size: .62rem;
+            font-style: italic;
+        }
     </style>
 </head>
 
@@ -334,10 +476,12 @@
                attendee non-cancelled (status 0/1) yang dianggap terisi */
             $seat_state = [];
             $seat_q = $this->db->query(
-                'SELECT s.floor_id, s.seat_number, s.registrationid AS seat_regid, s.bookingid AS seat_bookingid, a.status AS attendee_status, a.name AS attendee_name, r.ref_code
+                'SELECT s.floor_id, s.seat_number, s.registrationid AS seat_regid, s.bookingid AS seat_bookingid, a.status AS attendee_status, a.name AS attendee_name, a.age AS attendee_age, r.ref_code,
+                        b.name AS booking_name, b.keterangan AS booking_keterangan
                  FROM act_seating_seat s
                  LEFT JOIN act_xmas_attendee a ON a.attendeeid = s.attendeeid
                  LEFT JOIN act_xmas_registration r ON r.registrationid = s.registrationid
+                 LEFT JOIN act_xmas_booking b ON b.bookingid = s.bookingid
                  ORDER BY s.floor_id, s.seat_number'
             );
             foreach ($seat_q->result_array() as $sr) {
@@ -345,9 +489,11 @@
                     'confirmed' => ($sr['attendee_status'] !== null && (int) $sr['attendee_status'] !== 2),
                     'attendee_status' => $sr['attendee_status'] === null ? null : (int) $sr['attendee_status'],
                     'name' => (string) ($sr['attendee_name'] ?? ''),
+                    'age' => $sr['attendee_age'] ?? null,
                     'ref' => (string) ($sr['ref_code'] ?? ''),
                     'regid' => (int) ($sr['seat_regid'] ?? 0),
                     'bookingid' => (int) ($sr['seat_bookingid'] ?? 0),
+                    'booking_name' => trim((string) ($sr['booking_name'] ?? '') . ' ' . (string) ($sr['booking_keterangan'] ?? '')),
                 ];
             }
 
@@ -440,23 +586,37 @@
                                 $seat_slot++;
                                 $st = $seat_state[$no] ?? null;
                                 $cls = 'seat';
-                                $title = 'Seat ' . $no;
+                                $st_status = 'available';
+                                $st_name = '';
+                                $st_age = '';
+                                $st_ref = '';
+                                $st_bname = '';
                                 $regid = 0;
                                 $bid = (int) ($st['bookingid'] ?? 0);
                                 if (!empty($st['confirmed'])) {
                                     $cls .= ' seat-confirmed';
-                                    $regid = (int) ($st['regid'] ?? 0);
-                                    if ($st['name'] !== '') {
-                                        $st_label = ((int) ($st['attendee_status'] ?? 1) === 1) ? 'Confirmed' : 'Pending';
-                                        $title .= ' — ' . $st['name']
-                                            . ($st['ref'] !== '' ? ' (' . $st['ref'] . ')' : '')
-                                            . ' — ' . $st_label;
+                                    if (isset($st['attendee_status']) && $st['attendee_status'] !== null && (int) $st['attendee_status'] === 0) {
+                                        $cls .= ' seat-pending';
+                                        $st_status = 'pending';
+                                    } else {
+                                        $st_status = 'confirmed';
                                     }
+                                    $regid = (int) ($st['regid'] ?? 0);
+                                    $st_name = (string) ($st['name'] ?? '');
+                                    $st_age = ($st['age'] !== null && $st['age'] !== '') ? (string) $st['age'] : '';
+                                    $st_ref = (string) ($st['ref'] ?? '');
                                 } elseif ($bid > 0) {
                                     $cls .= ' seat-reserved';
-                                    $title .= ' — Reserved (booking #' . $bid . ')';
+                                    $st_status = 'reserved';
+                                    $st_bname = (string) ($st['booking_name'] ?? '');
                                 }
-                                $cells .= '<div class="' . $cls . '" data-seat="' . $no . '" data-reg="' . $regid . '" data-booking="' . $bid . '" title="' . htmlspecialchars($title) . '">' . $no . '</div>';
+                                $cells .= '<div class="' . $cls . '" data-seat="' . $no . '" data-reg="' . $regid . '" data-booking="' . $bid . '"'
+                                    . ' data-status="' . $st_status . '"'
+                                    . ' data-name="' . htmlspecialchars($st_name, ENT_QUOTES) . '"'
+                                    . ' data-age="' . htmlspecialchars($st_age, ENT_QUOTES) . '"'
+                                    . ' data-ref="' . htmlspecialchars($st_ref, ENT_QUOTES) . '"'
+                                    . ' data-bname="' . htmlspecialchars($st_bname, ENT_QUOTES) . '">'
+                                    . $no . '</div>';
                             }
                             $cells .= '</div>';
                         }
@@ -539,14 +699,14 @@
                 <div class="card-body py-2">
 
                     <!-- ===== Mode: Registration ===== -->
-                    <div class="row" id="modeRegWrap">
-                        <div class="col-12 col-md-5 mb-2 mb-md-0">
+                    <div id="modeRegWrap">
+                        <div class="mb-2">
                             <label class="mb-1 d-block"><i class="fas fa-search mr-1 text-muted"></i> Search Registration <small class="text-muted">(code / phone / name)</small></label>
                             <input type="text" class="form-control form-control-sm" id="seatSearch" placeholder="5-char code / 08xx / name" autocomplete="off">
                             <div id="seatSearchResults" class="list-group mt-1"></div>
-                            <small class="text-muted d-block mt-1">Registrations with <b>pending</b> attendees still appear (yellow badge) — attendees must be <b>Confirmed</b> in the Registration menu before seats can be assigned.</small>
+                            <small class="text-muted d-block mt-1">Search by code / phone / name. Pending attendees (yellow badge) can also be assigned seats — only <b>Cancelled</b> cannot.</small>
                         </div>
-                        <div class="col-12 col-md-7">
+                        <div>
                             <div id="seatRegEmpty" class="text-muted">
                                 <i class="fas fa-info-circle mr-1"></i> Search for a registration to start assigning / releasing seats.
                             </div>
@@ -562,23 +722,23 @@
                                 <div class="d-flex align-items-center flex-wrap">
                                     <span class="badge badge-info mr-2" id="seatSelCount">0 seat(s) selected</span>
                                     <span class="badge badge-warning mr-2 d-none" id="seatAttCount">0 attendee(s)</span>
-                                    <button type="button" class="btn btn-sm btn-primary mr-1" id="seatAssignBtn" disabled><i class="fas fa-chair mr-1"></i> Assign</button>
-                                    <button type="button" class="btn btn-sm btn-outline-danger" id="seatReleaseBtn" disabled><i class="fas fa-undo mr-1"></i> Release</button>
-                                    <small class="text-muted d-block w-100 mt-1">Click seats on the map: empty seat = assign, seat owned by this registration (red outline) = release.</small>
+                                    <span class="badge badge-danger mr-2 d-none" id="seatMismatch">Attendees &ne; seats</span>
+                                    <span class="badge badge-success mr-2 d-none" id="seatProgress">0/0 seated</span>
+                                    <small class="text-muted d-block w-100 mt-1">Click seats on the map: empty seat = assign, seat owned by this registration (red outline) = release. Actions appear in the bar at the bottom.</small>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <!-- ===== Mode: Booking ===== -->
-                    <div class="row" id="modeBookWrap" style="display:none">
-                        <div class="col-12 col-md-5 mb-2 mb-md-0">
+                    <div id="modeBookWrap" style="display:none">
+                        <div class="mb-2">
                             <label class="mb-1 d-block"><i class="fas fa-search mr-1 text-muted"></i> Search Booking <small class="text-muted">(notes / floor / #id)</small></label>
                             <input type="text" class="form-control form-control-sm" id="seatBookSearch" placeholder="e.g. name / 08xx / Floor 1" autocomplete="off">
                             <div id="seatBookResults" class="list-group mt-1"></div>
                             <small class="text-muted d-block mt-1">Booking seats are reserved <b>exclusively</b> for the booking (final) — registrants cannot occupy them. Leave empty to list active bookings.</small>
                         </div>
-                        <div class="col-12 col-md-7">
+                        <div>
                             <div id="seatBookEmpty" class="text-muted">
                                 <i class="fas fa-info-circle mr-1"></i> Search for a booking to start reserving / releasing seats.
                             </div>
@@ -592,9 +752,8 @@
                                 </div>
                                 <div class="d-flex align-items-center flex-wrap">
                                     <span class="badge badge-info mr-2" id="bookSelCount">0 seat(s) selected</span>
-                                    <button type="button" class="btn btn-sm btn-primary mr-1" id="seatBookAssignBtn" disabled><i class="fas fa-bookmark mr-1"></i> Reserve</button>
-                                    <button type="button" class="btn btn-sm btn-outline-danger" id="seatBookReleaseBtn" disabled><i class="fas fa-undo mr-1"></i> Release</button>
-                                    <small class="text-muted d-block w-100 mt-1">Click empty seats on the map to reserve them for this booking, or click the blue seats of this booking (red outline) to release them.</small>
+                                    <span class="badge badge-success mr-2 d-none" id="bookProgress">0/0 reserved</span>
+                                    <small class="text-muted d-block w-100 mt-1">Click empty seats on the map to reserve them for this booking, or click the blue seats of this booking (red outline) to release them. Actions appear in the bar at the bottom.</small>
                                 </div>
                             </div>
                         </div>
@@ -637,14 +796,35 @@
                 <div class="legend mb-0">
                     <span class="d-inline-flex align-items-center"><span class="seat me-2">1</span> Available</span>
                     <span class="d-inline-flex align-items-center"><span class="seat seat-confirmed me-2"></span> Confirmed</span>
+                    <span class="d-inline-flex align-items-center"><span class="seat seat-confirmed seat-pending me-2"></span> Occupied (pending)</span>
                     <span class="d-inline-flex align-items-center"><span class="seat seat-reserved me-2"></span> Reserved (booking)</span>
-                    <span class="d-inline-flex align-items-center"><span class="seat seat-selected me-2"></span> Selected</span>
+                    <span class="d-inline-flex align-items-center"><span class="seat seat-selected me-2"></span> Selected (assign)</span>
+                    <span class="d-inline-flex align-items-center"><span class="seat seat-confirmed seat-selected me-2"></span> Selected (release)</span>
                     <span class="d-inline-flex align-items-center"><span class="seat seat-blank me-2"></span> Empty</span>
                     <span class="d-inline-flex align-items-center"><span class="seat seat-table me-2"></span> Table</span>
                     <span class="d-inline-flex align-items-center"><span class="seat seat-pillar-box me-2"></span> Pillar</span>
                     <span class="d-inline-flex align-items-center"><span class="stage-bar px-2 py-1 me-2" style="font-size:.6rem;">STAGE</span> Stage</span>
                     <span class="text-muted">Viewed from above &mdash; stage at the front (top)</span>
                 </div>
+            </div>
+
+            <!-- Custom seat tooltip -->
+            <div id="seatTooltip" role="tooltip" aria-hidden="true"></div>
+
+            <!-- Sticky action bar (muncul saat selection aktif) -->
+            <div id="seatActionBar" class="seat-action-bar" style="display:none">
+                <div class="d-flex align-items-center flex-wrap">
+                    <strong class="text-sm mr-3 d-none" id="barTarget"></strong>
+                    <span class="badge badge-info mr-2" id="barSelCount">0 seat(s)</span>
+                    <span class="badge badge-warning mr-2 d-none" id="barAttCount">0 attendee(s)</span>
+                    <span class="badge badge-danger mr-2 d-none" id="barMismatch">Attendees &ne; seats</span>
+                    <div class="ml-auto d-flex align-items-center">
+                        <button type="button" class="btn btn-sm btn-primary mr-2" id="barActionBtn" disabled><i class="fas fa-chair mr-1"></i> Assign</button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary mr-2" id="barClearBtn" title="Clear seat selection"><i class="fas fa-eraser mr-1"></i> Clear</button>
+                        <button type="button" class="btn btn-sm btn-outline-danger" id="barCloseBtn" title="Close (clear registration / booking selection)">&times;</button>
+                    </div>
+                </div>
+                <small class="text-muted d-block mt-1" id="barHint"></small>
             </div>
 
         </div>
@@ -679,6 +859,21 @@
                 return $('<div>').text(val == null ? '' : String(val)).html();
             }
 
+            /* Nama >2 kata: kata ke-3 dst jadi huruf awal — "nathanael ferry pratama" → "nathanael ferry p" */
+            function shortName(name) {
+                var parts = String(name || '').trim().split(/\s+/);
+                if (parts.length <= 2) return parts.join(' ');
+                return parts.slice(0, 2).concat(parts.slice(2).map(function (w) {
+                    return w.charAt(0);
+                })).join(' ');
+            }
+
+            function nameWithAge(name, age) {
+                var n = shortName(name);
+                var a = (age === null || age === undefined || age === '') ? '' : String(age).trim();
+                return a ? n + ' (' + a + ')' : n;
+            }
+
             function toast(icon, title, text) {
                 Swal.fire({
                     toast: true,
@@ -696,9 +891,9 @@
                 var seats = [];
                 $('.seating-map .seat.seat-selected').each(function () {
                     seats.push({
-                        number: parseInt($(this).data('seat'), 10),
-                        reg: parseInt($(this).data('reg'), 10) || 0,
-                        booking: parseInt($(this).data('booking'), 10) || 0
+                        number: parseInt($(this).attr('data-seat'), 10),
+                        reg: parseInt($(this).attr('data-reg'), 10) || 0,
+                        booking: parseInt($(this).attr('data-booking'), 10) || 0
                     });
                 });
                 return seats;
@@ -712,8 +907,150 @@
                 return ids;
             }
 
+            function scrollToFloor(floorId) {
+                var el = document.querySelector('.seating-map[data-floor="' + parseInt(floorId, 10) + '"]');
+                if (el && el.scrollIntoView) {
+                    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }
+
+            function seatEl(floorId, seatNo) {
+                return $('.seating-map[data-floor="' + parseInt(floorId, 10) + '"] .seat[data-seat="' + parseInt(seatNo, 10) + '"]');
+            }
+
+            function freeSeatEl(floorId, seatNo) {
+                var $s = seatEl(floorId, seatNo);
+                $s.removeClass('seat-confirmed seat-pending seat-releasable seat-selected')
+                    .attr('data-reg', 0)
+                    .attr('data-booking', 0)
+                    .attr('data-status', 'available')
+                    .attr('data-name', '')
+                    .attr('data-age', '')
+                    .attr('data-ref', '')
+                    .attr('data-bname', '');
+            }
+
+            function occupySeatEl(floorId, seatNo, info) {
+                var $s = seatEl(floorId, seatNo);
+                $s.removeClass('seat-selected seat-reserved').addClass('seat-confirmed');
+                if (info.pending) $s.addClass('seat-pending'); else $s.removeClass('seat-pending');
+                $s.attr('data-reg', info.reg || 0).attr('data-booking', 0);
+                $s.attr('data-status', info.pending ? 'pending' : 'confirmed');
+                $s.attr('data-name', info.name || '').attr('data-age', info.age != null ? info.age : '').attr('data-ref', info.ref || '').attr('data-bname', '');
+            }
+
+            function reserveSeatEl(floorId, seatNo, bookingid, bookingName) {
+                var $s = seatEl(floorId, seatNo);
+                $s.removeClass('seat-selected seat-confirmed seat-pending').addClass('seat-reserved');
+                $s.attr('data-booking', bookingid || 0).attr('data-reg', 0);
+                $s.attr('data-status', 'reserved');
+                $s.attr('data-name', '').attr('data-ref', '');
+                $s.attr('data-bname', bookingName || '');
+            }
+
+            /* ===== Custom tooltip seat (bukan title browser) ===== */
+            var $tip = $('#seatTooltip');
+            var tipStatus = {
+                available: 'Available',
+                confirmed: 'Confirmed',
+                pending: 'Pending',
+                reserved: 'Reserved (booking)',
+                selected: 'Selected'
+            };
+
+            function buildSeatTip($s) {
+                var no = $s.attr('data-seat') || '';
+                var status = $s.hasClass('seat-selected') ? 'selected' : ($s.attr('data-status') || 'available');
+                var name = $s.attr('data-name') || '';
+                var age = $s.attr('data-age') || '';
+                var ref = $s.attr('data-ref') || '';
+                var bname = $s.attr('data-bname') || '';
+                var bid = parseInt($s.attr('data-booking'), 10) || 0;
+                var reg = parseInt($s.attr('data-reg'), 10) || 0;
+                var floorName = '';
+                var $map = $s.closest('.seating-map');
+                if ($map.length) {
+                    var fid = $map.attr('data-floor');
+                    var $h = $map.closest('.card').find('.card-title');
+                    floorName = $h.length ? $h.text().split('(')[0].trim() : ('Floor ' + fid);
+                }
+
+                var html = '<div class="tt-head"><span><span class="tt-seat">' + escapeHtml(no) + '</span> ' +
+                    escapeHtml(floorName) + '</span>' +
+                    '<span class="tt-badge ' + status + '">' + escapeHtml(tipStatus[status] || status) + '</span></div>';
+
+                if (status === 'reserved') {
+                    if (bname) {
+                        html += '<div class="tt-name">' + escapeHtml(bname) + '</div>';
+                    }
+                    var bmeta = [];
+                    if (bid > 0) bmeta.push('Booking <b>#' + bid + '</b>');
+                    if (bmeta.length) html += '<div class="tt-meta">' + bmeta.join(' · ') + '</div>';
+                    html += '<div class="tt-hint">Ditahan booking — kelola di mode Booking</div>';
+                } else {
+                    if (name) {
+                        html += '<div class="tt-name">' + escapeHtml(nameWithAge(name, age)) + '</div>';
+                    }
+                    var meta = [];
+                    if (ref) meta.push('Kode <b>' + escapeHtml(ref) + '</b>');
+                    if (reg > 0) meta.push('Reg <b>#' + reg + '</b>');
+                    if (meta.length) html += '<div class="tt-meta">' + meta.join(' · ') + '</div>';
+                    if (status === 'available') html += '<div class="tt-hint">Klik untuk memilih kursi</div>';
+                    else if (status === 'selected') html += '<div class="tt-hint">Klik lagi untuk batalkan pilihan</div>';
+                    else if (status === 'pending') html += '<div class="tt-hint">Occupied — attendee belum confirmed</div>';
+                    else if (status === 'confirmed') html += '<div class="tt-hint">Occupied — attendee confirmed</div>';
+                }
+
+                return html;
+            }
+
+            function positionTip(x, y) {
+                var w = $tip.outerWidth() || 180;
+                var h = $tip.outerHeight() || 60;
+                var left = x + 14;
+                var top = y + 16;
+                if (left + w > $(window).width() - 8) left = x - w - 12;
+                if (top + h > $(window).height() - 8) top = y - h - 12;
+                if (left < 8) left = 8;
+                if (top < 8) top = 8;
+                $tip.css({ left: left + 'px', top: top + 'px' });
+            }
+
+            $(document).on('mouseenter', '.seating-map .seat[data-seat]', function (e) {
+                $tip.html(buildSeatTip($(this))).addClass('show').attr('aria-hidden', 'false');
+                positionTip(e.clientX, e.clientY);
+            });
+
+            $(document).on('mousemove', '.seating-map .seat[data-seat]', function (e) {
+                if ($tip.hasClass('show')) positionTip(e.clientX, e.clientY);
+            });
+
+            $(document).on('mouseleave', '.seating-map .seat[data-seat]', function () {
+                $tip.removeClass('show').attr('aria-hidden', 'true');
+            });
+
+            $(window).on('scroll', function () {
+                $tip.removeClass('show').attr('aria-hidden', 'true');
+            });
+
+            function refreshAttendees(opts) {
+                if (!currentReg) return;
+                var uncheckAll = !!(opts && opts.uncheckAll);
+                $.getJSON(seatAttendeesEndpoint, { registrationid: currentReg.registrationid })
+                    .done(function (res) {
+                        if (res.success) renderAttendees(res.data.attendees);
+                        if (uncheckAll) {
+                            $('#seatRegAttendees input[type="checkbox"]').prop('checked', false);
+                        }
+                        updateButtons();
+                    });
+            }
+
+            var barAction = null; /* fn yang dijalankan barActionBtn */
+
             function updateButtons() {
                 var seats = selectedSeats();
+                barAction = null;
 
                 if (mode === 'booking') {
                     var free = 0, own = 0, other = 0;
@@ -723,17 +1060,48 @@
                         else free++;
                     });
                     $('#bookSelCount').text(seats.length + ' seat(s) selected');
-                    var canReserve = !!(currentBooking && free > 0 && own === 0 && other === 0 &&
-                        (Number(currentBooking.assigned_count) + free) <= Number(currentBooking.seats));
-                    var canRelease = !!(currentBooking && own > 0 && own === seats.length && free === 0 && other === 0);
-                    $('#seatBookAssignBtn').prop('disabled', !canReserve);
-                    $('#seatBookReleaseBtn').prop('disabled', !canRelease);
+                    var hint = '';
+                    if (other > 0) hint = 'Some selected seats belong to another booking.';
+                    else if (free > 0 && own > 0) hint = 'Select only free seats or only seats of this booking.';
+                    else if (free > 0 && (Number(currentBooking.assigned_count) + free) > Number(currentBooking.seats)) {
+                        hint = 'Booking holds ' + currentBooking.seats + ' seat(s) — selection exceeds quota.';
+                    }
+
+                    $('#barTarget').removeClass('d-none').text(currentBooking
+                        ? ('Booking #' + currentBooking.bookingid + ' · ' + (currentBooking.name || currentBooking.keterangan || '')) : '');
+                    $('#barSelCount').text(seats.length + ' seat(s)');
+                    $('#barAttCount').addClass('d-none');
+                    $('#barMismatch').addClass('d-none');
+
+                    if (currentBooking && !hint) {
+                        if (free > 0 && own === 0 && other === 0 &&
+                            (Number(currentBooking.assigned_count) + free) <= Number(currentBooking.seats)) {
+                            $('#barActionBtn').prop('disabled', false)
+                                .html('<i class="fas fa-bookmark mr-1"></i> Reserve (' + free + ')');
+                            barAction = function () { doBookReserve(); };
+                        } else if (own > 0 && own === seats.length && free === 0 && other === 0) {
+                            $('#barActionBtn').prop('disabled', false)
+                                .html('<i class="fas fa-undo mr-1"></i> Release (' + own + ')');
+                            barAction = function () { doBookRelease(); };
+                        } else {
+                            $('#barActionBtn').prop('disabled', true)
+                                .html('<i class="fas fa-bookmark mr-1"></i> Reserve');
+                        }
+                    } else {
+                        $('#barActionBtn').prop('disabled', true)
+                            .html('<i class="fas fa-bookmark mr-1"></i> Reserve');
+                    }
+                    $('#barHint').text(hint || (currentBooking
+                        ? 'Click empty seats to reserve, blue seats of this booking to release.'
+                        : ''));
+                    $('#seatActionBar').toggle(!!currentBooking);
+                    $('body').toggleClass('seat-bar-open', !!currentBooking);
                     return;
                 }
 
+                /* Registration mode */
                 var atts = checkedAttendees();
-                var freeCount = 0;
-                var regCount = 0;
+                var freeCount = 0, regCount = 0;
                 seats.forEach(function (s) {
                     if (s.reg) regCount++; else freeCount++;
                 });
@@ -742,11 +1110,41 @@
                 if (currentReg) {
                     $('#seatAttCount').removeClass('d-none').text(atts.length + ' attendee(s) checked');
                 }
+                var mismatch = freeCount > 0 && atts.length > 0 && freeCount !== atts.length;
+                $('#seatMismatch').toggleClass('d-none', !mismatch);
 
-                var canAssign = !!(currentReg && freeCount > 0 && freeCount === atts.length && regCount === 0);
-                var canRelease = !!(currentReg && regCount > 0 && regCount === seats.length && freeCount === 0);
-                $('#seatAssignBtn').prop('disabled', !canAssign);
-                $('#seatReleaseBtn').prop('disabled', !canRelease);
+                var rHint = '';
+                if (freeCount > 0 && regCount > 0) rHint = 'Select only free seats or only seats of this registration.';
+                else if (mismatch) rHint = 'Attendee count (' + atts.length + ') must match free seat count (' + freeCount + ').';
+
+                $('#barTarget').removeClass('d-none').text(currentReg
+                    ? (currentReg.ref_code + ' — Floor ' + currentReg.floor) : '');
+                $('#barSelCount').text(seats.length + ' seat(s)');
+                $('#barAttCount').toggleClass('d-none', !currentReg).text(atts.length + ' attendee(s)');
+                $('#barMismatch').toggleClass('d-none', !mismatch);
+
+                if (currentReg && !rHint) {
+                    if (freeCount > 0 && freeCount === atts.length && regCount === 0) {
+                        $('#barActionBtn').prop('disabled', false)
+                            .html('<i class="fas fa-chair mr-1"></i> Assign (' + freeCount + ')');
+                        barAction = function () { doAssignPreview(); };
+                    } else if (regCount > 0 && regCount === seats.length && freeCount === 0) {
+                        $('#barActionBtn').prop('disabled', false)
+                            .html('<i class="fas fa-undo mr-1"></i> Release (' + regCount + ')');
+                        barAction = function () { doRelease(); };
+                    } else {
+                        $('#barActionBtn').prop('disabled', true)
+                            .html('<i class="fas fa-chair mr-1"></i> Assign');
+                    }
+                } else {
+                    $('#barActionBtn').prop('disabled', true)
+                        .html('<i class="fas fa-chair mr-1"></i> Assign');
+                }
+                $('#barHint').text(rHint || (currentReg
+                    ? 'Empty seat = assign · red outline (owned) = release.'
+                    : ''));
+                $('#seatActionBar').toggle(!!currentReg);
+                $('body').toggleClass('seat-bar-open', !!currentReg);
             }
 
             function clearSeatSelection() {
@@ -794,7 +1192,14 @@
                 $('#seatBookPanel').show();
                 $('#seatBookTitle').text('#' + currentBooking.bookingid + ' · ' + (currentBooking.name || currentBooking.keterangan) + ' — ' + (b.floor_name || ('Floor ' + currentBooking.floor)));
                 $('#seatBookMeta').html((currentBooking.keterangan ? escapeHtml(currentBooking.keterangan) + ' &middot; ' : '') + '<b>' + currentBooking.assigned_count + ' of ' + currentBooking.seats + '</b> seat(s) reserved');
+                if (currentBooking.seats > 0) {
+                    $('#bookProgress').removeClass('d-none')
+                        .text(currentBooking.assigned_count + '/' + currentBooking.seats + ' reserved');
+                } else {
+                    $('#bookProgress').addClass('d-none');
+                }
                 $('#seatBookResults').empty().removeClass('show');
+                scrollToFloor(currentBooking.floor);
                 if (currentBooking.assigned_count >= currentBooking.seats) {
                     toast('info', 'Booking is full', 'All ' + currentBooking.seats + ' seat(s) are already reserved.');
                 }
@@ -807,11 +1212,13 @@
                 markBookingSeats(0);
                 $('#seatBookTitle').text('');
                 $('#seatBookMeta').empty();
+                $('#bookProgress').addClass('d-none');
                 $('#seatBookPanel').hide();
                 $('#seatBookEmpty').show();
                 $('#seatBookResults').empty().removeClass('show');
-                $('#seatBookAssignBtn, #seatBookReleaseBtn').prop('disabled', true);
                 $('#bookSelCount').text('0 seat(s) selected');
+                $('#seatActionBar').hide();
+                $('body').removeClass('seat-bar-open');
             }
 
             $('#btnModeReg').on('click', function () { setMode('reg'); });
@@ -820,8 +1227,9 @@
 
             function renderAttendees(attendees) {
                 var html = '';
+                var total = 0, seated = 0;
                 (attendees || []).forEach(function (a) {
-                    var seated = a.seat_number ? 'Seat ' + a.seat_number : 'No seat';
+                    var seatedN = a.seat_number ? 'Seat ' + a.seat_number : 'No seat';
                     var badgeCls = a.seat_number ? 'badge-success' : 'badge-secondary';
                     var checked = '';
                     var statusTag = '';
@@ -829,6 +1237,8 @@
                         checked = '';
                         statusTag = '<span class="badge badge-danger mr-1">Cancelled</span>';
                     } else {
+                        total++;
+                        if (a.seat_number) seated++;
                         checked = a.seat_number ? '' : 'checked';
                         if (a.status != 1) {
                             statusTag = '<span class="badge badge-warning mr-1">Pending</span>';
@@ -836,13 +1246,18 @@
                     }
                     html +=
                         '<label class="seat-attendee-item mb-1">' +
-                        '<input type="checkbox" value="' + a.attendeeid + '" ' + checked + '>' +
+                        '<input type="checkbox" value="' + a.attendeeid + '" data-name="' + escapeHtml(a.name) + '" data-age="' + escapeHtml(a.age != null ? a.age : '') + '" ' + checked + '>' +
                         statusTag +
-                        '<span class="flex-grow-1">' + escapeHtml(a.name) + '</span>' +
-                        '<span class="badge ' + badgeCls + '">' + escapeHtml(seated) + '</span>' +
+                        '<span class="flex-grow-1">' + escapeHtml(nameWithAge(a.name, a.age)) + '</span>' +
+                        '<span class="badge ' + badgeCls + '">' + escapeHtml(seatedN) + '</span>' +
                         '</label>';
                 });
                 $('#seatRegAttendees').html(html || '<div class="text-muted">No attendees</div>');
+                if (total > 0) {
+                    $('#seatProgress').removeClass('d-none').text(seated + '/' + total + ' seated');
+                } else {
+                    $('#seatProgress').addClass('d-none');
+                }
             }
 
             function selectReg(reg) {
@@ -864,6 +1279,7 @@
                     toast('info', 'No attendees yet', 'This registration has no attendees to assign');
                 }
                 $('#seatSearchResults').empty().removeClass('show');
+                scrollToFloor(reg.floor);
 
                 $.getJSON(seatAttendeesEndpoint, { registrationid: reg.registrationid })
                     .done(function (res) {
@@ -886,11 +1302,14 @@
                 $('#seatRegAttendees').empty();
                 $('#seatRegTitle').text('');
                 $('#seatRegMeta').empty();
+                $('#seatProgress').addClass('d-none');
                 $('#seatRegPanel').hide();
                 $('#seatRegEmpty').show();
-                $('#seatAssignBtn, #seatReleaseBtn').prop('disabled', true);
                 $('#seatAttCount').addClass('d-none');
+                $('#seatMismatch').addClass('d-none');
                 $('#seatSelCount').text('0 seat(s) selected');
+                $('#seatActionBar').hide();
+                $('body').removeClass('seat-bar-open');
             }
 
             /* Search */
@@ -923,6 +1342,7 @@
                                     '<div class="d-flex justify-content-between align-items-start">' +
                                     '<strong>' + escapeHtml(r.ref_code) + '</strong> ' + statusBadge +
                                     '</div>' +
+                                    (r.attendee_names ? '<div class="text-dark">' + escapeHtml(r.attendee_names) + '</div>' : '') +
                                     '<small class="text-muted d-block">Floor ' + escapeHtml(r.floor) + ' · ' + escapeHtml(r.phone || '') +
                                     ' · ' + conf + ' confirmed' + (pend ? ' · ' + pend + ' pending' : '') + ' · ' + (parseInt(r.seated_count, 10) || 0) + ' seated</small>' +
                                     '</button>'
@@ -998,13 +1418,13 @@
 
                 if (mode === 'booking') {
                     if ($s.hasClass('seat-confirmed')) return;
-                    var bid = parseInt($s.data('booking'), 10) || 0;
+                    var bid = parseInt($s.attr('data-booking'), 10) || 0;
                     if (bid > 0) {
                         if (currentBooking && bid === currentBooking.bookingid) {
                             $s.toggleClass('seat-selected');
                             updateButtons();
                         } else {
-                            toast('info', 'Reserved for another booking', 'Seat ' + $s.data('seat') + ' belongs to booking #' + bid);
+                            toast('info', 'Reserved for another booking', 'Seat ' + $s.attr('data-seat') + ' belongs to booking #' + bid);
                         }
                         return;
                     }
@@ -1015,28 +1435,58 @@
                 }
 
                 if ($s.hasClass('seat-confirmed')) {
-                    if (currentReg && parseInt($s.data('reg'), 10) === currentReg.registrationid) {
+                    if (currentReg && parseInt($s.attr('data-reg'), 10) === currentReg.registrationid) {
                         $s.toggleClass('seat-selected');
                         updateButtons();
                     }
                     return;
                 }
-                if (parseInt($s.data('booking'), 10) > 0) {
-                    toast('info', 'Reserved for a booking', 'Seat ' + $s.data('seat') + ' is held by a booking — switch to Booking mode to release it.');
+                if (parseInt($s.attr('data-booking'), 10) > 0) {
+                    toast('info', 'Reserved for a booking', 'Seat ' + $s.attr('data-seat') + ' is held by a booking — switch to Booking mode to release it.');
                     return;
                 }
                 $s.toggleClass('seat-selected');
                 updateButtons();
             });
 
-            /* Assign */
-            $('#seatAssignBtn').on('click', function () {
-                var $btn = $(this);
+            /* ===== Assign / Release (AJAX — tanpa reload halaman) ===== */
+            function setBarBusy(busy, label) {
+                if (busy) {
+                    $('#barActionBtn').prop('disabled', true)
+                        .html('<i class="fas fa-spinner fa-spin mr-1"></i> ' + (label || 'Saving...'));
+                } else {
+                    updateButtons();
+                }
+            }
+
+            function doAssignPreview() {
                 var atts = checkedAttendees();
                 var seats = selectedSeats().map(function (s) { return s.number; }).sort(function (a, b) { return a - b; });
-                if (!currentReg || !atts.length || !seats.length) return;
+                if (!currentReg || !atts.length || !seats.length || atts.length !== seats.length) return;
 
-                $btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin mr-1"></i> Saving...');
+                var names = [];
+                $('#seatRegAttendees input[type="checkbox"]:checked').each(function (i) {
+                    names.push($(this).closest('label').find('.flex-grow-1').text());
+                });
+                var rows = names.map(function (n, i) {
+                    return '<div class="d-flex justify-content-between border-bottom py-1">' +
+                        '<span>' + escapeHtml(n) + '</span><b>&rarr; Seat ' + seats[i] + '</b></div>';
+                }).join('');
+
+                Swal.fire({
+                    title: 'Assign seats?',
+                    html: '<div class="text-left text-sm" style="max-height:240px;overflow:auto">' + rows + '</div>',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Assign ' + atts.length + ' seat(s)',
+                    cancelButtonText: 'Cancel'
+                }).then(function (r) {
+                    if (r.value) doAssign(atts, seats);
+                });
+            }
+
+            function doAssign(atts, seats) {
+                setBarBusy(true, 'Saving...');
                 $.post(seatAssignEndpoint, {
                     registrationid: currentReg.registrationid,
                     floor_id: currentReg.floor,
@@ -1044,99 +1494,156 @@
                     seats: seats
                 })
                     .done(function (res) {
-                        if (res.success) {
-                            toast('success', 'Assigned!', res.message);
-                            setTimeout(function () { location.reload(); }, 900);
-                        } else {
+                        if (!res.success) {
                             toast('error', 'Failed', res.message);
-                            $btn.prop('disabled', false).html('<i class="fas fa-chair mr-1"></i> Assign');
+                            setBarBusy(false);
+                            return;
                         }
+                        var pairs = (res.data && res.data.pairs) || {};
+                        var attInfo = {};
+                        $('#seatRegAttendees input[type="checkbox"]').each(function () {
+                            attInfo[parseInt($(this).val(), 10)] = {
+                                name: $(this).attr('data-name') || '',
+                                age: $(this).attr('data-age') || '',
+                                pending: $(this).closest('label').find('.badge-warning').length > 0
+                            };
+                        });
+                        atts.forEach(function (aid, i) {
+                            var sn = pairs[aid] || seats[i];
+                            var info = attInfo[aid] || {};
+                            occupySeatEl(currentReg.floor, sn, {
+                                reg: currentReg.registrationid,
+                                pending: !!info.pending,
+                                name: info.name || '',
+                                age: info.age || '',
+                                ref: currentReg.ref_code || ''
+                            });
+                        });
+                        clearSeatSelection();
+                        markReleasableSeats(currentReg.registrationid);
+                        refreshAttendees({ uncheckAll: true });
+                        setBarBusy(false);
+                        toast('success', 'Assigned!', res.message);
                     })
                     .fail(function () {
                         toast('error', 'Error', 'Could not reach server');
-                        $btn.prop('disabled', false).html('<i class="fas fa-chair mr-1"></i> Assign');
+                        setBarBusy(false);
                     });
-            });
+            }
 
-            /* Release */
-            $('#seatReleaseBtn').on('click', function () {
-                var $btn = $(this);
+            function doRelease() {
                 var seats = selectedSeats().map(function (s) { return s.number; });
                 if (!currentReg || !seats.length) return;
-
-                $btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin mr-1"></i> Saving...');
+                setBarBusy(true, 'Saving...');
                 $.post(seatReleaseEndpoint, {
                     floor_id: currentReg.floor,
                     seats: seats,
                     registrationid: currentReg.registrationid
                 })
                     .done(function (res) {
-                        if (res.success) {
-                            toast('success', 'Released!', res.message);
-                            setTimeout(function () { location.reload(); }, 900);
-                        } else {
+                        if (!res.success) {
                             toast('error', 'Failed', res.message);
-                            $btn.prop('disabled', false).html('<i class="fas fa-undo mr-1"></i> Release');
+                            setBarBusy(false);
+                            return;
                         }
+                        seats.forEach(function (sn) { freeSeatEl(currentReg.floor, sn); });
+                        clearSeatSelection();
+                        markReleasableSeats(currentReg.registrationid);
+                        refreshAttendees();
+                        setBarBusy(false);
+                        toast('success', 'Released!', res.message);
                     })
                     .fail(function () {
                         toast('error', 'Error', 'Could not reach server');
-                        $btn.prop('disabled', false).html('<i class="fas fa-undo mr-1"></i> Release');
+                        setBarBusy(false);
                     });
-            });
+            }
 
-            /* Reserve (booking mode) */
-            $('#seatBookAssignBtn').on('click', function () {
-                var $btn = $(this);
+            function doBookReserve() {
                 var seats = selectedSeats().map(function (s) { return s.number; }).sort(function (a, b) { return a - b; });
                 if (!currentBooking || !seats.length) return;
-
-                $btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin mr-1"></i> Saving...');
+                setBarBusy(true, 'Saving...');
                 $.post(seatBookAssignEndpoint, {
                     bookingid: currentBooking.bookingid,
                     floor_id: currentBooking.floor,
                     seats: seats
                 })
                     .done(function (res) {
-                        if (res.success) {
-                            toast('success', 'Reserved!', res.message);
-                            setTimeout(function () { location.reload(); }, 900);
-                        } else {
+                        if (!res.success) {
                             toast('error', 'Failed', res.message);
-                            $btn.prop('disabled', false).html('<i class="fas fa-bookmark mr-1"></i> Reserve');
+                            setBarBusy(false);
+                            return;
                         }
+                        var bName = (currentBooking.name || currentBooking.keterangan || '');
+                        seats.forEach(function (sn) { reserveSeatEl(currentBooking.floor, sn, currentBooking.bookingid, bName); });
+                        currentBooking.assigned_count += seats.length;
+                        if (lastBookRows[currentBooking.bookingid]) {
+                            lastBookRows[currentBooking.bookingid].assigned_count = currentBooking.assigned_count;
+                        }
+                        $('#seatBookMeta').html((currentBooking.keterangan ? escapeHtml(currentBooking.keterangan) + ' &middot; ' : '') +
+                            '<b>' + currentBooking.assigned_count + ' of ' + currentBooking.seats + '</b> seat(s) reserved');
+                        $('#bookProgress').removeClass('d-none')
+                            .text(currentBooking.assigned_count + '/' + currentBooking.seats + ' reserved');
+                        clearSeatSelection();
+                        markBookingSeats(currentBooking.bookingid);
+                        updateButtons();
+                        setBarBusy(false);
+                        toast('success', 'Reserved!', res.message);
                     })
                     .fail(function () {
                         toast('error', 'Error', 'Could not reach server');
-                        $btn.prop('disabled', false).html('<i class="fas fa-bookmark mr-1"></i> Reserve');
+                        setBarBusy(false);
                     });
-            });
+            }
 
-            /* Release booking seats */
-            $('#seatBookReleaseBtn').on('click', function () {
-                var $btn = $(this);
+            function doBookRelease() {
                 var seats = selectedSeats().map(function (s) { return s.number; });
                 if (!currentBooking || !seats.length) return;
-
-                $btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin mr-1"></i> Saving...');
+                setBarBusy(true, 'Saving...');
                 $.post(seatBookReleaseEndpoint, {
                     bookingid: currentBooking.bookingid,
                     floor_id: currentBooking.floor,
                     seats: seats
                 })
                     .done(function (res) {
-                        if (res.success) {
-                            toast('success', 'Released!', res.message);
-                            setTimeout(function () { location.reload(); }, 900);
-                        } else {
+                        if (!res.success) {
                             toast('error', 'Failed', res.message);
-                            $btn.prop('disabled', false).html('<i class="fas fa-undo mr-1"></i> Release');
+                            setBarBusy(false);
+                            return;
                         }
+                        seats.forEach(function (sn) { freeSeatEl(currentBooking.floor, sn); });
+                        currentBooking.assigned_count = Math.max(0, currentBooking.assigned_count - seats.length);
+                        if (lastBookRows[currentBooking.bookingid]) {
+                            lastBookRows[currentBooking.bookingid].assigned_count = currentBooking.assigned_count;
+                        }
+                        $('#seatBookMeta').html((currentBooking.keterangan ? escapeHtml(currentBooking.keterangan) + ' &middot; ' : '') +
+                            '<b>' + currentBooking.assigned_count + ' of ' + currentBooking.seats + '</b> seat(s) reserved');
+                        $('#bookProgress').removeClass('d-none')
+                            .text(currentBooking.assigned_count + '/' + currentBooking.seats + ' reserved');
+                        clearSeatSelection();
+                        markBookingSeats(currentBooking.bookingid);
+                        setBarBusy(false);
+                        toast('success', 'Released!', res.message);
                     })
                     .fail(function () {
                         toast('error', 'Error', 'Could not reach server');
-                        $btn.prop('disabled', false).html('<i class="fas fa-undo mr-1"></i> Release');
+                        setBarBusy(false);
                     });
+            }
+
+            $('#barActionBtn').on('click', function () {
+                if (typeof barAction === 'function') barAction();
+            });
+            $('#barClearBtn').on('click', function () {
+                clearSeatSelection();
+                updateButtons();
+            });
+            $('#barCloseBtn').on('click', function () {
+                if (mode === 'booking') {
+                    clearBooking();
+                } else {
+                    clearReg();
+                }
             });
         })();
     </script>

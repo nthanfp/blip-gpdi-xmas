@@ -217,6 +217,9 @@ class Seating_Model extends CI_Model
         $rows = $this->db->query(
             "SELECT r.registrationid, r.ref_code, r.phone, r.floor, r.status,
                     f.name AS floor_name,
+                    (SELECT GROUP_CONCAT(a.name ORDER BY a.is_primary DESC, a.attendeeid ASC SEPARATOR ', ')
+                       FROM {$this->_attendee} a
+                      WHERE a.registrationid = r.registrationid AND a.status <> 2) AS attendee_names,
                     (SELECT COUNT(*) FROM {$this->_attendee} a
                       WHERE a.registrationid = r.registrationid AND a.status = 1) AS confirmed_count,
                     (SELECT COUNT(*) FROM {$this->_attendee} a
@@ -265,7 +268,7 @@ class Seating_Model extends CI_Model
         }
 
         $attendees = $this->db->query(
-            "SELECT a.attendeeid, a.name, a.status, s.seat_number
+            "SELECT a.attendeeid, a.name, a.age, a.status, s.seat_number
              FROM {$this->_attendee} a
              LEFT JOIN {$this->_seat} s ON s.attendeeid = a.attendeeid
              WHERE a.registrationid = ?
