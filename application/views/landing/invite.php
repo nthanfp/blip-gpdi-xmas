@@ -105,6 +105,30 @@
                 <!-- Registration Form -->
                 <?php $this->load->view('landing/christmas/registration-form') ?>
 
+                <!-- Cari Pendaftaran (sudah daftar? buka via no HP) -->
+                <section class="relative py-14 sm:py-20 px-5 sm:px-8 overflow-hidden -mt-px bg-red-950">
+                    <div class="absolute inset-0 bg-gradient-to-b from-red-950 via-red-900/50 to-red-950"></div>
+                    <div class="absolute inset-0 opacity-[0.03]" style="background-image: radial-gradient(circle, #f5edd6 1px, transparent 1px); background-size: 24px 24px;"></div>
+                    <div class="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-red-950 via-red-950/80 to-transparent pointer-events-none z-10"></div>
+
+                    <div class="relative z-10 max-w-md lg:max-w-lg mx-auto text-center space-y-5">
+                        <div class="w-14 h-14 mx-auto rounded-full bg-gold-400/10 flex items-center justify-center border border-gold-400/30" data-aos="zoom-in">
+                            <i class="fas fa-search text-gold-400 text-xl"></i>
+                        </div>
+                        <div class="space-y-2" data-aos="fade-up" data-aos-delay="80">
+                            <h2 class="text-xl sm:text-2xl font-bold text-white">Sudah Mendaftar?</h2>
+                            <p class="text-sm text-stone-300 leading-relaxed">
+                                Cari halaman pendaftaran Anda dengan nomor HP yang didaftarkan — tanpa perlu simpan kode.
+                            </p>
+                        </div>
+                        <a href="<?php echo site_url('cari'); ?>"
+                           class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gold-500 hover:bg-gold-600 text-red-950 font-semibold text-sm tracking-wide transition-all duration-300 hover:shadow-lg hover:shadow-gold-500/25 active:scale-95 focus:outline-none focus:ring-2 focus:ring-gold-400 focus:ring-offset-2 focus:ring-offset-red-950"
+                           data-aos="fade-up" data-aos-delay="160">
+                            <i class="fas fa-ticket-alt text-xs"></i> Cari Pendaftaran
+                        </a>
+                    </div>
+                </section>
+
                 <!-- Contact -->
                 <?php $this->load->view('landing/christmas/contact') ?>
 

@@ -313,6 +313,92 @@ class Landing extends CI_Controller
         ]);
     }
 
+    /* ═══ Cari pendaftaran via no HP → arahkan ke /p/{ref_code} ═══ */
+
+    public function find()
+    {
+        if ($this->_is_maintenance()) {
+            $this->load->view('landing/maintenance');
+            return;
+        }
+
+        $this->load->view('landing/find');
+    }
+
+    public function find_ajax()
+    {
+        if ($this->_is_maintenance()) {
+            $this->respond(['success' => false, 'message' => 'Situs sedang dalam pemeliharaan.']);
+            return;
+        }
+
+        $phone = preg_replace('/\D+/', '', (string) $this->input->post('phone'));
+        if ($phone === '') {
+            $this->respond(['success' => false, 'message' => 'Masukkan nomor HP terlebih dahulu.']);
+            return;
+        }
+
+        /* Normalisasi: 62xxx / +62 / 08xx / 8xx → kandidat pencocokan */
+        $candidates = [$phone];
+        if (strpos($phone, '62') === 0 && strlen($phone) > 4) {
+            $candidates[] = '0' . substr($phone, 2);
+        } elseif (strpos($phone, '0') === 0) {
+            $candidates[] = '62' . substr($phone, 1);
+        } elseif (strpos($phone, '8') === 0) {
+            $candidates[] = '0' . $phone;
+            $candidates[] = '62' . $phone;
+        }
+        $candidates = array_values(array_unique($candidates));
+
+        if (!$this->db->table_exists('act_xmas_registration')) {
+            $this->respond(['success' => false, 'message' => 'Data pendaftaran tidak ditemukan.']);
+            return;
+        }
+
+        $in = implode(',', array_fill(0, count($candidates), '?'));
+        $rows = $this->db->query(
+            "SELECT r.ref_code, r.floor, r.status, r.created_date, f.name AS floor_name
+             FROM act_xmas_registration r
+             LEFT JOIN set_xmas_floor f ON f.floor = r.floor
+             WHERE r.phone IN ({$in}) AND r.status <> 2
+             ORDER BY r.registrationid DESC",
+            $candidates
+        )->result();
+
+        if (!$rows) {
+            $this->respond([
+                'success' => false,
+                'message' => 'Nomor <b>' . htmlspecialchars($phone, ENT_QUOTES, 'UTF-8') . '</b> tidak ditemukan di daftar pendaftaran. Periksa kembali nomor Anda atau daftar dulu.'
+            ]);
+            return;
+        }
+
+        if (count($rows) === 1) {
+            $this->respond([
+                'success' => true,
+                'redirect' => site_url('p/' . rawurlencode($rows[0]->ref_code)),
+                'ref_code' => $rows[0]->ref_code
+            ]);
+            return;
+        }
+
+        /* Lebih dari satu pendaftaran — tampilkan pilihan */
+        $list = [];
+        foreach ($rows as $r) {
+            $list[] = [
+                'ref_code' => $r->ref_code,
+                'floor' => (int) $r->floor,
+                'floor_name' => (string) ($r->floor_name ?: ('Floor ' . (int) $r->floor)),
+                'redirect' => site_url('p/' . rawurlencode($r->ref_code)),
+            ];
+        }
+        $this->respond([
+            'success' => true,
+            'multi' => true,
+            'list' => $list
+        ]);
+    }
+
     /* Halaman sukses pendaftaran: /p/{ref_code} (+ QR) */
     public function registration_success($code = null)
     {
