@@ -350,4 +350,104 @@ class Booking_Model extends CI_Model
             'message' => $delete ? 'Booking deleted successfully.' : 'Failed to delete booking.'
         ];
     }
+
+    /* Ubah status banyak booking sekaligus (0=Active, 1=Cancelled).
+       Cancelled → kursi di Seating Layout dilepas; Active → cek sisa kuota per lantai. */
+    public function data_bulk_status(array $ids, $status)
+    {
+        $ids = array_values(array_unique(array_filter(array_map('intval', $ids))));
+        if (!$ids) {
+            return ['success' => false, 'message' => 'No bookings selected.'];
+        }
+        $status = $status ? 1 : 0;
+
+        if (!$this->db->table_exists($this->_table)) {
+            return ['success' => false, 'message' => 'Booking table not found.'];
+        }
+
+        $in = implode(',', array_fill(0, count($ids), '?'));
+        $rows = $this->db->query(
+            "SELECT bookingid, floor, seats, status FROM {$this->_table} WHERE bookingid IN ({$in})",
+            $ids
+        )->result();
+
+        if (!$rows) {
+            return ['success' => false, 'message' => 'Bookings not found.'];
+        }
+
+        /* Reactivasi (status 0): pastikan total kursi baru per lantai masih muat sisa kuota */
+        if ($status === 0) {
+            $add = [];
+            foreach ($rows as $r) {
+                if ((int) $r->status === 0) continue;
+                $f = (int) $r->floor;
+                $add[$f] = ($add[$f] ?? 0) + (int) $r->seats;
+            }
+
+            if ($add) {
+                $registered_map = $this->registered_by_floor();
+                $booked_map = $this->booked_by_floor();
+                $floors = $this->db->get('set_xmas_floor')->result();
+                $cap = [];
+                foreach ($floors as $f) {
+                    $cap[(int) $f->floor] = (int) $f->capacity;
+                }
+
+                foreach ($add as $floor => $extra) {
+                    if (!isset($cap[$floor])) {
+                        return ['success' => false, 'message' => 'Floor ' . $floor . ' not found.'];
+                    }
+                    $registered = $registered_map[$floor] ?? 0;
+                    $booked = $booked_map[$floor] ?? 0;
+                    $remaining = max(0, $cap[$floor] - $registered - $booked);
+                    if ($extra > $remaining) {
+                        $fname = '';
+                        foreach ($floors as $f) {
+                            if ((int) $f->floor === $floor) { $fname = $f->name; break; }
+                        }
+                        return [
+                            'success' => false,
+                            'message' => 'Remaining quota for ' . ($fname ?: ('Floor ' . $floor)) . ' is only ' .
+                                $remaining . ' seat(s) — cannot reactivate ' . $extra . ' seat(s) at once.'
+                        ];
+                    }
+                }
+            }
+        }
+
+        $admin_id = $this->current_user_id();
+        $now = date('Y-m-d H:i:s');
+
+        $this->db->trans_begin();
+
+        $update = $this->db->where_in('bookingid', $ids)->update($this->_table, [
+            'status' => $status,
+            'modified_by' => $admin_id,
+            'modified_date' => $now
+        ]);
+
+        if (!$update || $this->db->trans_status() === FALSE) {
+            $this->db->trans_rollback();
+            return ['success' => false, 'message' => 'Failed to update booking status.'];
+        }
+
+        if ($status === 1) {
+            $this->db->where_in('bookingid', $ids);
+            $this->db->update('act_seating_seat', [
+                'bookingid' => null,
+                'assigned_by' => null,
+                'assigned_date' => null,
+            ]);
+        }
+
+        if ($this->db->trans_status() === FALSE) {
+            $this->db->trans_rollback();
+            return ['success' => false, 'message' => 'Failed to update booking status.'];
+        }
+
+        $this->db->trans_commit();
+
+        $label = $status === 1 ? 'cancelled' : 'activated';
+        return ['success' => true, 'message' => count($ids) . ' booking(s) ' . $label . '.'];
+    }
 }

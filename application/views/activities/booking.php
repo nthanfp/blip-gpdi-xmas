@@ -57,6 +57,26 @@
                 </div>
             </div>
 
+            <!-- Bulk status -->
+            <div class="card card-outline card-secondary mb-2 d-none" id="bulkBar">
+                <div class="card-body py-2 px-2 d-flex align-items-center flex-wrap">
+                    <span class="badge badge-info mr-2" id="bulkCount">0 selected</span>
+                    <button type="button" class="btn btn-sm btn-success mr-1" id="btnBulkActive">
+                        <i class="fas fa-check-circle"></i> Set Active
+                    </button>
+                    <button type="button" class="btn btn-sm btn-secondary mr-1" id="btnBulkCancel">
+                        <i class="fas fa-ban"></i> Set Cancelled
+                    </button>
+                    <button type="button" class="btn btn-sm btn-info mr-1" id="btnBulkWa">
+                        <i class="fab fa-whatsapp"></i> Copy to WA
+                    </button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" id="btnBulkClear">
+                        <i class="fas fa-times"></i> Clear
+                    </button>
+                    <small class="text-muted d-block w-100 mt-1">Cancelled bookings release their seats in Seating Layout; reactivating checks remaining floor quota.</small>
+                </div>
+            </div>
+
             <div class="card card-outline card-secondary mb-0">
                 <div class="card-body py-2 px-2 border-bottom">
                     <div class="row">
@@ -99,6 +119,9 @@
                     <table class="table table-sm table-striped mb-0">
                         <thead>
                             <tr>
+                                <th class="text-nowrap" style="width: 30px;">
+                                    <input type="checkbox" id="checkAll" title="Select all on page">
+                                </th>
                                 <th class="d-none">ID</th>
                                 <th class="text-nowrap" style="width: 90px;">Floor</th>
                                 <th class="text-nowrap" style="width: 60px;">Seats</th>
@@ -112,7 +135,7 @@
                         </thead>
                         <tbody id="tableBodyBooking">
                             <tr>
-                                <td colspan="9" class="text-center text-muted py-4">Loading...</td>
+                                <td colspan="10" class="text-center text-muted py-4">Loading...</td>
                             </tr>
                         </tbody>
                     </table>
@@ -222,7 +245,8 @@
                 invitation: '<?= site_url("invitation/") ?>',
                 edit: '<?= site_url("activities/booking/data_edit") ?>',
                 update: '<?= site_url("activities/booking/data_update") ?>',
-                delete: '<?= site_url("activities/booking/data_delete") ?>'
+                delete: '<?= site_url("activities/booking/data_delete") ?>',
+                bulkStatus: '<?= site_url("activities/booking/data_bulk_status") ?>'
             }
 
             const state = {
@@ -231,6 +255,8 @@
                 search: '',
                 floor: ''
             }
+
+            let selectedIds = new Map() /* id -> { name, url } */
 
             const modal = $('#modalForm')
             const form = $('#formBooking')
@@ -305,12 +331,19 @@
 
             const renderRows = (rows) => {
                 if (!rows || !rows.length) {
-                    tableBody.html('<tr><td colspan="9" class="text-center text-muted py-4">No data found</td></tr>')
+                    tableBody.html('<tr><td colspan="10" class="text-center text-muted py-4">No data found</td></tr>')
+                    $('#checkAll').prop('checked', false)
+                    updateBulkBar()
                     return
                 }
 
-                const html = rows.map((row) => `
+                const html = rows.map((row) => {
+                    const id = String(row.bookingid)
+                    const invUrl = endpoints.invitation + encodeURIComponent(row.bookingid) + (slugify(row.name) ? '/' + encodeURIComponent(slugify(row.name)) : '')
+                    const checked = selectedIds.has(id) ? 'checked' : ''
+                    return `
                     <tr>
+                        <td><input type="checkbox" class="row-check" data-id="${escapeHtml(id)}" data-name="${escapeHtml(row.name)}" data-url="${escapeHtml(invUrl)}" ${checked}></td>
                         <td class="d-none">${escapeHtml(row.bookingid)}</td>
                         <td class="text-nowrap">${escapeHtml(floorName(row.floor))}</td>
                         <td class="text-nowrap">${escapeHtml(row.seats)}</td>
@@ -332,9 +365,79 @@
                             </button>
                         </td>
                     </tr>
-                `).join('')
+                `
+                }).join('')
 
                 tableBody.html(html)
+                syncCheckAll()
+                updateBulkBar()
+            }
+
+            const updateBulkBar = () => {
+                const n = selectedIds.size
+                $('#bulkCount').text(n + ' selected')
+                $('#bulkBar').toggleClass('d-none', n === 0)
+                $('#btnBulkActive, #btnBulkCancel').prop('disabled', n === 0)
+            }
+
+            const syncCheckAll = () => {
+                const boxes = tableBody.find('.row-check')
+                const checked = boxes.filter(':checked').length
+                $('#checkAll').prop('checked', boxes.length > 0 && checked === boxes.length)
+                $('#checkAll').prop('indeterminate', checked > 0 && checked < boxes.length)
+            }
+
+            const clearBulk = () => {
+                selectedIds.clear()
+                tableBody.find('.row-check').prop('checked', false)
+                $('#checkAll').prop('checked', false).prop('indeterminate', false)
+                updateBulkBar()
+            }
+
+            const bulkStatus = (status) => {
+                const ids = Array.from(selectedIds.keys())
+                if (!ids.length) return
+
+                const label = status === 1 ? 'cancel' : 'activate'
+                Swal.fire({
+                    title: (status === 1 ? 'Cancel ' : 'Activate ') + ids.length + ' booking(s)?',
+                    text: status === 1
+                        ? 'Cancelled bookings release their reserved seats.'
+                        : 'Reactivating checks remaining floor quota.',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: status === 1 ? '#6c757d' : '#28a745',
+                    confirmButtonText: status === 1 ? 'Set Cancelled' : 'Set Active'
+                }).then((r) => {
+                    if (!r.isConfirmed) return
+
+                    $.ajax({
+                        url: endpoints.bulkStatus,
+                        type: 'POST',
+                        dataType: 'json',
+                        data: { ids: JSON.stringify(ids), status: status },
+                        beforeSend: function() {
+                            $.LoadingOverlay('show', { background: 'rgba(0, 0, 0, 0.25)' })
+                        },
+                        success: function(res) {
+                            if (!res.success) {
+                                Swal.fire('Error', res.message || ('Failed to ' + label + ' bookings'), 'error')
+                                return
+                            }
+                            Swal.fire('Success', res.message || 'Updated', 'success')
+                            clearBulk()
+                            loadData()
+                            loadStats()
+                        },
+                        complete: function() {
+                            $.LoadingOverlay('hide')
+                        },
+                        error: function(xhr) {
+                            console.error(xhr.responseText)
+                            Swal.fire('Error', 'Server error (' + xhr.status + ')', 'error')
+                        }
+                    })
+                })
             }
 
             const renderPagination = (paginationData) => {
@@ -484,7 +587,77 @@
                 })
             }
 
+            /* Copy undangan terpilih ke clipboard — format WhatsApp: *Nama* + link */
+            const copyWaSelected = () => {
+                const items = Array.from(selectedIds.values())
+                if (!items.length) return
+
+                const text = items.map((it) => '*' + it.name + '*\n' + it.url).join('\n\n')
+
+                const done = () => {
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'success',
+                        title: items.length + ' undangan disalin',
+                        text: 'Tempel (paste) di chat WhatsApp.',
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true
+                    })
+                }
+
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(text).then(done).catch(() => fallbackCopy(text, done))
+                } else {
+                    fallbackCopy(text, done)
+                }
+            }
+
+            const fallbackCopy = (text, done) => {
+                const ta = document.createElement('textarea')
+                ta.value = text
+                ta.style.position = 'fixed'
+                ta.style.opacity = '0'
+                document.body.appendChild(ta)
+                ta.select()
+                try { document.execCommand('copy'); done() } catch (e) { Swal.fire('Error', 'Failed to copy', 'error') }
+                document.body.removeChild(ta)
+            }
+
             $('#btnAdd').on('click', openCreateModal)
+
+            /* Multi-select status */
+            $('#checkAll').on('change', function() {
+                const on = $(this).prop('checked')
+                tableBody.find('.row-check').each(function() {
+                    const id = String($(this).data('id'))
+                    $(this).prop('checked', on)
+                    if (on) {
+                        selectedIds.set(id, { name: String($(this).data('name') || ''), url: String($(this).data('url') || '') })
+                    } else {
+                        selectedIds.delete(id)
+                    }
+                })
+                $(this).prop('indeterminate', false)
+                updateBulkBar()
+            })
+
+            tableBody.on('change', '.row-check', function() {
+                const id = String($(this).data('id'))
+                if ($(this).prop('checked')) {
+                    selectedIds.set(id, { name: String($(this).data('name') || ''), url: String($(this).data('url') || '') })
+                } else {
+                    selectedIds.delete(id)
+                }
+                syncCheckAll()
+                updateBulkBar()
+            })
+
+            $('#btnBulkClear').on('click', clearBulk)
+            $('#btnBulkActive').on('click', function() { bulkStatus(0) })
+            $('#btnBulkCancel').on('click', function() { bulkStatus(1) })
+            $('#btnBulkWa').on('click', copyWaSelected)
 
             $('#btnApply').on('click', function() {
                 state.page = 1

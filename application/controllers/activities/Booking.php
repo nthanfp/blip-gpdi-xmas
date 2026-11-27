@@ -178,4 +178,28 @@ class Booking extends CI_Controller
         $result = $this->Booking_Model->data_delete($id);
         $this->respond($result);
     }
+
+    public function data_bulk_status()
+    {
+        if (!$this->guard_menu_access('update')) {
+            return;
+        }
+
+        $ids = $this->input->post('ids');
+        if (is_string($ids)) {
+            $ids = json_decode($ids, true) ?: [];
+        }
+        if (!is_array($ids)) {
+            $ids = [];
+        }
+
+        $status = $this->input->post('status', true);
+        if ($status === '' || $status === null || !in_array((string) $status, ['0', '1'], true)) {
+            $this->respond(['success' => false, 'message' => 'Status must be 0 (Active) or 1 (Cancelled).']);
+            return;
+        }
+
+        $result = $this->Booking_Model->data_bulk_status($ids, (int) $status);
+        $this->respond($result);
+    }
 }
